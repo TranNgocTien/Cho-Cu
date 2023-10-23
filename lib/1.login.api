@@ -1,0 +1,8 @@
+1.Login:
+[POST] https://vstserver.com/login
+[header]: Content-Type : application/json
+[body]:
+user_id: số điện thoại
+password:
+device: tên thiết bị
+token: "anhkhongdoiqua"

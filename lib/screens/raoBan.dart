@@ -21,7 +21,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
       appBar: AppBar(
         title: Text(
           'Rao bán',
-          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                 fontFamily: GoogleFonts.rubik().fontFamily,
                 fontWeight: FontWeight.bold,
                 color: const Color.fromRGBO(54, 92, 69, 1),

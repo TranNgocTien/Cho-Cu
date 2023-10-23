@@ -1,6 +1,17 @@
+import 'dart:convert';
+
+import 'package:chotot/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/screens/homeScreen.dart';
+import 'package:chotot/models/login.dart';
+import 'dart:io' show Platform;
+import 'package:device_info_plus/device_info_plus.dart';
+
+import 'package:http/http.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,10 +22,90 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _form = GlobalKey<FormState>();
-
+  LoginPost? _loginPost;
   var _isLogin = true;
   var _enteredEmail = '';
   var _enteredPassword = '';
+  final token = "anhkhongdoiqua";
+
+  LoginController loginController = Get.put(LoginController());
+
+  // final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+  // Future<Response> loginUsers() async {
+  //   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  //   String deviceName = "";
+
+  //   // Get device information
+  //   try {
+  //     if (Platform.isAndroid) {
+  //       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+  //       deviceName = androidInfo.model;
+  //     } else if (Platform.isIOS) {
+  //       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+  //       deviceName = iosInfo.name;
+  //     }
+  //     print(deviceName);
+  //   } on PlatformException {
+  //     throw Exception('get device name failed');
+  //   }
+  //   if (_form.currentState!.validate()) {
+  //     //show snackbar to indicate loading
+  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //       content: const Text('Processing Data'),
+  //       backgroundColor: Colors.green.shade300,
+  //     ));
+
+  //     //get response from ApiClient
+  //     // final response = await http.post(Uri.parse('https://vstserver.com/login'),
+  //     //     headers: {
+  //     //       'Content-Type': 'application/json',
+  //     //       'Authorization': 'Bearer $token',
+  //     //     },
+  //     //     body: jsonEncode(
+  //     //       {
+  //     //         'user_id': _enteredEmail,
+  //     //         'password': _enteredPassword,
+  //     //         'device': deviceName,
+  //     //       },
+  //     //     ));
+
+  //     // if (response.statusCode == 200) {
+  //     //   return response.body;
+  //     // } else {
+  //     //   ScaffoldMessenger.of(context).clearSnackBars();
+  //     //   //if an error occurs, show snackbar with error message
+  //     //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //     //     content: Text('Error: ${response.reasonPhrase}'),
+  //     //     backgroundColor: Colors.red.shade300,
+  //     //   ));
+  //     //   throw Exception(response.reasonPhrase);
+  //     // }
+
+  //     try {
+  //       Response response = post(Uri.parse('https://vstserver.com/login'),
+  //           body: jsonEncode(
+  //             {
+  //               'user_id': _enteredEmail,
+  //               'password': _enteredPassword,
+  //               'device': deviceName,
+  //             },
+  //           )) as Response;
+  //       if (response.statusCode == 200) {
+  //         Navigator.push(
+  //           context,
+  //           MaterialPageRoute(
+  //             builder: (ctx) => MainScreen(),
+  //           ),
+  //         );
+  //         return response;
+  //       }
+  //     } catch (e) {
+  //       print(e.toString());
+  //     }
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,17 +166,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: const EdgeInsets.only(
                                 top: 5, left: 15, right: 15),
                             child: TextFormField(
+                              controller: loginController.phoneNumberController,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  label: Text(
-                                    'User name',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                          fontFamily:
-                                              GoogleFonts.rubik().fontFamily,
-                                        ),
+                                  label: Row(
+                                    children: [
+                                      const Icon(FontAwesomeIcons.user),
+                                      const SizedBox(width: 20),
+                                      Text(
+                                        'Số điện thoại',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(
+                                              fontFamily: GoogleFonts.rubik()
+                                                  .fontFamily,
+                                            ),
+                                      ),
+                                    ],
                                   )),
                               keyboardType: TextInputType.emailAddress,
                               autocorrect: false,
@@ -122,17 +220,24 @@ class _LoginScreenState extends State<LoginScreen> {
                               top: 5,
                             ),
                             child: TextFormField(
+                              controller: loginController.passwordController,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                label: Text(
-                                  'Password',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .copyWith(
-                                        fontFamily:
-                                            GoogleFonts.rubik().fontFamily,
-                                      ),
+                                label: Row(
+                                  children: [
+                                    const Icon(FontAwesomeIcons.userShield),
+                                    const SizedBox(width: 20),
+                                    Text(
+                                      'Mật khẩu',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(
+                                            fontFamily:
+                                                GoogleFonts.rubik().fontFamily,
+                                          ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               obscureText: true,
@@ -151,12 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 30),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const MainScreen(),
-                              ),
-                            );
+                            loginController.loginWithEmail();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
