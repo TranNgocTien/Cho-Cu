@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chotot/controllers/login_controller.dart';
+import 'package:chotot/screens/requestOtp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,8 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:chotot/models/login.dart';
 import 'dart:io' show Platform;
-import 'package:device_info_plus/device_info_plus.dart';
-
+import 'package:chotot/screens/forgotPasswordScreen.dart';
 import 'package:http/http.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _form = GlobalKey<FormState>();
   LoginPost? _loginPost;
-  var _isLogin = true;
+
   var _enteredEmail = '';
   var _enteredPassword = '';
   final token = "anhkhongdoiqua";
@@ -156,6 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Form(
                     key: _form,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           decoration: BoxDecoration(
@@ -266,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 16.0),
                             child: Text(
-                              _isLogin ? 'Login' : 'Signup',
+                              'Login',
                               style: Theme.of(context)
                                   .textTheme
                                   .headlineLarge!
@@ -279,23 +280,42 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _isLogin = !_isLogin;
-                            });
-                          },
-                          child: Text(
-                            _isLogin
-                                ? 'Create an account'
-                                : 'I already have an account',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge!
-                                .copyWith(
-                                  color: const Color.fromRGBO(5, 109, 101, 1),
-                                ),
-                          ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Get.to(const RequestOtpScreen());
+                              },
+                              child: Text(
+                                'Tạo tài khoản',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(
+                                      color:
+                                          const Color.fromRGBO(5, 109, 101, 1),
+                                    ),
+                              ),
+                            ),
+                            const SizedBox(width: 25),
+                            TextButton(
+                              onPressed: () {
+                                Get.to(const ForgotPasswordScreen());
+                              },
+                              child: Text(
+                                'Quên mật khẩu',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(
+                                      color:
+                                          const Color.fromRGBO(5, 109, 101, 1),
+                                    ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

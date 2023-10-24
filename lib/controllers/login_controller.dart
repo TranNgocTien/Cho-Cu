@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:chotot/utils/api_endpoints.dart';
@@ -17,7 +17,7 @@ import 'package:chotot/utils/api_endpoints.dart';
 class LoginController extends GetxController {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<void> loginWithEmail() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     String deviceName = "";
@@ -64,14 +64,13 @@ class LoginController extends GetxController {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }
     } catch (error) {
-      print(error);
       Get.back();
       showDialog(
           context: Get.context!,
           builder: (context) {
             return SimpleDialog(
-              title: Text('Error'),
-              contentPadding: EdgeInsets.all(20),
+              title: const Text('Error'),
+              contentPadding: const EdgeInsets.all(20),
               children: [
                 Text(
                   error.toString(),

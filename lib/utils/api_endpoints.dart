@@ -5,5 +5,8 @@ class ApiEndPoints {
 
 class _AuthEndPoints {
   final String loginEmail = 'login';
-  final String registerEmail = 'registration';
+  final String register = 'register';
+  final String requestOtp = 'request_otp';
+  final String verifyOtp = 'verify_otp';
+  final String forgotPassword = 'forgot_password';
 }
