@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/widgets/taikhoanItem.dart';
+import 'package:chotot/screens/lyLichScreen.dart';
 
 class TaiKhoanScreen extends StatelessWidget {
   const TaiKhoanScreen({super.key});
@@ -31,7 +32,10 @@ class TaiKhoanScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const TaiKhoanItem(
-                title: "Lý lịch", image: 'image/icon/ly_lich_(1).png'),
+              title: "Lý lịch",
+              image: 'image/icon/ly_lich_(1).png',
+              screen: LyLichScreen(),
+            ),
             const TaiKhoanItem(
                 title: 'Thống kê', image: 'image/icon/icon_thong_ke_(1).png'),
             const TaiKhoanItem(

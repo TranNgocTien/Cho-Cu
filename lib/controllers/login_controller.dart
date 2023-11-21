@@ -13,15 +13,19 @@ import 'package:http/http.dart' as http;
 
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:chotot/utils/api_endpoints.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  TextEditingController phoneNumberController = TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
+
+  var isLoading = false;
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late final String tokenString;
+  late final String hostId;
   Future<void> loginWithEmail() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     String deviceName = "";
-
     // Get device information
     try {
       if (Platform.isAndroid) {
@@ -36,31 +40,68 @@ class LoginController extends GetxController {
     }
     var headers = {'Content-Type': 'application/json'};
     try {
+      isLoading = true;
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.loginEmail);
       Map body = {
-        'user_id': int.parse(phoneNumberController.text.trim()),
-        'password': int.parse(passwordController.text),
+        'user_id': phoneNumberController.text.trim(),
+        'password': passwordController.text,
         'device': deviceName,
         'token': 'anhkhongdoiqua',
       };
       http.Response response =
           await http.post(url, body: jsonEncode(body), headers: headers);
       if (response.statusCode == 200) {
-        // final json = jsonDecode(response.body);
-        // if (json['code']) {
-        // var token = json['data']['Token'];
-        // final SharedPreferences? prefs = await _prefs;
-        // await prefs?.setString('token', token);
-        phoneNumberController.clear();
-        passwordController.clear();
-        Get.off(const MainScreen());
-        // } else if (json['code'] == "A1") {
-        //   print(jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured');
-        //   throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
-        // }
+        final json = jsonDecode(response.body);
+        print(json);
+        if (json['status'] == 'ok') {
+          tokenString = json['data']['token'];
+          hostId = json['data']['_id'];
+          final SharedPreferences prefs = await _prefs;
+
+          // await prefs.setString('token', token.toString());
+
+          await prefs.setString('host_name', json['data']['name']);
+          isLoading = false;
+
+          showDialog(
+              context: Get.context!,
+              builder: (context) {
+                return SimpleDialog(
+                  title: const Text('Error'),
+                  contentPadding: const EdgeInsets.all(20),
+                  children: [
+                    Text(
+                      json['error']['message'],
+                    ),
+                  ],
+                );
+              });
+          // print('=========================');
+          // print(
+          //   prefs.getString('token'),
+          // );
+          phoneNumberController.clear();
+          passwordController.clear();
+          Get.offAll(const MainScreen());
+        } else if (json['status'] == "error") {
+          showDialog(
+              context: Get.context!,
+              builder: (context) {
+                return SimpleDialog(
+                  title: const Text('Error'),
+                  contentPadding: const EdgeInsets.all(20),
+                  children: [
+                    Text(
+                      json['error']['message'],
+                    ),
+                  ],
+                );
+              });
+          throw jsonDecode(response.body)['error']['message'] ??
+              'Unknown Error Occured';
+        }
       } else {
-        print(jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured');
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }
     } catch (error) {

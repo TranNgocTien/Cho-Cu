@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:chotot/screens/login.dart';
-import 'package:lottie/lottie.dart';
+// import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
 final theme = ThemeData(
@@ -29,10 +29,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MEDENDx',
-      theme: theme,
-      home: const SplashScreen(),
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+      },
+      child: MaterialApp(
+        title: 'MEDENDx',
+        theme: theme,
+        home: const SplashScreen(),
+      ),
     );
   }
 }

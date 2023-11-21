@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:chotot/controllers/registeration_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,7 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Center(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Container(
                 margin: const EdgeInsets.only(
@@ -204,6 +202,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                     ],
                                   )),
+                              obscureText: true,
+                              keyboardType: TextInputType.visiblePassword,
+                              autocorrect: false,
+                              textCapitalization: TextCapitalization.none,
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value.trim().length <= 1) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Password is required!'),
+                                    ),
+                                  );
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 211, 210, 210),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 5, left: 15, right: 15),
+                            child: TextFormField(
+                              controller:
+                                  registerController.rePasswordController,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  label: Row(
+                                    children: [
+                                      const Icon(FontAwesomeIcons.user),
+                                      const SizedBox(width: 20),
+                                      Text(
+                                        'Nhập lại mật khẩu',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(
+                                              fontFamily: GoogleFonts.rubik()
+                                                  .fontFamily,
+                                            ),
+                                      ),
+                                    ],
+                                  )),
+                              obscureText: true,
                               keyboardType: TextInputType.visiblePassword,
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,

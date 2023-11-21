@@ -14,6 +14,7 @@ class RegisterationController extends GetxController {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController otpCodeController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController rePasswordController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   bool isVerifyScreen = false;
   // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -33,6 +34,7 @@ class RegisterationController extends GetxController {
 
       if (response.statusCode == 200) {
         // final json = jsonDecode(response.body);
+
         // if (json['code'] == 0) {
         //   var token = json['data']['Token'];
         //   print(token);
@@ -82,6 +84,7 @@ class RegisterationController extends GetxController {
           await http.post(url, body: jsonEncode(body), headers: headers);
 
       if (response.statusCode == 200) {
+        // final json = jsonDecode(response.body);
       } else {
         throw jsonDecode(response.body)['message'] ?? 'Unknown Error occured';
       }
@@ -117,6 +120,7 @@ class RegisterationController extends GetxController {
           await http.post(url, body: jsonEncode(body), headers: headers);
 
       if (response.statusCode == 200) {
+        // final json = jsonDecode(response.body);
         Get.to(const RegisterScreen());
       } else {
         throw jsonDecode(response.body)['message'] ?? 'Unknown Error occured';
@@ -140,6 +144,21 @@ class RegisterationController extends GetxController {
   }
 
   Future<void> registerAccount() async {
+    if (passwordController.text != rePasswordController.text) {
+      return showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return const SimpleDialog(
+              title: Text('Error'),
+              contentPadding: EdgeInsets.all(20),
+              children: [
+                Text(
+                  'Mật khẩu không đúng. Nhập lại mật khẩu',
+                ),
+              ],
+            );
+          });
+    }
     try {
       var headers = {'Content-Type': 'application/json'};
       var url =
@@ -156,6 +175,8 @@ class RegisterationController extends GetxController {
           await http.post(url, body: jsonEncode(body), headers: headers);
 
       if (response.statusCode == 200) {
+        // final json = jsonDecode(response.body);
+
         nameController.clear();
         phoneNumberController.clear();
         addressController.clear();

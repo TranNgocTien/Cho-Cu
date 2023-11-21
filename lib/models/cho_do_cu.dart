@@ -1,21 +1,29 @@
-import 'package:uuid/uuid.dart';
-
-const uuid = Uuid();
-
 class DoCu {
-  DoCu(
-      {required this.date,
-      required this.time,
-      required this.name,
-      required this.price,
-      required this.description,
-      String? id})
-      : id = id ?? uuid.v4();
+  DoCu({
+    required this.name,
+    required this.price,
+    required this.description,
+    required this.id,
+    required this.address,
+    required this.province,
+    required this.district,
+    required this.ward,
+    required this.photos,
+    required this.phone,
+    required this.hostId,
+    required this.status,
+  });
 
-  final String date;
-  final String time;
   final String name;
   final String price;
   final String description;
   final String id;
+  final String address;
+  final String province;
+  final String district;
+  final String ward;
+  final List photos;
+  final String phone;
+  final String hostId;
+  final String status;
 }

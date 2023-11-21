@@ -7,6 +7,10 @@
   <string>sms</string>
   <string>tel</string>
 </array>
+<key>NSLocationWhenInUseUsageDescription</key>
+	<string>The location of user.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pick image</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -18,7 +22,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>chotot</string>
+	<string>cho4.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

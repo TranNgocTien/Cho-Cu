@@ -257,6 +257,61 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                             ),
                                           ],
                                         )),
+                                    obscureText: true,
+                                    keyboardType: TextInputType.text,
+                                    autocorrect: false,
+                                    textCapitalization: TextCapitalization.none,
+                                    validator: (value) {
+                                      if (value == null ||
+                                          value.isEmpty ||
+                                          value.trim().length <= 1 ||
+                                          value.trim().length > 10) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'New password is required!'),
+                                          ),
+                                        );
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color.fromARGB(255, 211, 210, 210),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5, left: 15, right: 15),
+                                  child: TextFormField(
+                                    controller: forgotPasswordController
+                                        .reNewPasswordController,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        label: Row(
+                                          children: [
+                                            const Icon(FontAwesomeIcons.user),
+                                            const SizedBox(width: 20),
+                                            Text(
+                                              'Nhập lại mật khẩu mới',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge!
+                                                  .copyWith(
+                                                    fontFamily:
+                                                        GoogleFonts.rubik()
+                                                            .fontFamily,
+                                                  ),
+                                            ),
+                                          ],
+                                        )),
+                                    obscureText: true,
                                     keyboardType: TextInputType.text,
                                     autocorrect: false,
                                     textCapitalization: TextCapitalization.none,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 class TaiKhoanItem extends StatelessWidget {
@@ -7,14 +8,32 @@ class TaiKhoanItem extends StatelessWidget {
     super.key,
     required this.title,
     required this.image,
+    this.screen,
   });
   final String title;
   final String image;
-
+  final Widget? screen;
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        screen != null
+            ? Navigator.push(
+                context, MaterialPageRoute(builder: (ctx) => screen!))
+            : showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const SimpleDialog(
+                    contentPadding: EdgeInsets.all(20),
+                    children: [
+                      Text(
+                        'no screen',
+                      ),
+                    ],
+                  );
+                });
+        ;
+      },
       child: Container(
         padding: const EdgeInsets.only(left: 20, right: 5, top: 10, bottom: 5),
         width: double.infinity,

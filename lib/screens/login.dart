@@ -1,17 +1,13 @@
-import 'dart:convert';
-
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/screens/requestOtp.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:chotot/screens/homeScreen.dart';
-import 'package:chotot/models/login.dart';
-import 'dart:io' show Platform;
+
 import 'package:chotot/screens/forgotPasswordScreen.dart';
-import 'package:http/http.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,90 +17,48 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _storage = const FlutterSecureStorage();
   final _form = GlobalKey<FormState>();
-  LoginPost? _loginPost;
+  bool _savePassword = true;
+  // LoginPost? _loginPost;
 
-  var _enteredEmail = '';
-  var _enteredPassword = '';
-  final token = "anhkhongdoiqua";
+  // var _enteredEmail = '';
+  // var _enteredPassword = '';
 
   LoginController loginController = Get.put(LoginController());
+  Future<void> _readFromStorage() async {
+    loginController.phoneNumberController.text =
+        await _storage.read(key: "KEY_USERNAME") ?? '';
+    loginController.passwordController.text =
+        await _storage.read(key: "KEY_PASSWORD") ?? '';
+  }
 
-  // final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+  _onFormSubmit() async {
+    if (_savePassword) {
+      // Write values
+      await _storage.write(
+          key: "KEY_USERNAME",
+          value: loginController.phoneNumberController.text);
+      await _storage.write(
+          key: "KEY_PASSWORD", value: loginController.passwordController.text);
+    }
+  }
 
-  // Future<Response> loginUsers() async {
-  //   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  //   String deviceName = "";
+  autoLogin() async {
+    await _readFromStorage();
 
-  //   // Get device information
-  //   try {
-  //     if (Platform.isAndroid) {
-  //       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-  //       deviceName = androidInfo.model;
-  //     } else if (Platform.isIOS) {
-  //       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-  //       deviceName = iosInfo.name;
-  //     }
-  //     print(deviceName);
-  //   } on PlatformException {
-  //     throw Exception('get device name failed');
-  //   }
-  //   if (_form.currentState!.validate()) {
-  //     //show snackbar to indicate loading
-  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //       content: const Text('Processing Data'),
-  //       backgroundColor: Colors.green.shade300,
-  //     ));
+    if (loginController.phoneNumberController.text == '' ||
+        loginController.passwordController.text == '') return;
 
-  //     //get response from ApiClient
-  //     // final response = await http.post(Uri.parse('https://vstserver.com/login'),
-  //     //     headers: {
-  //     //       'Content-Type': 'application/json',
-  //     //       'Authorization': 'Bearer $token',
-  //     //     },
-  //     //     body: jsonEncode(
-  //     //       {
-  //     //         'user_id': _enteredEmail,
-  //     //         'password': _enteredPassword,
-  //     //         'device': deviceName,
-  //     //       },
-  //     //     ));
+    await loginController.loginWithEmail();
+  }
 
-  //     // if (response.statusCode == 200) {
-  //     //   return response.body;
-  //     // } else {
-  //     //   ScaffoldMessenger.of(context).clearSnackBars();
-  //     //   //if an error occurs, show snackbar with error message
-  //     //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //     //     content: Text('Error: ${response.reasonPhrase}'),
-  //     //     backgroundColor: Colors.red.shade300,
-  //     //   ));
-  //     //   throw Exception(response.reasonPhrase);
-  //     // }
-
-  //     try {
-  //       Response response = post(Uri.parse('https://vstserver.com/login'),
-  //           body: jsonEncode(
-  //             {
-  //               'user_id': _enteredEmail,
-  //               'password': _enteredPassword,
-  //               'device': deviceName,
-  //             },
-  //           )) as Response;
-  //       if (response.statusCode == 200) {
-  //         Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //             builder: (ctx) => MainScreen(),
-  //           ),
-  //         );
-  //         return response;
-  //       }
-  //     } catch (e) {
-  //       print(e.toString());
-  //     }
-  //   }
-  // }
+  @override
+  void initState() {
+    autoLogin();
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,9 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                                 return null;
                               },
-                              onSaved: (value) {
-                                _enteredEmail = value!;
-                              },
+                              // onSaved: (value) {
+                              //   _enteredEmail = value!;
+                              // },
                             ),
                           ),
                         ),
@@ -248,16 +202,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                                 return null;
                               },
-                              onSaved: (value) {
-                                _enteredPassword = value!;
-                              },
+                              // onSaved: (value) {
+                              //   _enteredPassword = value!;
+                              // },
                             ),
                           ),
                         ),
                         const SizedBox(height: 30),
                         ElevatedButton(
-                          onPressed: () {
-                            loginController.loginWithEmail();
+                          onPressed: () async {
+                            loginController.isLoading == true
+                                ? null
+                                : loginController.loginWithEmail();
+                            await _onFormSubmit();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -266,18 +223,35 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 16.0),
-                            child: Text(
-                              'Login',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineLarge!
-                                  .copyWith(
-                                    color: Colors.white,
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25,
+                            child: loginController.isLoading == true
+                                ? const CircularProgressIndicator()
+                                : Text(
+                                    'Login',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineLarge!
+                                        .copyWith(
+                                          color: Colors.white,
+                                          fontFamily:
+                                              GoogleFonts.rubik().fontFamily,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25,
+                                        ),
                                   ),
-                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: CheckboxListTile(
+                            value: _savePassword,
+                            onChanged: (bool? newValue) {
+                              setState(() {
+                                _savePassword = newValue!;
+                              });
+                            },
+                            title: const Text("Remember me"),
+                            activeColor: const Color.fromRGBO(5, 109, 101, 1),
                           ),
                         ),
                         const SizedBox(height: 10),

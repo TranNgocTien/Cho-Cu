@@ -16,6 +16,7 @@ class ForgotPasswordController extends GetxController {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController otpCodeController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
+  TextEditingController reNewPasswordController = TextEditingController();
   var isRequestOtp = 0.obs;
   // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<void> requestOtpForgotPassword() async {
@@ -57,7 +58,21 @@ class ForgotPasswordController extends GetxController {
 
   Future<void> forgotPassword() async {
     // Get device information
-
+    if (newPasswordController.text != reNewPasswordController.text) {
+      return showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return const SimpleDialog(
+              title: Text('Error'),
+              contentPadding: EdgeInsets.all(20),
+              children: [
+                Text(
+                  'Mật khẩu không đúng. Nhập lại mật khẩu',
+                ),
+              ],
+            );
+          });
+    }
     var headers = {'Content-Type': 'application/json'};
     try {
       var url = Uri.parse(
@@ -86,11 +101,9 @@ class ForgotPasswordController extends GetxController {
         //   throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
         // }
       } else {
-        print(jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured');
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }
     } catch (error) {
-      print(error);
       Get.back();
       showDialog(
         context: Get.context!,

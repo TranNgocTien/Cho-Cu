@@ -1,6 +1,7 @@
 class ApiEndPoints {
-  static final String baseUrl = 'https://vstserver.com/';
+  static const String baseUrl = 'https://vstserver.com/';
   static _AuthEndPoints authEndPoints = _AuthEndPoints();
+  static const String servicesUrl = 'https://vstserver.com/services/';
 }
 
 class _AuthEndPoints {
@@ -9,4 +10,9 @@ class _AuthEndPoints {
   final String requestOtp = 'request_otp';
   final String verifyOtp = 'verify_otp';
   final String forgotPassword = 'forgot_password';
+  final String getStuffs = "get_stuffs";
+  final String postStuffs = "post_stuff";
+  final String uploadJobPhoto = "upload_job_photo";
+  final String getOtherfee = "get_otherfee";
+  final String soldOut = 'sold_out';
 }
