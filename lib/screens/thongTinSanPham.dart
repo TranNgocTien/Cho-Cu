@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chotot/controllers/stuff_sold_out.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ThongTinSanPhamScreen extends StatefulWidget {
   const ThongTinSanPhamScreen({super.key, required this.docu});
@@ -18,9 +19,106 @@ class ThongTinSanPhamScreen extends StatefulWidget {
 class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
   LoginController loginController = Get.put(LoginController());
 
+  SoldOutStuffs soldOut = Get.put(SoldOutStuffs());
+  Future<void> _makePhoneCall(String phoneNumber, String method) async {
+    final Uri launchUri = Uri(
+      scheme: method,
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
+    Get.back();
+  }
+
+  Future<void> _showContactMethod(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: MediaQuery.of(context).size.height * 0.2,
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(width: 1, color: Colors.black))),
+                    child: Text(
+                      'Liên hệ:',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontFamily: GoogleFonts.rubik().fontFamily,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _makePhoneCall(widget.docu.phone, 'sms');
+                        },
+                        child: Column(
+                          children: [
+                            const Icon(FontAwesomeIcons.message,
+                                color: Color.fromARGB(255, 2, 219, 134)),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Tin nhắn',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _makePhoneCall(widget.docu.phone, 'tel');
+                        },
+                        child: Column(
+                          children: [
+                            const Icon(FontAwesomeIcons.phone,
+                                color: Color.fromARGB(255, 2, 219, 134)),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Gọi trực tiếp',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   bool isFavorite = false;
 
-  SoldOutStuffs soldOut = Get.put(SoldOutStuffs());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,37 +176,42 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                     height: 300.0,
                     enableInfiniteScroll: false,
                     autoPlay: true,
-                    viewportFraction: 0.9,
+                    viewportFraction: 0.95,
                   ),
                   items: widget.docu.photos.map((photo) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return Stack(children: [
-                          Image.network(
-                            photo.split('"').join(''),
-                          ),
-                          Positioned(
-                            bottom: 4,
-                            right: 4,
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 30,
-                              width: 30,
-                              decoration: const BoxDecoration(
-                                color: Color.fromARGB(93, 0, 0, 0),
-                                shape: BoxShape.circle,
+                    return Container(
+                      margin: const EdgeInsets.all(8),
+                      child: Center(
+                        child: Builder(
+                          builder: (BuildContext context) {
+                            return Stack(children: [
+                              Image.network(
+                                photo.split('"').join(''),
                               ),
-                              child: Text(
-                                '${widget.docu.photos.indexOf(photo) + 1}/${widget.docu.photos.length}',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                              Positioned(
+                                bottom: 4,
+                                right: 4,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 30,
+                                  width: 30,
+                                  decoration: const BoxDecoration(
+                                    color: Color.fromARGB(93, 0, 0, 0),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(
+                                    '${widget.docu.photos.indexOf(photo) + 1}/${widget.docu.photos.length}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          )
-                        ]);
-                      },
+                              )
+                            ]);
+                          },
+                        ),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -265,7 +368,9 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                     width: double.infinity,
                     alignment: Alignment.center,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _showContactMethod(context);
+                      },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(
                             width: 1.0, color: Color.fromRGBO(5, 109, 101, 1)),

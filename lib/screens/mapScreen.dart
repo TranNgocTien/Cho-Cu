@@ -6,7 +6,7 @@ class MapScreen extends StatefulWidget {
   const MapScreen({
     super.key,
     this.location =
-        const PlaceLocation(latitude: 37.422, longitude: -122.084, address: ''),
+        const PlaceLocation(latitude: 16.0, longitude: 106.0, address: ''),
     this.isSelecting = true,
   });
 
@@ -46,7 +46,7 @@ class _MapScreenState extends State<MapScreen> {
               },
         initialCameraPosition: CameraPosition(
           target: LatLng(widget.location.latitude, widget.location.longitude),
-          zoom: 16,
+          zoom: 10,
         ),
         markers: (_pickedLocation == null && widget.isSelecting)
             ? {}

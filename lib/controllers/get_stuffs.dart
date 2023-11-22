@@ -20,6 +20,7 @@ class GetStuffs extends GetxController {
   // final headers = {
   //   'Content-Type': 'application/json',
   // };
+
   bool isLoading = true;
   LoginController loginController = Get.put(LoginController());
   Future<void> getStuffs(int index) async {

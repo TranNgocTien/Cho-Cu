@@ -44,10 +44,24 @@ class PostStuff extends GetxController {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<void> postItem() async {
     List<String> adressList = addressController.text.split(',');
+
+    if (adressList.length < 4) {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return const SimpleDialog(
+              contentPadding: EdgeInsets.all(20),
+              children: [
+                Text(
+                    'Kiểm tra lại thông tin địa chỉ (gồm tên số nhà, tên đường, phường/xã, thành phố, tỉnh thành).'),
+              ],
+            );
+          });
+      return;
+    }
     String district = adressList[2];
     String ward = adressList[1];
     String province = adressList[3];
-    print('$ward,$district');
     final SharedPreferences prefs = await _prefs;
     // Get device information
 
@@ -55,7 +69,8 @@ class PostStuff extends GetxController {
     final hostName = prefs.getString('host_name');
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
-
+    print(
+        '${descriptionController.text},${sumPriceController.text},$codeOtherFee,${phoneController.text},$hostId,$hostName,${addressController.text},$lat,$lng,${nameController.text} - $formattedDate,$province,$district,$ward');
     try {
       var url = Uri.parse(
           ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.postStuffs);
@@ -87,15 +102,16 @@ class PostStuff extends GetxController {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        print(json);
+        // print(json);
         if (json['status'] == 'ok') {
-          print(json);
           await _getStuffs.getStuffs(0);
           descriptionController.clear();
           sumPriceController.clear();
           phoneController.clear();
           nameController.clear();
           addressController.clear();
+          imageLink.clear();
+          Get.back();
         } else if (json['status'] == "error") {
           showDialog(
               context: Get.context!,

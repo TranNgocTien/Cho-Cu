@@ -45,6 +45,19 @@ class SoldOutStuffs extends GetxController {
 
       if (response.statusCode == 200) {
         if (json['status'] == 'ok') {
+          showDialog(
+              context: Get.context!,
+              builder: (context) {
+                return const SimpleDialog(
+                  title: Text('Thông báo'),
+                  contentPadding: EdgeInsets.all(20),
+                  children: [
+                    Text(
+                      'Đã cập nhật lên hệ thống',
+                    ),
+                  ],
+                );
+              });
         } else if (json['status'] == 'error') {
           if (json['error']['message'] == 'Không có hàng') {}
           showDialog(

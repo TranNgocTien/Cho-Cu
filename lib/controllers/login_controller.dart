@@ -9,11 +9,10 @@ import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:chotot/utils/api_endpoints.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
   TextEditingController phoneNumberController = TextEditingController(text: '');
@@ -53,7 +52,7 @@ class LoginController extends GetxController {
           await http.post(url, body: jsonEncode(body), headers: headers);
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        print(json);
+
         if (json['status'] == 'ok') {
           tokenString = json['data']['token'];
           hostId = json['data']['_id'];
@@ -61,6 +60,7 @@ class LoginController extends GetxController {
 
           // await prefs.setString('token', token.toString());
 
+          await prefs.setString('host_id', json['data']['_id']);
           await prefs.setString('host_name', json['data']['name']);
           isLoading = false;
 

@@ -17,7 +17,7 @@ class ChoScreen extends StatefulWidget {
 
 class _ChoScreenState extends State<ChoScreen> {
   final GetStuffs _getStuffs = Get.put(GetStuffs());
-  var currentIndex = 2;
+  var currentIndex = 1;
 
   Widget center = const Center(
     child: CircularProgressIndicator(),
