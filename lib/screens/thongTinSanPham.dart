@@ -1,6 +1,7 @@
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/models/cho_do_cu.dart';
+import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chotot/controllers/stuff_sold_out.dart';
@@ -27,6 +28,22 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
     );
     await launchUrl(launchUri);
     Get.back();
+  }
+
+  void showOverlay(str) {
+    showDialog(
+        context: Get.context!,
+        builder: (context) {
+          return SimpleDialog(
+            backgroundColor: Color.fromARGB(113, 0, 0, 0),
+            // contentPadding: const EdgeInsets.all(20),
+            children: [
+              Image.network(str,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: MediaQuery.of(context).size.width * 0.9),
+            ],
+          );
+        });
   }
 
   Future<void> _showContactMethod(BuildContext context) {
@@ -174,42 +191,44 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                 child: CarouselSlider(
                   options: CarouselOptions(
                     height: 300.0,
-                    enableInfiniteScroll: false,
                     autoPlay: true,
+                    enableInfiniteScroll: false,
                     viewportFraction: 0.95,
                   ),
                   items: widget.docu.photos.map((photo) {
-                    return Container(
-                      margin: const EdgeInsets.all(8),
-                      child: Center(
-                        child: Builder(
-                          builder: (BuildContext context) {
-                            return Stack(children: [
-                              Image.network(
-                                photo.split('"').join(''),
-                              ),
-                              Positioned(
-                                bottom: 4,
-                                right: 4,
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 30,
-                                  width: 30,
-                                  decoration: const BoxDecoration(
-                                    color: Color.fromARGB(93, 0, 0, 0),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Text(
-                                    '${widget.docu.photos.indexOf(photo) + 1}/${widget.docu.photos.length}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
+                    return InstaImageViewer(
+                      child: Container(
+                        margin: const EdgeInsets.all(8),
+                        child: Center(
+                          child: Builder(
+                            builder: (BuildContext context) {
+                              return Stack(children: [
+                                Image.network(
+                                  photo.split('"').join(''),
                                 ),
-                              )
-                            ]);
-                          },
+                                Positioned(
+                                  bottom: 4,
+                                  right: 4,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 30,
+                                    width: 30,
+                                    decoration: const BoxDecoration(
+                                      color: Color.fromARGB(93, 0, 0, 0),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Text(
+                                      '${widget.docu.photos.indexOf(photo) + 1}/${widget.docu.photos.length}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                )
+                              ]);
+                            },
+                          ),
                         ),
                       ),
                     );
@@ -232,11 +251,56 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                         fontWeight: FontWeight.w700,
                         fontFamily: GoogleFonts.rubik().fontFamily),
                   ),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(
+                          left: 15,
+                        ),
+                        child: Text(
+                          softWrap: true,
+                          'Mô tả:',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: GoogleFonts.rubik().fontFamily),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: Text(
+                          widget.docu.description,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                  color: Colors.black,
+                                  fontFamily: GoogleFonts.rubik().fontFamily),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          Text(
+                            'Giá mong muốn:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: GoogleFonts.rubik().fontFamily),
+                            textAlign: TextAlign.start,
+                          ),
                           SizedBox(
                             child: Text(
                               '${widget.docu.price} VNĐ',
@@ -298,78 +362,25 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(
-                          left: 15,
-                        ),
-                        child: Text(
-                          softWrap: true,
-                          'Số điện thoại:',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: GoogleFonts.rubik().fontFamily),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        widget.docu.phone,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(
-                                color: Colors.black,
-                                fontFamily: GoogleFonts.rubik().fontFamily),
-                        textAlign: TextAlign.start,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(
-                          left: 15,
-                        ),
-                        child: Text(
-                          softWrap: true,
-                          'Mô tả:',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: GoogleFonts.rubik().fontFamily),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: Text(
-                          widget.docu.description,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                                  color: Colors.black,
-                                  fontFamily: GoogleFonts.rubik().fontFamily),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                    ],
-                  ),
                   Container(
                     width: double.infinity,
                     alignment: Alignment.center,
                     child: OutlinedButton(
                       onPressed: () {
-                        _showContactMethod(context);
+                        widget.docu.status == 'sold_out'
+                            ? showDialog(
+                                context: Get.context!,
+                                builder: (context) {
+                                  return const SimpleDialog(
+                                    contentPadding: EdgeInsets.all(20),
+                                    children: [
+                                      Text(
+                                        'Sản phẩm đã bán',
+                                      ),
+                                    ],
+                                  );
+                                })
+                            : _showContactMethod(context);
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(

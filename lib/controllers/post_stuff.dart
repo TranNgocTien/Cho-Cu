@@ -69,8 +69,7 @@ class PostStuff extends GetxController {
     final hostName = prefs.getString('host_name');
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
-    print(
-        '${descriptionController.text},${sumPriceController.text},$codeOtherFee,${phoneController.text},$hostId,$hostName,${addressController.text},$lat,$lng,${nameController.text} - $formattedDate,$province,$district,$ward');
+
     try {
       var url = Uri.parse(
           ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.postStuffs);
@@ -152,7 +151,24 @@ class PostStuff extends GetxController {
   Future<void> uploadJobPhoto() async {
     final SharedPreferences prefs = await _prefs;
     // Get device information
-
+    if (imageFileList!.length > 3 ||
+        imageFileList!.isEmpty ||
+        imageFileList == null) {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return const SimpleDialog(
+              contentPadding: EdgeInsets.all(20),
+              children: [
+                Text(
+                  'Hình ảnh đã chọn nhiều hơn 3 hoặc chưa chọn ảnh. Xin chọn lại!',
+                ),
+              ],
+            );
+          });
+      imageFileList!.clear();
+      return;
+    }
     final hostId = prefs.getString('host_id');
 
     try {

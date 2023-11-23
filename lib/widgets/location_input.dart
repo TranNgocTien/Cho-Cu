@@ -2,6 +2,7 @@ import 'dart:convert';
 // import 'package:geocoding/geocoding.dart';
 import 'package:chotot/screens/mapScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -116,10 +117,12 @@ class _LocationInputState extends State<LocationInput> {
   @override
   Widget build(BuildContext context) {
     Widget previewContent = Text(
-      'No location chosen',
+      'Chưa có địa điểm',
       textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: Theme.of(context).colorScheme.onBackground,
+      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+            fontFamily: GoogleFonts.rubik().fontFamily,
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
           ),
     );
     if (_pickedLocation != null || widget.pickedLocationAdress != null) {
@@ -153,12 +156,12 @@ class _LocationInputState extends State<LocationInput> {
             TextButton.icon(
               onPressed: _getCurrentLocation,
               icon: const Icon(Icons.location_on),
-              label: const Text('Get Current Location'),
+              label: const Text('Lấy tọa độ thiết bị'),
             ),
             TextButton.icon(
               onPressed: _selectOnMap,
               icon: const Icon(Icons.map),
-              label: const Text('Select on Map'),
+              label: const Text('Chọn trên bản đồ'),
             ),
           ],
         ),

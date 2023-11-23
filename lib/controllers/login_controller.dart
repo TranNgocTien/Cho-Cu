@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,11 +21,27 @@ class LoginController extends GetxController {
 
   var isLoading = false;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late final String tokenString;
-  late final String hostId;
+  String tokenString = '';
+  String hostId = '';
   Future<void> loginWithEmail() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     String deviceName = "";
+    if (phoneNumberController.text == '' || passwordController.text == '') {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return const SimpleDialog(
+              title: Text('Lỗi đăng nhập'),
+              contentPadding: EdgeInsets.all(20),
+              children: [
+                Text(
+                  'Điền đầy đủ thông tin đăng nhập',
+                ),
+              ],
+            );
+          });
+      return;
+    }
     // Get device information
     try {
       if (Platform.isAndroid) {
@@ -59,7 +76,7 @@ class LoginController extends GetxController {
           final SharedPreferences prefs = await _prefs;
 
           // await prefs.setString('token', token.toString());
-
+          await _getCurrentLocation();
           await prefs.setString('host_id', json['data']['_id']);
           await prefs.setString('host_name', json['data']['name']);
           isLoading = false;
@@ -85,6 +102,7 @@ class LoginController extends GetxController {
           passwordController.clear();
           Get.offAll(const MainScreen());
         } else if (json['status'] == "error") {
+          isLoading = false;
           showDialog(
               context: Get.context!,
               builder: (context) {
@@ -120,5 +138,43 @@ class LoginController extends GetxController {
             );
           });
     }
+  }
+
+  Future<void> _getCurrentLocation() async {
+    Location location = Location();
+
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    locationData = await location.getLocation();
+    final lat = locationData.latitude;
+    final lng = locationData.longitude;
+    if (lat == null || lng == null) {
+      return;
+    }
+
+    final SharedPreferences prefs = await _prefs;
+
+    // await prefs.setString('token', token.toString());
+
+    await prefs.setDouble('lat', lat);
+    await prefs.setDouble('lng', lng);
   }
 }

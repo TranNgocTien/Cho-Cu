@@ -1,4 +1,4 @@
-import 'dart:convert';
+// import 'dart:convert';
 
 import 'package:chotot/controllers/registeration_controller.dart';
 import 'package:flutter/material.dart';
@@ -144,7 +144,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 16.0),
                             child: Text(
-                              'Verify',
+                              'Xác thực mã',
                               style: Theme.of(context)
                                   .textTheme
                                   .headlineLarge!

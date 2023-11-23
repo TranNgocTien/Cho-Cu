@@ -129,8 +129,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
-                                            content: Text(
-                                                'Phone number is required!'),
+                                            content:
+                                                Text('Nhập số điện thoại!'),
                                           ),
                                         );
                                       }
@@ -141,11 +141,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               ),
                               const SizedBox(height: 30),
                               ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    forgotPasswordController
-                                        .requestOtpForgotPassword();
-                                  });
+                                onPressed: () async {
+                                  await forgotPasswordController
+                                      .requestOtpForgotPassword();
+                                  setState(() {});
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:

@@ -47,11 +47,11 @@ class _MainScreenState extends State<MainScreen>
         body: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             controller: _tabController,
-            children: const [
-              TimThoScreen(),
-              CongViecScreen(),
-              ChoScreen(),
-              ThongBaoScreen(),
+            children: [
+              const TimThoScreen(),
+              const CongViecScreen(),
+              const ChoScreen(),
+              const ThongBaoScreen(),
               TaiKhoanScreen(),
             ]),
         bottomNavigationBar: BottomNavigationBar(

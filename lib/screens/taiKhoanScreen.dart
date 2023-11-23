@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/widgets/taikhoanItem.dart';
 import 'package:chotot/screens/lyLichScreen.dart';
+import 'package:get/get.dart';
+import 'package:chotot/screens/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:chotot/controllers/login_controller.dart';
 
 class TaiKhoanScreen extends StatelessWidget {
-  const TaiKhoanScreen({super.key});
-
+  TaiKhoanScreen({super.key});
+  final _storage = const FlutterSecureStorage();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  LoginController loginController = Get.put(LoginController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,8 +54,21 @@ class TaiKhoanScreen extends StatelessWidget {
             const TaiKhoanItem(
                 title: 'Nap tiền',
                 image: 'image/icon/huong_dan_nap_tien_(1).png'),
-            const TaiKhoanItem(
-                title: 'Đăng xuất', image: 'image/icon/dnag_xuat_(1).png'),
+            TaiKhoanItem(
+                title: 'Đăng xuất',
+                image: 'image/icon/dnag_xuat_(1).png',
+                onTap: () async {
+                  final SharedPreferences prefs = await _prefs;
+
+                  // await prefs.setString('token', token.toString());
+                  loginController.tokenString = '';
+                  loginController.hostId = '';
+                  await prefs.clear();
+
+                  await _storage.delete(key: "KEY_USERNAME");
+                  await _storage.delete(key: "KEY_PASSWORD");
+                  Get.offAll(const LoginScreen());
+                }),
             const TaiKhoanItem(
                 title: 'Xóa tài khoản', image: 'image/icon/dnag_xuat_(1).png'),
             // TaiKhoanItem(

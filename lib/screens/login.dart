@@ -19,7 +19,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _storage = const FlutterSecureStorage();
   final _form = GlobalKey<FormState>();
-  bool _savePassword = true;
+  bool _savePassword = false;
   // LoginPost? _loginPost;
 
   // var _enteredEmail = '';
@@ -41,7 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
           value: loginController.phoneNumberController.text);
       await _storage.write(
           key: "KEY_PASSWORD", value: loginController.passwordController.text);
+    } else {
+      await _storage.write(key: "KEY_USERNAME", value: '');
+      await _storage.write(key: "KEY_PASSWORD", value: '');
     }
+    autoLogin();
   }
 
   autoLogin() async {
@@ -150,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     value.trim().length > 10) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('Login input is required!'),
+                                      content: Text('Nhập tên đăng nhập!'),
                                     ),
                                   );
                                 }
@@ -226,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: loginController.isLoading == true
                                 ? const CircularProgressIndicator()
                                 : Text(
-                                    'Login',
+                                    'Đăng nhập',
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineLarge!
@@ -250,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _savePassword = newValue!;
                               });
                             },
-                            title: const Text("Remember me"),
+                            title: const Text("Ghi nhớ đăng nhập"),
                             activeColor: const Color.fromRGBO(5, 109, 101, 1),
                           ),
                         ),

@@ -9,30 +9,33 @@ class TaiKhoanItem extends StatelessWidget {
     required this.title,
     required this.image,
     this.screen,
+    this.onTap,
   });
   final String title;
   final String image;
   final Widget? screen;
+  final Function? onTap;
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        screen != null
-            ? Navigator.push(
-                context, MaterialPageRoute(builder: (ctx) => screen!))
-            : showDialog(
-                context: Get.context!,
-                builder: (context) {
-                  return const SimpleDialog(
-                    contentPadding: EdgeInsets.all(20),
-                    children: [
-                      Text(
-                        'no screen',
-                      ),
-                    ],
-                  );
-                });
-        ;
+        onTap == null
+            ? screen != null
+                ? Navigator.push(
+                    context, MaterialPageRoute(builder: (ctx) => screen!))
+                : showDialog(
+                    context: Get.context!,
+                    builder: (context) {
+                      return const SimpleDialog(
+                        contentPadding: EdgeInsets.all(20),
+                        children: [
+                          Text(
+                            'no screen',
+                          ),
+                        ],
+                      );
+                    })
+            : onTap!();
       },
       child: Container(
         padding: const EdgeInsets.only(left: 20, right: 5, top: 10, bottom: 5),

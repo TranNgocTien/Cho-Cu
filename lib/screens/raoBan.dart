@@ -13,11 +13,12 @@ import 'package:chotot/screens/mapScreen.dart';
 // import 'package:chotot/models/get_otherfee.dart';
 import 'package:chotot/data/get_otherFee_data.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:chotot/controllers/post_stuff.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RaoBanScreen extends StatefulWidget {
   const RaoBanScreen({super.key});
@@ -29,13 +30,11 @@ class RaoBanScreen extends StatefulWidget {
 class _RaoBanScreenState extends State<RaoBanScreen> {
   final _formKey = GlobalKey<FormState>();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  // File? imageFile;
 
   PostStuff postStuff = Get.put(PostStuff());
   final ImagePicker imagePicker = ImagePicker();
   String service = 'Chọn dịch vụ đăng tin';
   String serviceFee = '0';
-  LatLng? _pickedLocation;
 
   Future<void> _convertCoordinatefromAddress(double lat, double lng) async {
     final url = Uri.parse(
@@ -355,10 +354,21 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                       ),
                       IconButton(
                         onPressed: () async {
+                          final SharedPreferences prefs = await _prefs;
+
+                          // await prefs.setString('token', token.toString());
+
+                          final lat = prefs.getDouble('lat')!;
+                          final lng = prefs.getDouble('lng')!;
+
                           final pickedLocation =
                               await Navigator.of(context).push<LatLng>(
                             MaterialPageRoute(
-                              builder: (ctx) => const MapScreen(),
+                              builder: (ctx) => MapScreen(
+                                  location: PlaceLocation(
+                                      latitude: lat,
+                                      longitude: lng,
+                                      address: '')),
                             ),
                           );
 

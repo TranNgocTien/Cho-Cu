@@ -195,7 +195,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                         )),
                     child: Center(
                       child: Text(
-                        'No Image selected!',
+                        'Không có ảnh!',
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
                               fontFamily: GoogleFonts.rubik().fontFamily,
                               color: Colors.black,
