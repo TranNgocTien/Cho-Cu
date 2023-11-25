@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:chotot/models/addressUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +28,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
       Get.put(ChangeAvatarController());
   // TextEditingController addressToCoordinate = TextEditingController();
   UpdateInfoController updateInfoController = Get.put(UpdateInfoController());
-
+  LyLichController lyLichController = Get.put(LyLichController());
   void _convertAddressToCoordinate(string) async {
     List<Location> location = await locationFromAddress(string);
 

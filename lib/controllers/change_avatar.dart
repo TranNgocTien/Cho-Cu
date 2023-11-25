@@ -57,6 +57,7 @@ class ChangeAvatarController extends GetxController {
 
       if (response.statusCode == 200) {
         if (json['status'] == 'ok') {
+          imageFileUpdateConvert?.delete();
           imageFileUpdate?.delete();
         } else if (json['status'] == 'error') {
           showDialog(

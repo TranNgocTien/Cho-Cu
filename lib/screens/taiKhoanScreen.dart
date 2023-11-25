@@ -1,3 +1,4 @@
+import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,11 +10,24 @@ import 'package:get/get.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/controllers/log_out.dart';
 
-class TaiKhoanScreen extends StatelessWidget {
-  TaiKhoanScreen({super.key});
+class TaiKhoanScreen extends StatefulWidget {
+  const TaiKhoanScreen({super.key});
 
+  @override
+  State<TaiKhoanScreen> createState() => _TaiKhoanScreenState();
+}
+
+class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
   LoginController loginController = Get.put(LoginController());
+  LyLichController lyLichController = Get.put(LyLichController());
   LogOutController logOutController = Get.put(LogOutController());
+  @override
+  void initState() {
+    // TODO: implement initState
+    lyLichController.getInfo();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

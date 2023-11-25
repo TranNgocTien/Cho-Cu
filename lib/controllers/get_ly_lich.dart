@@ -6,56 +6,19 @@ import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/utils/api_endpoints.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chotot/models/ly_lich.dart';
 import 'package:chotot/data/ly_lich.dart';
 
-class UpdateInfoController extends GetxController {
-  LoginController loginController = Get.put(LoginController());
-  TextEditingController nameController = TextEditingController(text: '');
-  TextEditingController addressController = TextEditingController(text: '');
-  late double lat;
-  late double lng;
-
+class LyLichController extends GetxController {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<void> updateInfo() async {
+  Future<void> getInfo() async {
     // Get device information
     final SharedPreferences prefs = await _prefs;
 
     try {
-      if (lat == null || lng == null) {
-        showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return const SimpleDialog(
-                contentPadding: EdgeInsets.all(20),
-                children: [
-                  Text(
-                    'Tọa độ không lấy được',
-                  ),
-                ],
-              );
-            });
-        return;
-      }
-      if (nameController.text.isEmpty) {
-        showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return const SimpleDialog(
-                contentPadding: EdgeInsets.all(20),
-                children: [
-                  Text(
-                    'Nhập tên chủ tài khoản',
-                  ),
-                ],
-              );
-            });
-        return;
-      }
       var headers = {
         'Content-Type': 'application/json',
         "x-access-token": prefs.getString('token').toString().trim(),
@@ -63,10 +26,6 @@ class UpdateInfoController extends GetxController {
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.updateInfo);
       Map body = {
-        'name': nameController.text.toString(),
-        'address': addressController.text.toString(),
-        'lat': lat.toString(),
-        'lng': lng.toString(),
         'token': 'anhkhongdoiqua',
       };
       http.Response response =
@@ -92,23 +51,6 @@ class UpdateInfoController extends GetxController {
             ccid: data['ccid'].toString(),
             email: data['email'].toString(),
           ));
-
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return const SimpleDialog(
-                  contentPadding: EdgeInsets.all(20),
-                  children: [
-                    Text(
-                      'Cập nhật tài khoản thành công',
-                    ),
-                  ],
-                );
-              });
-          nameController.clear();
-          addressController.clear();
-          lat = 0;
-          lng = 0;
         } else if (json['status'] == "error") {
           showDialog(
               context: Get.context!,

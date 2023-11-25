@@ -5,6 +5,8 @@ import 'package:chotot/screens/taiKhoanScreen.dart';
 import 'package:chotot/screens/choScreen.dart';
 import 'package:chotot/screens/thongBaoScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:chotot/controllers/get_ly_lich.dart';
+import 'package:get/get.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,7 +18,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-
+  LyLichController lyLichController = Get.put(LyLichController());
   int selectedIndex = 0;
 
   onItemClicked(int index) {
@@ -30,6 +32,7 @@ class _MainScreenState extends State<MainScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
+
     _tabController = TabController(length: 5, vsync: this);
   }
 
@@ -47,11 +50,11 @@ class _MainScreenState extends State<MainScreen>
         body: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             controller: _tabController,
-            children: [
-              const TimThoScreen(),
-              const CongViecScreen(),
-              const ChoScreen(),
-              const ThongBaoScreen(),
+            children: const [
+              TimThoScreen(),
+              CongViecScreen(),
+              ChoScreen(),
+              ThongBaoScreen(),
               TaiKhoanScreen(),
             ]),
         bottomNavigationBar: BottomNavigationBar(
