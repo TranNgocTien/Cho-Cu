@@ -102,8 +102,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily: GoogleFonts.rubik()
-                                                  .fontFamily,
+                                              fontFamily:
+                                                  GoogleFonts.robotoMono()
+                                                      .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -149,8 +150,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily: GoogleFonts.rubik()
-                                                  .fontFamily,
+                                              fontFamily:
+                                                  GoogleFonts.robotoMono()
+                                                      .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -196,8 +198,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily: GoogleFonts.rubik()
-                                                  .fontFamily,
+                                              fontFamily:
+                                                  GoogleFonts.robotoMono()
+                                                      .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -245,8 +248,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily: GoogleFonts.rubik()
-                                                  .fontFamily,
+                                              fontFamily:
+                                                  GoogleFonts.robotoMono()
+                                                      .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -322,7 +326,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   .headlineLarge!
                                   .copyWith(
                                     color: Colors.white,
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 25,
                                   ),

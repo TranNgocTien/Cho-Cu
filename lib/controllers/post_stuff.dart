@@ -112,6 +112,7 @@ class PostStuff extends GetxController {
           imageLink.clear();
           Get.back();
         } else if (json['status'] == "error") {
+          imageLink.clear();
           showDialog(
               context: Get.context!,
               builder: (context) {
@@ -125,8 +126,6 @@ class PostStuff extends GetxController {
                   ],
                 );
               });
-          throw jsonDecode(response.body)['error']['message'] ??
-              'Unknown Error Occured';
         }
       } else {
         throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
@@ -151,24 +150,24 @@ class PostStuff extends GetxController {
   Future<void> uploadJobPhoto() async {
     final SharedPreferences prefs = await _prefs;
     // Get device information
-    if (imageFileList!.length > 3 ||
-        imageFileList!.isEmpty ||
-        imageFileList == null) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Hình ảnh đã chọn nhiều hơn 3 hoặc chưa chọn ảnh. Xin chọn lại!',
-                ),
-              ],
-            );
-          });
-      imageFileList!.clear();
-      return;
-    }
+    // if (imageFileList!.length > 3 ||
+    //     imageFileList!.isEmpty ||
+    //     imageFileList == null) {
+    //   showDialog(
+    //       context: Get.context!,
+    //       builder: (context) {
+    //         return const SimpleDialog(
+    //           contentPadding: EdgeInsets.all(20),
+    //           children: [
+    //             Text(
+    //               'Hình ảnh đã chọn nhiều hơn 3 hoặc chưa chọn ảnh. Xin chọn lại!',
+    //             ),
+    //           ],
+    //         );
+    //       });
+
+    //   return;
+    // }
     final hostId = prefs.getString('host_id');
 
     try {
@@ -201,25 +200,43 @@ class PostStuff extends GetxController {
       var res = await request.send();
       var response = await http.Response.fromStream(res);
 
-      if (imageFileList!.isEmpty) {
-        showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text('Take at least 1 picture'),
-              ],
-            );
-          },
-        );
-        return;
-      }
+      // if (imageFileList!.isEmpty) {
+      //   showDialog(
+      //     context: Get.context!,
+      //     builder: (context) {
+      //       return const SimpleDialog(
+      //         contentPadding: EdgeInsets.all(20),
+      //         children: [
+      //           Text('Take at least 1 picture'),
+      //         ],
+      //       );
+      //     },
+      //   );
+      //   return;
+      // }
       final json = jsonDecode(response.body);
+      // print(json);
       if (response.statusCode == 200) {
         var data = json['data'];
         if (json['status'] == 'ok') {
           imageLink = data["photos"];
+          imageConvertedFile.clear();
+          imageFileList!.clear();
+        } else if (json['status'] == 'error') {
+          imageConvertedFile.clear();
+          imageFileList!.clear();
+          showDialog(
+              context: Get.context!,
+              builder: (context) {
+                return SimpleDialog(
+                  contentPadding: const EdgeInsets.all(20),
+                  children: [
+                    Text(
+                      json['error']['message'],
+                    ),
+                  ],
+                );
+              });
         }
         // final json = jsonDecode(res.body);
         // if (json['status'] == 'ok') {
@@ -242,8 +259,9 @@ class PostStuff extends GetxController {
         //       'Unknown Error Occured';
         // }
       } else {
-        // throw jsonDecode(res.headers)['Message'] ?? 'Unknown Error Occured';
+        throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
       }
+      // throw jsonDecode(res.headers)['Message'] ?? 'Unknown Error Occured';
     } catch (error) {
       showDialog(
           context: Get.context!,
@@ -280,6 +298,7 @@ class PostStuff extends GetxController {
 
       if (response.statusCode == 200) {
         if (json['status'] == 'ok') {
+          // print(json);
           otherFee.clear();
           var data = json['data'];
 
@@ -309,8 +328,6 @@ class PostStuff extends GetxController {
                   ],
                 );
               });
-          throw jsonDecode(response.body)['error']['message'] ??
-              'Unknown Error Occured111';
         }
       } else {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';

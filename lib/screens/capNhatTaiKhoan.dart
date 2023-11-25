@@ -10,6 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:chotot/widgets/location_input.dart';
 import 'package:chotot/models/place.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:chotot/controllers/update_info.dart';
+import 'package:chotot/controllers/change_avatar.dart';
 
 class CapNhatTaiKhoanScreen extends StatefulWidget {
   const CapNhatTaiKhoanScreen({super.key});
@@ -21,7 +23,10 @@ class CapNhatTaiKhoanScreen extends StatefulWidget {
 class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
   File? imageFile;
   PlaceLocation? _selectedLocation;
-  TextEditingController addressToCoordinate = TextEditingController();
+  ChangeAvatarController changeAvatarController =
+      Get.put(ChangeAvatarController());
+  // TextEditingController addressToCoordinate = TextEditingController();
+  UpdateInfoController updateInfoController = Get.put(UpdateInfoController());
 
   void _convertAddressToCoordinate(string) async {
     List<Location> location = await locationFromAddress(string);
@@ -33,6 +38,9 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
     if (lat == null || lng == null) {
       return;
     }
+    updateInfoController.lat = lat;
+    updateInfoController.lng = lng;
+
     setState(() {
       _selectedLocation = PlaceLocation(
         latitude: lat,
@@ -50,6 +58,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
       final imageTemp = File(imageFileGallery.path);
       setState(() {
         imageFile = imageTemp;
+        changeAvatarController.imageFileUpdate = imageFile;
       });
     } on PlatformException catch (e) {
       AlertDialog(
@@ -58,6 +67,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
         ),
       );
     }
+    Get.back();
   }
 
   _openCamera() async {
@@ -68,6 +78,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
       final imageTemp = File(imageFileGallery.path);
       setState(() {
         imageFile = imageTemp;
+        changeAvatarController.imageFileUpdate = imageFile;
       });
     } on PlatformException catch (e) {
       AlertDialog(
@@ -76,6 +87,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
         ),
       );
     }
+    Get.back();
   }
 
   Future<void> _showChoiceDialog(BuildContext context) {
@@ -96,7 +108,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                   Text(
                     'Lựa chọn tải ảnh:',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontFamily: GoogleFonts.rubik().fontFamily,
+                          fontFamily: GoogleFonts.robotoMono().fontFamily,
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
                         ),
@@ -120,7 +132,8 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                   .textTheme
                                   .labelLarge!
                                   .copyWith(
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -142,7 +155,8 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                   .textTheme
                                   .labelLarge!
                                   .copyWith(
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -166,7 +180,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
         title: Text(
           'Cập nhật tài khoản',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontFamily: GoogleFonts.rubik().fontFamily,
+                fontFamily: GoogleFonts.robotoMono().fontFamily,
                 fontWeight: FontWeight.bold,
                 color: const Color.fromRGBO(54, 92, 69, 1),
               ),
@@ -195,9 +209,9 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                         )),
                     child: Center(
                       child: Text(
-                        'Không có ảnh!',
+                        'Cập nhật ảnh đại diện',
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              fontFamily: GoogleFonts.rubik().fontFamily,
+                              fontFamily: GoogleFonts.robotoMono().fontFamily,
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
@@ -212,7 +226,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
               label: Text(
                 'Tải ảnh',
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      fontFamily: GoogleFonts.rubik().fontFamily,
+                      fontFamily: GoogleFonts.robotoMono().fontFamily,
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
                     ),
@@ -233,7 +247,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                     top: 5,
                   ),
                   child: TextFormField(
-                    // controller: loginController.passwordController,
+                    controller: updateInfoController.nameController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       label: Row(
@@ -242,12 +256,11 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                           const SizedBox(width: 20),
                           Text(
                             'Tên',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      fontFamily:
+                                          GoogleFonts.robotoMono().fontFamily,
+                                    ),
                           ),
                         ],
                       ),
@@ -287,7 +300,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                       hideOnError: true,
                       debounceDuration: const Duration(milliseconds: 500),
                       textFieldConfiguration: TextFieldConfiguration(
-                        controller: addressToCoordinate,
+                        controller: updateInfoController.addressController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           label: Row(
@@ -301,7 +314,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                     .bodyLarge!
                                     .copyWith(
                                       fontFamily:
-                                          GoogleFonts.rubik().fontFamily,
+                                          GoogleFonts.robotoMono().fontFamily,
                                     ),
                               ),
                             ],
@@ -325,7 +338,8 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
+                                  fontFamily:
+                                      GoogleFonts.robotoMono().fontFamily,
                                   fontSize: 18,
                                 ),
                           ),
@@ -334,7 +348,8 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                       onSuggestionSelected: (AddressUpdate? suggestion) {
                         final address = suggestion!;
                         setState(() {});
-                        addressToCoordinate.text = address.description;
+                        updateInfoController.addressController.text =
+                            address.description;
 
                         ScaffoldMessenger.of(context)
                           ..removeCurrentSnackBar()
@@ -350,7 +365,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                 ),
                 IconButton(
                   onPressed: () {
-                    if (addressToCoordinate.text.isEmpty) {
+                    if (updateInfoController.addressController.text.isEmpty) {
                       showDialog(
                           context: Get.context!,
                           builder: (context) {
@@ -365,7 +380,8 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                           });
                       return;
                     }
-                    _convertAddressToCoordinate(addressToCoordinate.text);
+                    _convertAddressToCoordinate(
+                        updateInfoController.addressController.text);
                   },
                   icon: const FaIcon(FontAwesomeIcons.locationPin),
                   style: IconButton.styleFrom(
@@ -379,6 +395,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
               onSelectLocation: (location) {
                 _selectedLocation = location;
               },
+              state: 'capnhat',
             ),
             const SizedBox(
               height: 20,
@@ -396,11 +413,14 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                 child: Text(
                   'Cập nhật',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontFamily: GoogleFonts.rubik().fontFamily,
+                        fontFamily: GoogleFonts.robotoMono().fontFamily,
                         color: const Color.fromARGB(255, 2, 219, 134),
                       ),
                 ), // B,
-                onPressed: () {},
+                onPressed: () async {
+                  await updateInfoController.updateInfo();
+                  await changeAvatarController.updateAvatar();
+                },
               ),
             ),
             const SizedBox(

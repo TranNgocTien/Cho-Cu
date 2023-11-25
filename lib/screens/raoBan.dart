@@ -214,7 +214,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
           title: Text(
             'Rao bán',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontFamily: GoogleFonts.rubik().fontFamily,
+                  fontFamily: GoogleFonts.robotoMono().fontFamily,
                   fontWeight: FontWeight.bold,
                   color: const Color.fromRGBO(54, 92, 69, 1),
                 ),
@@ -235,7 +235,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Tên chủ đơn hàng: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.rubik().fontFamily,
+                          fontFamily: GoogleFonts.robotoMono().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -278,7 +278,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Địa chỉ của bạn: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.rubik().fontFamily,
+                          fontFamily: GoogleFonts.robotoMono().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -328,7 +328,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                       .bodyMedium!
                                       .copyWith(
                                         fontFamily:
-                                            GoogleFonts.rubik().fontFamily,
+                                            GoogleFonts.robotoMono().fontFamily,
                                         fontSize: 18,
                                       ),
                                 ),
@@ -389,7 +389,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Số điện thoại liên hệ:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.rubik().fontFamily,
+                          fontFamily: GoogleFonts.robotoMono().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -432,7 +432,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Mô tả:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.rubik().fontFamily,
+                          fontFamily: GoogleFonts.robotoMono().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -477,7 +477,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Giá mong muốn: (VNĐ)',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.rubik().fontFamily,
+                          fontFamily: GoogleFonts.robotoMono().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -542,7 +542,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                   .labelLarge!
                                   .copyWith(
                                     color: Colors.white,
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                   ),
                             ),
                           ),
@@ -555,7 +556,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                 .labelLarge!
                                 .copyWith(
                                   color: const Color.fromRGBO(5, 109, 101, 1),
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
+                                  fontFamily:
+                                      GoogleFonts.robotoMono().fontFamily,
                                 ),
                           ),
                           IconButton(
@@ -574,7 +576,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                                     color: const Color.fromRGBO(
                                                         5, 109, 101, 1),
                                                     fontFamily:
-                                                        GoogleFonts.rubik()
+                                                        GoogleFonts.robotoMono()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -677,18 +679,21 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                   .labelLarge!
                                   .copyWith(
                                     color: Colors.white,
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                   ),
                             ),
                           ),
                         ),
                         Text(
                           service,
-                          style:
-                              Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    color: const Color.fromRGBO(5, 109, 101, 1),
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .copyWith(
+                                color: const Color.fromRGBO(5, 109, 101, 1),
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              ),
                         ),
                       ]),
                   const SizedBox(height: 10),
@@ -697,19 +702,23 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                       children: [
                         Text(
                           'Phí đăng:',
-                          style:
-                              Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    color: const Color.fromRGBO(5, 109, 101, 1),
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .copyWith(
+                                color: const Color.fromRGBO(5, 109, 101, 1),
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              ),
                         ),
                         Text(
                           '$serviceFee GP',
-                          style:
-                              Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    color: const Color.fromRGBO(5, 109, 101, 1),
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .copyWith(
+                                color: const Color.fromRGBO(5, 109, 101, 1),
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              ),
                         ),
                       ]),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.075),
@@ -730,12 +739,14 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                             horizontal: 30, vertical: 8),
                         child: Text(
                           'Đăng tin',
-                          style:
-                              Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    color: Colors.white,
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
-                                    fontSize: 20,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .copyWith(
+                                color: Colors.white,
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontSize: 20,
+                              ),
                         ),
                       ),
                     ),

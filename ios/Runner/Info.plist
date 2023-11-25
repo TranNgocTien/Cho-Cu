@@ -2,16 +2,32 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+<!-- Background Processing -->
+<key>UIBackgroundModes</key>
+<array>
+    <string>processing</string>
+</array>
+
+<!-- Task Schedulling -->
+<key>BGTaskSchedulerPermittedIdentifiers</key>
+<array>
+   <string>workmanager.background.task</string>
+</array>
+
+<!-- Background Fetching -->
+<key>UIBackgroundModes</key>
+<array>
+    <string>fetch</string>
+</array>
+
+
 <key>LSApplicationQueriesSchemes</key>
 <array>
   <string>sms</string>
   <string>tel</string>
 </array>
-<key>LSApplicationQueriesSchemes</key>
-<array>
-  <string>sms</string>
-  <string>tel</string>
-</array>
+
 <key>NSLocationWhenInUseUsageDescription</key>
 	<string>The location of user.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -19,7 +35,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Chotot</string>
+	<string>Cho4.0</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

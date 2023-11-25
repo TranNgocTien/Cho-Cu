@@ -39,144 +39,208 @@ class _ChoScreenState extends State<ChoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Center(
-          child: Text(
-            'Chợ đồ cũ',
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontFamily: GoogleFonts.rubik().fontFamily,
-                  fontWeight: FontWeight.bold,
-                  color: const Color.fromRGBO(54, 92, 69, 1),
-                ),
-            textAlign: TextAlign.center,
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Center(
+            child: Text(
+              'Chợ đồ cũ',
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    fontFamily: GoogleFonts.robotoMono().fontFamily,
+                    fontWeight: FontWeight.bold,
+                    color: const Color.fromRGBO(54, 92, 69, 1),
+                  ),
+              textAlign: TextAlign.center,
+            ),
           ),
+          backgroundColor: Colors.white,
+          foregroundColor: const Color.fromRGBO(54, 92, 69, 1),
+          elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Get.to(const OwnerOrder());
+                },
+                icon: const FaIcon(FontAwesomeIcons.listUl)),
+          ],
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: const Color.fromRGBO(54, 92, 69, 1),
-        elevation: 0,
-        actions: [
-          IconButton(
-              onPressed: () {
-                Get.to(const OwnerOrder());
-              },
-              icon: const FaIcon(FontAwesomeIcons.listUl)),
-        ],
-      ),
-      body: items.isNotEmpty
-          ? Stack(
-              children: [
-                SingleChildScrollView(
-                  physics: const ScrollPhysics(),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: items.length,
-                          itemBuilder: (ctx, index) => Container(
-                            margin: const EdgeInsets.only(bottom: 25),
-                            padding: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2,
-                                color: const Color.fromRGBO(54, 92, 69, 1),
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                Get.to(
-                                  ThongTinSanPhamScreen(
-                                    docu: items[index],
+        body: items.isNotEmpty
+            ? Stack(
+                children: [
+                  SingleChildScrollView(
+                    physics: const ScrollPhysics(),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: items.length,
+                            itemBuilder: (ctx, index) => Column(
+                              children: [
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
-                                );
-                              },
-                              splashColor:
-                                  const Color.fromARGB(255, 136, 217, 187),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Đồ cũ của ${items[index].name} ',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                          color: const Color.fromRGBO(
-                                              54, 92, 69, 1),
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily:
-                                              GoogleFonts.rubik().fontFamily,
-                                        ),
-                                    textAlign: TextAlign.start,
+                                  elevation: 10,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 25),
+                                    padding: const EdgeInsets.all(15),
+                                    // decoration: BoxDecoration(
+                                    //   border: Border.all(
+                                    //     width: 2,
+                                    //     color: const Color.fromRGBO(54, 92, 69, 1),
+                                    //   ),
+                                    //   borderRadius: BorderRadius.circular(10),
+                                    // ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Get.to(
+                                          ThongTinSanPhamScreen(
+                                            docu: items[index],
+                                          ),
+                                        );
+                                      },
+                                      splashColor: const Color.fromARGB(
+                                          255, 136, 217, 187),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Đồ cũ của ${items[index].name} ',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!
+                                                .copyWith(
+                                                  color: const Color.fromRGBO(
+                                                      54, 92, 69, 1),
+                                                  // color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                  fontFamily:
+                                                      GoogleFonts.robotoMono()
+                                                          .fontFamily,
+                                                ),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Giá mong muốn:  ',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge!
+                                                    .copyWith(
+                                                      // color: const Color.fromRGBO(
+                                                      //     122, 191, 149, 1),
+                                                      color: Colors.black,
+                                                      fontFamily: GoogleFonts
+                                                              .robotoMono()
+                                                          .fontFamily,
+                                                    ),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Text(
+                                                '${items[index].price} VNĐ',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge!
+                                                    .copyWith(
+                                                      // color: const Color.fromRGBO(
+                                                      //     122, 191, 149, 1),
+                                                      color: Colors.grey,
+                                                      fontFamily: GoogleFonts
+                                                              .robotoMono()
+                                                          .fontFamily,
+                                                    ),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Mô tả:  ',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge!
+                                                    .copyWith(
+                                                      color: Colors.black,
+                                                      fontFamily: GoogleFonts
+                                                              .robotoMono()
+                                                          .fontFamily,
+                                                    ),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Flexible(
+                                                child: Text(
+                                                  '${items[index].description}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge!
+                                                      .copyWith(
+                                                        color: Colors.grey,
+                                                        fontFamily: GoogleFonts
+                                                                .robotoMono()
+                                                            .fontFamily,
+                                                      ),
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'Giá mong muốn: ${items[index].price} VNĐ',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                          color: const Color.fromRGBO(
-                                              122, 191, 149, 1),
-                                          fontFamily:
-                                              GoogleFonts.rubik().fontFamily,
-                                        ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                  Text(
-                                    'Mô tả: ${items[index].description}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                          color: const Color.fromRGBO(
-                                              122, 191, 149, 1),
-                                          fontFamily:
-                                              GoogleFonts.rubik().fontFamily,
-                                        ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(height: 10),
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 200,
-                      ),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: AlignmentDirectional.bottomCenter,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.15,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 10,
+                        const SizedBox(
+                          height: 200,
                         ),
                       ],
-                      color: Colors.white,
-                      border: Border(
-                        top: BorderSide(width: 1, color: Colors.transparent),
-                      ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.13,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 10,
+                          ),
+                        ],
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(width: 1, color: Colors.transparent),
+                        ),
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -209,8 +273,11 @@ class _ChoScreenState extends State<ChoScreen> {
                                 ),
                                 child: Text(
                                   '$currentIndex',
-                                  style: const TextStyle(
-                                    color: Color.fromRGBO(122, 191, 149, 1),
+                                  style: TextStyle(
+                                    color:
+                                        const Color.fromRGBO(122, 191, 149, 1),
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                     fontSize: 20,
                                   ),
                                   textAlign: TextAlign.center,
@@ -232,7 +299,7 @@ class _ChoScreenState extends State<ChoScreen> {
                             ],
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ElevatedButton(
                                 onPressed: () async {},
@@ -250,7 +317,7 @@ class _ChoScreenState extends State<ChoScreen> {
                                         color: const Color.fromRGBO(
                                             122, 191, 149, 1),
                                         fontFamily:
-                                            GoogleFonts.rubik().fontFamily,
+                                            GoogleFonts.robotoMono().fontFamily,
                                       ),
                                 ),
                               ),
@@ -278,8 +345,8 @@ class _ChoScreenState extends State<ChoScreen> {
                                         .labelLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily:
-                                              GoogleFonts.rubik().fontFamily,
+                                          fontFamily: GoogleFonts.robotoMono()
+                                              .fontFamily,
                                         ),
                                   ),
                                 ),
@@ -301,8 +368,8 @@ class _ChoScreenState extends State<ChoScreen> {
                                         .copyWith(
                                           color: const Color.fromRGBO(
                                               122, 191, 149, 1),
-                                          fontFamily:
-                                              GoogleFonts.rubik().fontFamily,
+                                          fontFamily: GoogleFonts.robotoMono()
+                                              .fontFamily,
                                         ),
                                   ),
                                 ),
@@ -313,10 +380,10 @@ class _ChoScreenState extends State<ChoScreen> {
                       ),
                     ),
                   ),
-                ),
-              ],
-            )
-          : center,
+                ],
+              )
+            : center,
+      ),
     );
   }
 }

@@ -82,7 +82,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                           const Color.fromRGBO(54, 92, 69, 1),
                                       fontWeight: FontWeight.bold,
                                       fontFamily:
-                                          GoogleFonts.rubik().fontFamily,
+                                          GoogleFonts.robotoMono().fontFamily,
                                     ),
                                 textAlign: TextAlign.start,
                               ),
@@ -112,7 +112,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.rubik()
+                                                        GoogleFonts.robotoMono()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -160,8 +160,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily:
-                                              GoogleFonts.rubik().fontFamily,
+                                          fontFamily: GoogleFonts.robotoMono()
+                                              .fontFamily,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
                                         ),
@@ -197,7 +197,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.rubik()
+                                                        GoogleFonts.robotoMono()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -250,7 +250,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.rubik()
+                                                        GoogleFonts.robotoMono()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -304,7 +304,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.rubik()
+                                                        GoogleFonts.robotoMono()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -351,8 +351,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily:
-                                              GoogleFonts.rubik().fontFamily,
+                                          fontFamily: GoogleFonts.robotoMono()
+                                              .fontFamily,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
                                         ),

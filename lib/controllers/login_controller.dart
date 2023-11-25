@@ -71,21 +71,10 @@ class LoginController extends GetxController {
         final json = jsonDecode(response.body);
 
         if (json['status'] == 'ok') {
-          tokenString = json['data']['token'];
-          hostId = json['data']['_id'];
-          final SharedPreferences prefs = await _prefs;
-
-          // await prefs.setString('token', token.toString());
-          await _getCurrentLocation();
-          await prefs.setString('host_id', json['data']['_id']);
-          await prefs.setString('host_name', json['data']['name']);
-          isLoading = false;
-
           showDialog(
               context: Get.context!,
               builder: (context) {
                 return SimpleDialog(
-                  title: const Text('Error'),
                   contentPadding: const EdgeInsets.all(20),
                   children: [
                     Text(
@@ -94,6 +83,17 @@ class LoginController extends GetxController {
                   ],
                 );
               });
+          tokenString = json['data']['token'];
+          hostId = json['data']['_id'];
+          final SharedPreferences prefs = await _prefs;
+
+          // await prefs.setString('token', token.toString());
+          await _getCurrentLocation();
+          await prefs.setString('host_id', json['data']['_id']);
+          await prefs.setString('token', json['data']['token']);
+          await prefs.setString('host_name', json['data']['name']);
+          isLoading = false;
+
           // print('=========================');
           // print(
           //   prefs.getString('token'),

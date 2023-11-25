@@ -2,21 +2,25 @@ import 'dart:convert';
 // import 'package:geocoding/geocoding.dart';
 import 'package:chotot/screens/mapScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:chotot/models/place.dart';
+import 'package:chotot/controllers/update_info.dart';
 
 class LocationInput extends StatefulWidget {
   const LocationInput({
     super.key,
     required this.onSelectLocation,
     required this.pickedLocationAdress,
+    this.state,
   });
   final void Function(PlaceLocation location) onSelectLocation;
   final PlaceLocation? pickedLocationAdress;
+  final String? state;
   @override
   State<LocationInput> createState() {
     return _LocationInputState();
@@ -26,7 +30,7 @@ class LocationInput extends StatefulWidget {
 class _LocationInputState extends State<LocationInput> {
   PlaceLocation? _pickedLocation;
   var _isGettingLocation = false;
-
+  UpdateInfoController updateInfoController = Get.put(UpdateInfoController());
   String get locationImage {
     _pickedLocation = widget.pickedLocationAdress ?? _pickedLocation;
     if (_pickedLocation == null) {
@@ -56,7 +60,7 @@ class _LocationInputState extends State<LocationInput> {
     widget.onSelectLocation(_pickedLocation!);
   }
 
-  void _getCurrentLocation() async {
+  void _getCurrentLocation(String? state) async {
     Location location = Location();
 
     bool serviceEnabled;
@@ -89,11 +93,14 @@ class _LocationInputState extends State<LocationInput> {
     if (lat == null || lng == null) {
       return;
     }
-
+    if (state == 'capnhat') {
+      updateInfoController.lat = lat;
+      updateInfoController.lng = lng;
+    }
     _savePlace(lat, lng);
   }
 
-  void _selectOnMap() async {
+  void _selectOnMap(String? state) async {
     final pickedLocation = await Navigator.of(context).push<LatLng>(
       MaterialPageRoute(
         builder: (ctx) => const MapScreen(),
@@ -103,7 +110,10 @@ class _LocationInputState extends State<LocationInput> {
     if (pickedLocation == null) {
       return;
     }
-
+    if (state == 'capnhat') {
+      updateInfoController.lat = pickedLocation.latitude;
+      updateInfoController.lng = pickedLocation.longitude;
+    }
     _savePlace(pickedLocation.latitude, pickedLocation.longitude);
   }
 
@@ -154,12 +164,16 @@ class _LocationInputState extends State<LocationInput> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             TextButton.icon(
-              onPressed: _getCurrentLocation,
+              onPressed: () {
+                _getCurrentLocation(widget.state);
+              },
               icon: const Icon(Icons.location_on),
               label: const Text('Lấy tọa độ thiết bị'),
             ),
             TextButton.icon(
-              onPressed: _selectOnMap,
+              onPressed: () {
+                _selectOnMap(widget.state);
+              },
               icon: const Icon(Icons.map),
               label: const Text('Chọn trên bản đồ'),
             ),

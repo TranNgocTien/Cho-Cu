@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/widgets/taikhoanItem.dart';
 import 'package:chotot/screens/lyLichScreen.dart';
 import 'package:get/get.dart';
-import 'package:chotot/screens/login.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:chotot/controllers/login_controller.dart';
+import 'package:chotot/controllers/log_out.dart';
 
 class TaiKhoanScreen extends StatelessWidget {
   TaiKhoanScreen({super.key});
-  final _storage = const FlutterSecureStorage();
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   LoginController loginController = Get.put(LoginController());
+  LogOutController logOutController = Get.put(LogOutController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,7 @@ class TaiKhoanScreen extends StatelessWidget {
           child: Text(
             'Tài khoản',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontFamily: GoogleFonts.rubik().fontFamily,
+                  fontFamily: GoogleFonts.robotoMono().fontFamily,
                   fontWeight: FontWeight.bold,
                   color: const Color.fromRGBO(54, 92, 69, 1),
                 ),
@@ -58,16 +58,8 @@ class TaiKhoanScreen extends StatelessWidget {
                 title: 'Đăng xuất',
                 image: 'image/icon/dnag_xuat_(1).png',
                 onTap: () async {
-                  final SharedPreferences prefs = await _prefs;
-
+                  await logOutController.logOut();
                   // await prefs.setString('token', token.toString());
-                  loginController.tokenString = '';
-                  loginController.hostId = '';
-                  await prefs.clear();
-
-                  await _storage.delete(key: "KEY_USERNAME");
-                  await _storage.delete(key: "KEY_PASSWORD");
-                  Get.offAll(const LoginScreen());
                 }),
             const TaiKhoanItem(
                 title: 'Xóa tài khoản', image: 'image/icon/dnag_xuat_(1).png'),
@@ -107,12 +99,14 @@ class TaiKhoanScreen extends StatelessWidget {
                         ),
                       ),
                       child: Text('Thông tin công ty',
-                          style:
-                              Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .copyWith(
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w400,
+                              ),
                           textAlign: TextAlign.start),
                     )
                   ],

@@ -66,7 +66,7 @@ class TaiKhoanItem extends StatelessWidget {
               ),
               child: Text(title,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontFamily: GoogleFonts.rubik().fontFamily,
+                        fontFamily: GoogleFonts.robotoMono().fontFamily,
                         fontSize: 22,
                         fontWeight: FontWeight.w400,
                       ),

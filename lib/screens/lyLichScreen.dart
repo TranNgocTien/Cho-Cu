@@ -66,10 +66,10 @@ class _LyLichScreenState extends State<LyLichScreen> {
                 ),
                 Text(
                   'Name',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(color: Colors.black),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Colors.black,
+                        fontFamily: GoogleFonts.robotoMono().fontFamily,
+                      ),
                 ),
                 const SizedBox(
                   height: 10,
@@ -111,6 +111,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                     '60.0',
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           color: Colors.white,
+                          fontFamily: GoogleFonts.robotoMono().fontFamily,
                         ),
                   ),
                 ),
@@ -129,11 +130,13 @@ class _LyLichScreenState extends State<LyLichScreen> {
                       ),
                       child: Text(
                         'Nhập mã voucher',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
-                                  color: const Color.fromARGB(255, 2, 219, 134),
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              color: const Color.fromARGB(255, 2, 219, 134),
+                            ),
                       ), // B,
                       onPressed: () {},
                     ),
@@ -146,11 +149,13 @@ class _LyLichScreenState extends State<LyLichScreen> {
                       ),
                       child: Text(
                         'Mua voucher',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
-                                  color: const Color.fromARGB(255, 2, 219, 134),
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              color: const Color.fromARGB(255, 2, 219, 134),
+                            ),
                       ), // B,
                       onPressed: () {},
                     ),
@@ -180,7 +185,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                             .textTheme
                             .titleMedium!
                             .copyWith(
-                                fontFamily: GoogleFonts.rubik().fontFamily,
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
                                 color: Colors.black),
                         textAlign: TextAlign.start,
                       ),
@@ -189,11 +194,13 @@ class _LyLichScreenState extends State<LyLichScreen> {
                       ),
                       Text(
                         '123123123',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
-                                  color: Colors.black26,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              color: Colors.black26,
+                            ),
                         textAlign: TextAlign.start,
                       ),
                     ]),
@@ -205,7 +212,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                             .textTheme
                             .titleMedium!
                             .copyWith(
-                                fontFamily: GoogleFonts.rubik().fontFamily,
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
                                 color: Colors.black),
                         textAlign: TextAlign.start,
                       ),
@@ -232,7 +239,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                             .textTheme
                             .titleMedium!
                             .copyWith(
-                                fontFamily: GoogleFonts.rubik().fontFamily,
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
                                 color: Colors.black),
                         textAlign: TextAlign.start,
                       ),
@@ -241,11 +248,13 @@ class _LyLichScreenState extends State<LyLichScreen> {
                       ),
                       Text(
                         '0979757026',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
-                                  color: Colors.black26,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              color: Colors.black26,
+                            ),
                         textAlign: TextAlign.start,
                       ),
                     ]),
@@ -258,7 +267,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                             .textTheme
                             .titleMedium!
                             .copyWith(
-                                fontFamily: GoogleFonts.rubik().fontFamily,
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
                                 color: Colors.black),
                         textAlign: TextAlign.start,
                       ),
@@ -267,11 +276,13 @@ class _LyLichScreenState extends State<LyLichScreen> {
                       ),
                       Text(
                         '--',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
-                                  color: Colors.black26,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              color: Colors.black26,
+                            ),
                         textAlign: TextAlign.start,
                       ),
                     ]),
@@ -279,7 +290,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                       child: Text(
                         'Ảnh CMND/CCCD',
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontFamily: GoogleFonts.rubik().fontFamily,
+                              fontFamily: GoogleFonts.robotoMono().fontFamily,
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
@@ -310,7 +321,8 @@ class _LyLichScreenState extends State<LyLichScreen> {
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                     color: Colors.black,
                                   ),
                             ),
@@ -338,7 +350,8 @@ class _LyLichScreenState extends State<LyLichScreen> {
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                     color: Colors.black,
                                   ),
                             ),
@@ -350,12 +363,14 @@ class _LyLichScreenState extends State<LyLichScreen> {
                     Center(
                       child: Text(
                         'Tiểu sử - Kinh nghiệm làm việc',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ), // B,,
                     ),
                     const SizedBox(height: 10),
@@ -407,7 +422,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                               .textTheme
                               .titleLarge!
                               .copyWith(
-                                fontFamily: GoogleFonts.rubik().fontFamily,
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
                                 color: const Color.fromARGB(255, 2, 219, 134),
                               ),
                         ), // B,

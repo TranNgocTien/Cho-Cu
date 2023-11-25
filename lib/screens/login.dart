@@ -71,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
                 margin: const EdgeInsets.only(
@@ -138,8 +138,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily: GoogleFonts.rubik()
-                                                  .fontFamily,
+                                              fontFamily:
+                                                  GoogleFonts.robotoMono()
+                                                      .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -192,8 +193,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           .textTheme
                                           .bodyLarge!
                                           .copyWith(
-                                            fontFamily:
-                                                GoogleFonts.rubik().fontFamily,
+                                            fontFamily: GoogleFonts.robotoMono()
+                                                .fontFamily,
                                           ),
                                     ),
                                   ],
@@ -236,8 +237,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily:
-                                              GoogleFonts.rubik().fontFamily,
+                                          fontFamily: GoogleFonts.robotoMono()
+                                              .fontFamily,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
                                         ),
@@ -246,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 10),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.7,
                           child: CheckboxListTile(
                             value: _savePassword,
                             onChanged: (bool? newValue) {
@@ -254,13 +255,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _savePassword = newValue!;
                               });
                             },
-                            title: const Text("Ghi nhớ đăng nhập"),
+                            title: Text(
+                              "Ghi nhớ đăng nhập",
+                              style: TextStyle(
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              ),
+                            ),
                             activeColor: const Color.fromRGBO(5, 109, 101, 1),
                           ),
                         ),
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             TextButton(
                               onPressed: () {
@@ -274,6 +281,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     .copyWith(
                                       color:
                                           const Color.fromRGBO(5, 109, 101, 1),
+                                      fontFamily:
+                                          GoogleFonts.robotoMono().fontFamily,
                                     ),
                               ),
                             ),
@@ -290,6 +299,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     .copyWith(
                                       color:
                                           const Color.fromRGBO(5, 109, 101, 1),
+                                      fontFamily:
+                                          GoogleFonts.robotoMono().fontFamily,
                                     ),
                               ),
                             ),

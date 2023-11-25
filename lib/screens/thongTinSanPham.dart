@@ -35,7 +35,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
         context: Get.context!,
         builder: (context) {
           return SimpleDialog(
-            backgroundColor: Color.fromARGB(113, 0, 0, 0),
+            backgroundColor: const Color.fromARGB(113, 0, 0, 0),
             // contentPadding: const EdgeInsets.all(20),
             children: [
               Image.network(str,
@@ -68,7 +68,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                     child: Text(
                       'Liên hệ:',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            fontFamily: GoogleFonts.rubik().fontFamily,
+                            fontFamily: GoogleFonts.robotoMono().fontFamily,
                             color: Colors.black,
                             fontWeight: FontWeight.w600,
                           ),
@@ -94,7 +94,8 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                   .textTheme
                                   .labelLarge!
                                   .copyWith(
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -117,7 +118,8 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                   .textTheme
                                   .labelLarge!
                                   .copyWith(
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -138,6 +140,11 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var dateSubmit = widget.docu.name
+        .substring(widget.docu.name.indexOf('-'))
+        .replaceFirst('-', '');
+    var nameStuff =
+        widget.docu.name.substring(0, widget.docu.name.indexOf('-'));
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white, elevation: 0, actions: [
         Container(
@@ -154,7 +161,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                     'Thông báo đã bán',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: const Color.fromRGBO(122, 191, 149, 1),
-                          fontFamily: GoogleFonts.rubik().fontFamily,
+                          fontFamily: GoogleFonts.robotoMono().fontFamily,
                           fontSize: 15,
                         ),
                   ),
@@ -165,7 +172,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                         color: widget.docu.status == 'sold_out'
                             ? Colors.red
                             : const Color.fromRGBO(122, 191, 149, 1),
-                        fontFamily: GoogleFonts.rubik().fontFamily,
+                        fontFamily: GoogleFonts.robotoMono().fontFamily,
                         fontSize: 15,
                       ),
                 ),
@@ -239,166 +246,228 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
             Container(
               height: MediaQuery.of(context).size.height * 0.5,
               padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.docu.name,
-                    softWrap: true,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: GoogleFonts.rubik().fontFamily),
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(
-                          left: 15,
-                        ),
-                        child: Text(
-                          softWrap: true,
-                          'Mô tả:',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: GoogleFonts.rubik().fontFamily),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: Text(
-                          widget.docu.description,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                                  color: Colors.black,
-                                  fontFamily: GoogleFonts.rubik().fontFamily),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      nameStuff,
+                      softWrap: true,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 25,
+                            fontFamily: GoogleFonts.robotoMono().fontFamily,
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Row(
                         children: [
                           Text(
-                            'Giá mong muốn:',
+                            'Ngày đăng:',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
                                 .copyWith(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: GoogleFonts.rubik().fontFamily),
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily:
+                                      GoogleFonts.robotoMono().fontFamily,
+                                ),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            dateSubmit,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: Colors.grey,
+                                  fontFamily:
+                                      GoogleFonts.robotoMono().fontFamily,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(
+                            left: 15,
+                          ),
+                          child: Text(
+                            'Địa chỉ:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily:
+                                      GoogleFonts.robotoMono().fontFamily,
+                                ),
                             textAlign: TextAlign.start,
                           ),
-                          SizedBox(
-                            child: Text(
-                              '${widget.docu.price} VNĐ',
+                        ),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            softWrap: true,
+                            widget.docu.address,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                  color: Colors.grey,
+                                  fontFamily:
+                                      GoogleFonts.robotoMono().fontFamily,
+                                ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Giá mong muốn:',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
                                   .copyWith(
-                                      color: Colors.black,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
+                                  ),
+                              textAlign: TextAlign.start,
+                            ),
+                            SizedBox(
+                              child: Text(
+                                '${widget.docu.price} VNĐ',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium!
+                                    .copyWith(
+                                      color: Colors.grey,
                                       fontSize: 20,
                                       fontFamily:
-                                          GoogleFonts.rubik().fontFamily),
+                                          GoogleFonts.robotoMono().fontFamily,
+                                    ),
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            icon: FaIcon(
-                              FontAwesomeIcons.heart,
-                              size: 20,
-                              color: isFavorite ? Colors.red : Colors.black,
+                            IconButton(
+                              icon: FaIcon(
+                                FontAwesomeIcons.heart,
+                                size: 20,
+                                color: isFavorite ? Colors.red : Colors.black,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  isFavorite = !isFavorite;
+                                });
+                              },
                             ),
-                            onPressed: () {
-                              setState(() {
-                                isFavorite = !isFavorite;
-                              });
-                            },
-                          ),
-                        ]),
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(
-                          left: 15,
-                        ),
-                        child: Text(
-                          'Địa chỉ:',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: GoogleFonts.rubik().fontFamily),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: Text(
-                          softWrap: true,
-                          widget.docu.address,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                                  color: Colors.black,
-                                  fontFamily: GoogleFonts.rubik().fontFamily),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        widget.docu.status == 'sold_out'
-                            ? showDialog(
-                                context: Get.context!,
-                                builder: (context) {
-                                  return const SimpleDialog(
-                                    contentPadding: EdgeInsets.all(20),
-                                    children: [
-                                      Text(
-                                        'Sản phẩm đã bán',
-                                      ),
-                                    ],
-                                  );
-                                })
-                            : _showContactMethod(context);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                            width: 1.0, color: Color.fromRGBO(5, 109, 101, 1)),
-                        backgroundColor: Colors.white,
+                          ]),
+                    ),
+                    const SizedBox(height: 15),
+                    Container(
+                      padding: const EdgeInsets.only(
+                        left: 15,
                       ),
                       child: Text(
-                        'Liên hệ',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: GoogleFonts.rubik().fontFamily,
-                                ),
+                        softWrap: true,
+                        'Mô tả:',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: GoogleFonts.robotoMono().fontFamily,
+                            ),
+                        textAlign: TextAlign.start,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 10),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey, width: 1),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20))),
+                      child: Flex(direction: Axis.horizontal, children: [
+                        Flexible(
+                          child: Text(
+                            widget.docu.description,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                  color: Colors.grey,
+                                  fontFamily:
+                                      GoogleFonts.robotoMono().fontFamily,
+                                ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ]),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          widget.docu.status == 'sold_out'
+                              ? showDialog(
+                                  context: Get.context!,
+                                  builder: (context) {
+                                    return const SimpleDialog(
+                                      contentPadding: EdgeInsets.all(20),
+                                      children: [
+                                        Text(
+                                          'Sản phẩm đã bán',
+                                        ),
+                                      ],
+                                    );
+                                  })
+                              : _showContactMethod(context);
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                              width: 1.0,
+                              color: Color.fromRGBO(5, 109, 101, 1)),
+                          backgroundColor: Colors.white,
+                        ),
+                        child: Text(
+                          'Liên hệ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

@@ -15,4 +15,7 @@ class _AuthEndPoints {
   final String uploadJobPhoto = "upload_job_photo";
   final String getOtherfee = "get_otherfee";
   final String soldOut = 'sold_out';
+  final String logout = 'logout';
+  final String updateInfo = 'update_info';
+  final String changeAvatar = 'change_avatar';
 }

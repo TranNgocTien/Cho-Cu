@@ -75,12 +75,14 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                       children: <Widget>[
                         Text(
                           'Nhập mã xác thực OTP:',
-                          style:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(
-                                    color: const Color.fromRGBO(54, 92, 69, 1),
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                color: const Color.fromRGBO(54, 92, 69, 1),
+                                fontWeight: FontWeight.bold,
+                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              ),
                           textAlign: TextAlign.start,
                         ),
                         const SizedBox(height: 30),
@@ -106,8 +108,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily: GoogleFonts.rubik()
-                                                  .fontFamily,
+                                              fontFamily:
+                                                  GoogleFonts.robotoMono()
+                                                      .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -150,7 +153,8 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                                   .headlineLarge!
                                   .copyWith(
                                     color: Colors.white,
-                                    fontFamily: GoogleFonts.rubik().fontFamily,
+                                    fontFamily:
+                                        GoogleFonts.robotoMono().fontFamily,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 25,
                                   ),
