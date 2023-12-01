@@ -44,7 +44,7 @@ class _OwnerOrderState extends State<OwnerOrder> {
           child: Text(
             'Bài đã đăng',
             style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontFamily: GoogleFonts.robotoMono().fontFamily,
+                  fontFamily: GoogleFonts.montserrat().fontFamily,
                   fontWeight: FontWeight.bold,
                   color: const Color.fromRGBO(54, 92, 69, 1),
                 ),
@@ -100,7 +100,7 @@ class _OwnerOrderState extends State<OwnerOrder> {
                                                 54, 92, 69, 1),
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20,
-                                            fontFamily: GoogleFonts.robotoMono()
+                                            fontFamily: GoogleFonts.montserrat()
                                                 .fontFamily,
                                           ),
                                       textAlign: TextAlign.start,
@@ -119,7 +119,7 @@ class _OwnerOrderState extends State<OwnerOrder> {
                                               //     122, 191, 149, 1),
                                               color: Colors.black,
                                               fontFamily:
-                                                  GoogleFonts.robotoMono()
+                                                  GoogleFonts.montserrat()
                                                       .fontFamily,
                                             ),
                                         textAlign: TextAlign.start,
@@ -132,7 +132,7 @@ class _OwnerOrderState extends State<OwnerOrder> {
                                             .copyWith(
                                               color: Colors.grey,
                                               fontFamily:
-                                                  GoogleFonts.robotoMono()
+                                                  GoogleFonts.montserrat()
                                                       .fontFamily,
                                             ),
                                         textAlign: TextAlign.start,
@@ -151,7 +151,7 @@ class _OwnerOrderState extends State<OwnerOrder> {
                                               .copyWith(
                                                 color: Colors.black,
                                                 fontFamily:
-                                                    GoogleFonts.robotoMono()
+                                                    GoogleFonts.montserrat()
                                                         .fontFamily,
                                               ),
                                           textAlign: TextAlign.start,
@@ -165,7 +165,7 @@ class _OwnerOrderState extends State<OwnerOrder> {
                                                 .copyWith(
                                                   color: Colors.grey,
                                                   fontFamily:
-                                                      GoogleFonts.robotoMono()
+                                                      GoogleFonts.montserrat()
                                                           .fontFamily,
                                                 ),
                                             textAlign: TextAlign.start,

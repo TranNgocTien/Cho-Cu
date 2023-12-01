@@ -48,20 +48,20 @@ class _ChoScreenState extends State<ChoScreen> {
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Center(
             child: Text(
               'Chợ đồ cũ',
               style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    fontFamily: GoogleFonts.robotoMono().fontFamily,
+                    fontFamily: GoogleFonts.montserrat().fontFamily,
                     fontWeight: FontWeight.bold,
                     color: const Color.fromRGBO(54, 92, 69, 1),
                   ),
               textAlign: TextAlign.center,
             ),
           ),
-          backgroundColor: Colors.white,
           foregroundColor: const Color.fromRGBO(54, 92, 69, 1),
           elevation: 0,
           actions: [
@@ -88,6 +88,7 @@ class _ChoScreenState extends State<ChoScreen> {
                             itemBuilder: (ctx, index) => Column(
                               children: [
                                 Card(
+                                  color: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
@@ -130,7 +131,7 @@ class _ChoScreenState extends State<ChoScreen> {
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 20,
                                                   fontFamily:
-                                                      GoogleFonts.robotoMono()
+                                                      GoogleFonts.montserrat()
                                                           .fontFamily,
                                                 ),
                                             textAlign: TextAlign.start,
@@ -150,7 +151,7 @@ class _ChoScreenState extends State<ChoScreen> {
                                                       //     122, 191, 149, 1),
                                                       color: Colors.black,
                                                       fontFamily: GoogleFonts
-                                                              .robotoMono()
+                                                              .montserrat()
                                                           .fontFamily,
                                                     ),
                                                 textAlign: TextAlign.start,
@@ -165,7 +166,7 @@ class _ChoScreenState extends State<ChoScreen> {
                                                       //     122, 191, 149, 1),
                                                       color: Colors.grey,
                                                       fontFamily: GoogleFonts
-                                                              .robotoMono()
+                                                              .montserrat()
                                                           .fontFamily,
                                                     ),
                                                 textAlign: TextAlign.start,
@@ -184,21 +185,22 @@ class _ChoScreenState extends State<ChoScreen> {
                                                     .copyWith(
                                                       color: Colors.black,
                                                       fontFamily: GoogleFonts
-                                                              .robotoMono()
+                                                              .montserrat()
                                                           .fontFamily,
                                                     ),
                                                 textAlign: TextAlign.start,
                                               ),
                                               Flexible(
                                                 child: Text(
-                                                  '${items[index].description}',
+                                                  maxLines: 3,
+                                                  items[index].description,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge!
                                                       .copyWith(
                                                         color: Colors.grey,
                                                         fontFamily: GoogleFonts
-                                                                .robotoMono()
+                                                                .montserrat()
                                                             .fontFamily,
                                                       ),
                                                   textAlign: TextAlign.start,
@@ -277,7 +279,7 @@ class _ChoScreenState extends State<ChoScreen> {
                                     color:
                                         const Color.fromRGBO(122, 191, 149, 1),
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                     fontSize: 20,
                                   ),
                                   textAlign: TextAlign.center,
@@ -317,7 +319,7 @@ class _ChoScreenState extends State<ChoScreen> {
                                         color: const Color.fromRGBO(
                                             122, 191, 149, 1),
                                         fontFamily:
-                                            GoogleFonts.robotoMono().fontFamily,
+                                            GoogleFonts.montserrat().fontFamily,
                                       ),
                                 ),
                               ),
@@ -345,7 +347,7 @@ class _ChoScreenState extends State<ChoScreen> {
                                         .labelLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily: GoogleFonts.robotoMono()
+                                          fontFamily: GoogleFonts.montserrat()
                                               .fontFamily,
                                         ),
                                   ),
@@ -368,7 +370,7 @@ class _ChoScreenState extends State<ChoScreen> {
                                         .copyWith(
                                           color: const Color.fromRGBO(
                                               122, 191, 149, 1),
-                                          fontFamily: GoogleFonts.robotoMono()
+                                          fontFamily: GoogleFonts.montserrat()
                                               .fontFamily,
                                         ),
                                   ),

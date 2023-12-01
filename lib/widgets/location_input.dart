@@ -29,6 +29,7 @@ class LocationInput extends StatefulWidget {
 
 class _LocationInputState extends State<LocationInput> {
   PlaceLocation? _pickedLocation;
+  PlaceLocation? _currentLocation;
   var _isGettingLocation = false;
   UpdateInfoController updateInfoController = Get.put(UpdateInfoController());
   String get locationImage {
@@ -56,11 +57,24 @@ class _LocationInputState extends State<LocationInput> {
       );
       _isGettingLocation = false;
     });
-
+    _convertCoordinatefromAddress(
+        _pickedLocation!.latitude, _pickedLocation!.longitude);
     widget.onSelectLocation(_pickedLocation!);
+    setState(() {});
   }
 
-  void _getCurrentLocation(String? state) async {
+  Future<void> _convertCoordinatefromAddress(double lat, double lng) async {
+    final url = Uri.parse(
+        'https://rsapi.goong.io/Geocode?latlng=$lat,$lng&api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB');
+    final response = await http.get(url);
+    final resData = json.decode(response.body);
+    final address = resData['results'][0]['formatted_address'];
+    setState(() {
+      updateInfoController.addressController.text = address;
+    });
+  }
+
+  Future<void> _getCurrentLocation(String? state) async {
     Location location = Location();
 
     bool serviceEnabled;
@@ -97,13 +111,17 @@ class _LocationInputState extends State<LocationInput> {
       updateInfoController.lat = lat;
       updateInfoController.lng = lng;
     }
-    _savePlace(lat, lng);
+    _currentLocation =
+        PlaceLocation(latitude: lat, longitude: lng, address: '');
+
+    // _savePlace(lat, lng);
+    setState(() {});
   }
 
-  void _selectOnMap(String? state) async {
+  void _selectOnMap(String? state, PlaceLocation currentLocation) async {
     final pickedLocation = await Navigator.of(context).push<LatLng>(
       MaterialPageRoute(
-        builder: (ctx) => const MapScreen(),
+        builder: (ctx) => MapScreen(currentLocation: currentLocation),
       ),
     );
 
@@ -114,6 +132,7 @@ class _LocationInputState extends State<LocationInput> {
       updateInfoController.lat = pickedLocation.latitude;
       updateInfoController.lng = pickedLocation.longitude;
     }
+
     _savePlace(pickedLocation.latitude, pickedLocation.longitude);
   }
 
@@ -163,16 +182,17 @@ class _LocationInputState extends State<LocationInput> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            // TextButton.icon(
+            //   onPressed: () {
+            //     _getCurrentLocation(widget.state);
+            //   },
+            //   icon: const Icon(Icons.location_on),
+            //   label: const Text('Lấy tọa độ thiết bị'),
+            // ),
             TextButton.icon(
-              onPressed: () {
-                _getCurrentLocation(widget.state);
-              },
-              icon: const Icon(Icons.location_on),
-              label: const Text('Lấy tọa độ thiết bị'),
-            ),
-            TextButton.icon(
-              onPressed: () {
-                _selectOnMap(widget.state);
+              onPressed: () async {
+                await _getCurrentLocation('');
+                _selectOnMap(widget.state, _currentLocation!);
               },
               icon: const Icon(Icons.map),
               label: const Text('Chọn trên bản đồ'),

@@ -82,7 +82,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                           const Color.fromRGBO(54, 92, 69, 1),
                                       fontWeight: FontWeight.bold,
                                       fontFamily:
-                                          GoogleFonts.robotoMono().fontFamily,
+                                          GoogleFonts.montserrat().fontFamily,
                                     ),
                                 textAlign: TextAlign.start,
                               ),
@@ -112,7 +112,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.robotoMono()
+                                                        GoogleFonts.montserrat()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -160,7 +160,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily: GoogleFonts.robotoMono()
+                                          fontFamily: GoogleFonts.montserrat()
                                               .fontFamily,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
@@ -197,7 +197,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.robotoMono()
+                                                        GoogleFonts.montserrat()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -250,7 +250,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.robotoMono()
+                                                        GoogleFonts.montserrat()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -304,7 +304,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.robotoMono()
+                                                        GoogleFonts.montserrat()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -351,7 +351,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily: GoogleFonts.robotoMono()
+                                          fontFamily: GoogleFonts.montserrat()
                                               .fontFamily,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,

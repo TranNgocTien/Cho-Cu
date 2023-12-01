@@ -56,6 +56,7 @@ class UpdateInfoController extends GetxController {
             });
         return;
       }
+
       var headers = {
         'Content-Type': 'application/json',
         "x-access-token": prefs.getString('token').toString().trim(),
@@ -91,6 +92,7 @@ class UpdateInfoController extends GetxController {
             wallet: data['wallet'].toString(),
             ccid: data['ccid'].toString(),
             email: data['email'].toString(),
+            workerAuthen: data['worker_authen'].toString(),
           ));
 
           showDialog(

@@ -19,15 +19,16 @@ class AddressUpdateApi {
         'https://rsapi.goong.io/Place/AutoComplete?api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB&input=$query');
 
     final response = await http.get(url);
+
     if (response.statusCode == 200) {
       final List address = json.decode(response.body)["predictions"];
 
       return address
           .map((json) => AddressUpdate.fromJson(json))
           .where((address) {
-        final nameLower = address.description.toLowerCase();
-        final queryLower = query.toLowerCase();
-        return nameLower.contains(queryLower);
+        // final queryLower = query.toLowerCase().replaceAll(',', '');
+
+        return true;
       }).toList();
     } else {
       throw Exception();

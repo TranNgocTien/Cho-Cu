@@ -58,6 +58,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   intl: ^0.18.1
   insta_image_viewer: ^1.0.2
+  hawk_fab_menu: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +94,7 @@ flutter:
     - image/the-can-cuoc-mat-sau.png
     - image/the-can-cuoc.png
     - image/profile.jpg
+    - image/icon/thong_tin_review_1.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

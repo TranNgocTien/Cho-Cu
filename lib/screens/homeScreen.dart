@@ -1,3 +1,4 @@
+import 'package:chotot/controllers/get_notis.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/screens/timThoScreen.dart';
 import 'package:chotot/screens/congViecScreen.dart';
@@ -20,7 +21,7 @@ class _MainScreenState extends State<MainScreen>
   TabController? _tabController;
   LyLichController lyLichController = Get.put(LyLichController());
   int selectedIndex = 0;
-
+  NotiController notiController = Get.put(NotiController());
   onItemClicked(int index) {
     setState(() {
       selectedIndex = index;
@@ -32,7 +33,8 @@ class _MainScreenState extends State<MainScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    lyLichController.getInfo();
+    notiController.getNoti(0);
     _tabController = TabController(length: 5, vsync: this);
   }
 

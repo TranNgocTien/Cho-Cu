@@ -7,14 +7,14 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:chotot/utils/api_endpoints.dart';
-
+import 'package:chotot/models/noti.dart';
+import 'package:chotot/data/noti_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:chotot/models/ly_lich.dart';
-import 'package:chotot/data/ly_lich.dart';
 
-class LyLichController extends GetxController {
+class NotiController extends GetxController {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<void> getInfo() async {
+
+  Future<void> getNoti(int index) async {
     // Get device information
     final SharedPreferences prefs = await _prefs;
 
@@ -24,8 +24,9 @@ class LyLichController extends GetxController {
         "x-access-token": prefs.getString('token').toString().trim(),
       };
       var url = Uri.parse(
-          ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.updateInfo);
+          ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getNotis);
       Map body = {
+        'index': '$index',
         'token': 'anhkhongdoiqua',
       };
       http.Response response =
@@ -34,27 +35,22 @@ class LyLichController extends GetxController {
         final json = jsonDecode(response.body);
 
         if (json['status'] == 'ok') {
-          lyLichInfo.clear();
-
+          notification.clear();
           var data = json['data'];
-          lyLichInfo.add(
-            LyLich(
-              name: data['name'].toString(),
-              id: data['_id'].toString(),
-              address: data['address'].toString(),
-              emailAuthen: data['email_authen'].toString(),
-              profileImage: data['profile_image'].toString(),
-              joinDate: data['join_date'].toString(),
-              active: data['active'].toString(),
-              phone: data['phone'].toString(),
-              type: data['type'].toString(),
-              status: data['status'].toString(),
-              wallet: data['wallet'].toString(),
-              ccid: data['ccid'].toString(),
-              email: data['email'].toString(),
-              workerAuthen: data['worker_authen'].toString(),
-            ),
-          );
+          for (int i = 0; i < data.length; i++) {
+            notification.add(
+              Noti(
+                id: data[i]['_id'].toString(),
+                userId: data[i]['user_id'].toString(),
+                title: data[i]['title'].toString(),
+                message: data[i]['message'].toString(),
+                time: data[i]['time'].toString(),
+                action: data[i]['action'].toString(),
+                actionType: data[i]['action_type'].toString(),
+                isRead: data[i]['read'].toString(),
+              ),
+            );
+          }
         } else if (json['status'] == "error") {
           showDialog(
               context: Get.context!,

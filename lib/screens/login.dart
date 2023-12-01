@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             .bodyLarge!
                                             .copyWith(
                                               fontFamily:
-                                                  GoogleFonts.robotoMono()
+                                                  GoogleFonts.montserrat()
                                                       .fontFamily,
                                             ),
                                       ),
@@ -193,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           .textTheme
                                           .bodyLarge!
                                           .copyWith(
-                                            fontFamily: GoogleFonts.robotoMono()
+                                            fontFamily: GoogleFonts.montserrat()
                                                 .fontFamily,
                                           ),
                                     ),
@@ -237,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily: GoogleFonts.robotoMono()
+                                          fontFamily: GoogleFonts.montserrat()
                                               .fontFamily,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
@@ -258,7 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             title: Text(
                               "Ghi nhớ đăng nhập",
                               style: TextStyle(
-                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
                               ),
                             ),
                             activeColor: const Color.fromRGBO(5, 109, 101, 1),
@@ -282,7 +282,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color:
                                           const Color.fromRGBO(5, 109, 101, 1),
                                       fontFamily:
-                                          GoogleFonts.robotoMono().fontFamily,
+                                          GoogleFonts.montserrat().fontFamily,
                                     ),
                               ),
                             ),
@@ -300,7 +300,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color:
                                           const Color.fromRGBO(5, 109, 101, 1),
                                       fontFamily:
-                                          GoogleFonts.robotoMono().fontFamily,
+                                          GoogleFonts.montserrat().fontFamily,
                                     ),
                               ),
                             ),

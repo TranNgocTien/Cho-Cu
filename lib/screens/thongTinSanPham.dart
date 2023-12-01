@@ -52,7 +52,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             content: Container(
-              width: MediaQuery.of(context).size.width * 0.3,
+              width: MediaQuery.of(context).size.width * 0.7,
               height: MediaQuery.of(context).size.height * 0.2,
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -68,7 +68,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                     child: Text(
                       'Liên hệ:',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            fontFamily: GoogleFonts.robotoMono().fontFamily,
+                            fontFamily: GoogleFonts.montserrat().fontFamily,
                             color: Colors.black,
                             fontWeight: FontWeight.w600,
                           ),
@@ -95,7 +95,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                   .labelLarge!
                                   .copyWith(
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -103,6 +103,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(width: 20),
                       GestureDetector(
                         onTap: () {
                           _makePhoneCall(widget.docu.phone, 'tel');
@@ -119,7 +120,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                   .labelLarge!
                                   .copyWith(
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -161,7 +162,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                     'Thông báo đã bán',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: const Color.fromRGBO(122, 191, 149, 1),
-                          fontFamily: GoogleFonts.robotoMono().fontFamily,
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
                           fontSize: 15,
                         ),
                   ),
@@ -172,7 +173,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                         color: widget.docu.status == 'sold_out'
                             ? Colors.red
                             : const Color.fromRGBO(122, 191, 149, 1),
-                        fontFamily: GoogleFonts.robotoMono().fontFamily,
+                        fontFamily: GoogleFonts.montserrat().fontFamily,
                         fontSize: 15,
                       ),
                 ),
@@ -258,7 +259,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                             color: Colors.black,
                             fontWeight: FontWeight.w700,
                             fontSize: 25,
-                            fontFamily: GoogleFonts.robotoMono().fontFamily,
+                            fontFamily: GoogleFonts.montserrat().fontFamily,
                           ),
                     ),
                     const SizedBox(
@@ -277,7 +278,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontFamily:
-                                      GoogleFonts.robotoMono().fontFamily,
+                                      GoogleFonts.montserrat().fontFamily,
                                 ),
                           ),
                           const SizedBox(width: 10),
@@ -289,7 +290,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                 .copyWith(
                                   color: Colors.grey,
                                   fontFamily:
-                                      GoogleFonts.robotoMono().fontFamily,
+                                      GoogleFonts.montserrat().fontFamily,
                                 ),
                           ),
                         ],
@@ -312,7 +313,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontFamily:
-                                      GoogleFonts.robotoMono().fontFamily,
+                                      GoogleFonts.montserrat().fontFamily,
                                 ),
                             textAlign: TextAlign.start,
                           ),
@@ -328,7 +329,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                 .copyWith(
                                   color: Colors.grey,
                                   fontFamily:
-                                      GoogleFonts.robotoMono().fontFamily,
+                                      GoogleFonts.montserrat().fontFamily,
                                 ),
                             textAlign: TextAlign.start,
                           ),
@@ -350,7 +351,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                   ),
                               textAlign: TextAlign.start,
                             ),
@@ -364,7 +365,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                       color: Colors.grey,
                                       fontSize: 20,
                                       fontFamily:
-                                          GoogleFonts.robotoMono().fontFamily,
+                                          GoogleFonts.montserrat().fontFamily,
                                     ),
                               ),
                             ),
@@ -396,7 +397,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                             .copyWith(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              fontFamily: GoogleFonts.montserrat().fontFamily,
                             ),
                         textAlign: TextAlign.start,
                       ),
@@ -419,7 +420,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                 .copyWith(
                                   color: Colors.grey,
                                   fontFamily:
-                                      GoogleFonts.robotoMono().fontFamily,
+                                      GoogleFonts.montserrat().fontFamily,
                                 ),
                             textAlign: TextAlign.start,
                           ),
@@ -439,8 +440,10 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                     return const SimpleDialog(
                                       contentPadding: EdgeInsets.all(20),
                                       children: [
-                                        Text(
-                                          'Sản phẩm đã bán',
+                                        Center(
+                                          child: Text(
+                                            'Sản phẩm đã bán',
+                                          ),
                                         ),
                                       ],
                                     );
@@ -461,7 +464,7 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                               .copyWith(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
                               ),
                         ),
                       ),

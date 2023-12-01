@@ -93,7 +93,20 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
       return;
     }
     await postStuff.uploadJobPhoto();
-
+    if (postStuff.addressController.text.isEmpty) {
+      showDialog(
+          context: Get.context!,
+          builder: (context) {
+            return const SimpleDialog(
+              contentPadding: EdgeInsets.all(20),
+              children: [
+                Text(
+                  'Vui lòng chọn theo tên gợi ý!',
+                ),
+              ],
+            );
+          });
+    }
     if (postStuff.addressController.text.isEmpty ||
         postStuff.descriptionController.text.isEmpty ||
         postStuff.nameController.text.isEmpty ||
@@ -214,7 +227,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
           title: Text(
             'Rao bán',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontFamily: GoogleFonts.robotoMono().fontFamily,
+                  fontFamily: GoogleFonts.montserrat().fontFamily,
                   fontWeight: FontWeight.bold,
                   color: const Color.fromRGBO(54, 92, 69, 1),
                 ),
@@ -235,7 +248,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Tên chủ đơn hàng: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.robotoMono().fontFamily,
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -278,7 +291,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Địa chỉ của bạn: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.robotoMono().fontFamily,
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -328,7 +341,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                       .bodyMedium!
                                       .copyWith(
                                         fontFamily:
-                                            GoogleFonts.robotoMono().fontFamily,
+                                            GoogleFonts.montserrat().fontFamily,
                                         fontSize: 18,
                                       ),
                                 ),
@@ -365,7 +378,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                               await Navigator.of(context).push<LatLng>(
                             MaterialPageRoute(
                               builder: (ctx) => MapScreen(
-                                  location: PlaceLocation(
+                                  currentLocation: PlaceLocation(
                                       latitude: lat,
                                       longitude: lng,
                                       address: '')),
@@ -389,7 +402,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Số điện thoại liên hệ:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.robotoMono().fontFamily,
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -432,7 +445,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Mô tả:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.robotoMono().fontFamily,
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -477,7 +490,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Giá mong muốn: (VNĐ)',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.robotoMono().fontFamily,
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -543,7 +556,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                   .copyWith(
                                     color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                   ),
                             ),
                           ),
@@ -557,7 +570,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                 .copyWith(
                                   color: const Color.fromRGBO(5, 109, 101, 1),
                                   fontFamily:
-                                      GoogleFonts.robotoMono().fontFamily,
+                                      GoogleFonts.montserrat().fontFamily,
                                 ),
                           ),
                           IconButton(
@@ -576,7 +589,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                                     color: const Color.fromRGBO(
                                                         5, 109, 101, 1),
                                                     fontFamily:
-                                                        GoogleFonts.robotoMono()
+                                                        GoogleFonts.montserrat()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -680,7 +693,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                   .copyWith(
                                     color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                   ),
                             ),
                           ),
@@ -692,7 +705,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                               .labelLarge!
                               .copyWith(
                                 color: const Color.fromRGBO(5, 109, 101, 1),
-                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
                               ),
                         ),
                       ]),
@@ -707,7 +720,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                               .labelLarge!
                               .copyWith(
                                 color: const Color.fromRGBO(5, 109, 101, 1),
-                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
                               ),
                         ),
                         Text(
@@ -717,7 +730,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                               .labelLarge!
                               .copyWith(
                                 color: const Color.fromRGBO(5, 109, 101, 1),
-                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
                               ),
                         ),
                       ]),
@@ -744,7 +757,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                               .labelLarge!
                               .copyWith(
                                 color: Colors.white,
-                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
                                 fontSize: 20,
                               ),
                         ),

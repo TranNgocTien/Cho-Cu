@@ -18,4 +18,5 @@ class _AuthEndPoints {
   final String logout = 'logout';
   final String updateInfo = 'update_info';
   final String changeAvatar = 'change_avatar';
+  final String getNotis = 'get_notis';
 }

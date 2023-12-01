@@ -21,12 +21,6 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
   LoginController loginController = Get.put(LoginController());
   LyLichController lyLichController = Get.put(LyLichController());
   LogOutController logOutController = Get.put(LogOutController());
-  @override
-  void initState() {
-    // TODO: implement initState
-    lyLichController.getInfo();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +31,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
           child: Text(
             'Tài khoản',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontFamily: GoogleFonts.robotoMono().fontFamily,
+                  fontFamily: GoogleFonts.montserrat().fontFamily,
                   fontWeight: FontWeight.bold,
                   color: const Color.fromRGBO(54, 92, 69, 1),
                 ),
@@ -117,7 +111,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
                               .textTheme
                               .labelLarge!
                               .copyWith(
-                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
                                 fontSize: 22,
                                 fontWeight: FontWeight.w400,
                               ),

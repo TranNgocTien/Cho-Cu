@@ -81,7 +81,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                               .copyWith(
                                 color: const Color.fromRGBO(54, 92, 69, 1),
                                 fontWeight: FontWeight.bold,
-                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
                               ),
                           textAlign: TextAlign.start,
                         ),
@@ -109,7 +109,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                                             .bodyLarge!
                                             .copyWith(
                                               fontFamily:
-                                                  GoogleFonts.robotoMono()
+                                                  GoogleFonts.montserrat()
                                                       .fontFamily,
                                             ),
                                       ),
@@ -154,7 +154,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                                   .copyWith(
                                     color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 25,
                                   ),

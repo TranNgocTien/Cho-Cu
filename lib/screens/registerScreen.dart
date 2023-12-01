@@ -103,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .bodyLarge!
                                             .copyWith(
                                               fontFamily:
-                                                  GoogleFonts.robotoMono()
+                                                  GoogleFonts.montserrat()
                                                       .fontFamily,
                                             ),
                                       ),
@@ -151,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .bodyLarge!
                                             .copyWith(
                                               fontFamily:
-                                                  GoogleFonts.robotoMono()
+                                                  GoogleFonts.montserrat()
                                                       .fontFamily,
                                             ),
                                       ),
@@ -199,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .bodyLarge!
                                             .copyWith(
                                               fontFamily:
-                                                  GoogleFonts.robotoMono()
+                                                  GoogleFonts.montserrat()
                                                       .fontFamily,
                                             ),
                                       ),
@@ -249,7 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .bodyLarge!
                                             .copyWith(
                                               fontFamily:
-                                                  GoogleFonts.robotoMono()
+                                                  GoogleFonts.montserrat()
                                                       .fontFamily,
                                             ),
                                       ),
@@ -327,7 +327,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   .copyWith(
                                     color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 25,
                                   ),

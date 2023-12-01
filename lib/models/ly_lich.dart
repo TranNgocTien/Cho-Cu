@@ -13,6 +13,7 @@ class LyLich {
     required this.wallet,
     required this.ccid,
     required this.email,
+    required this.workerAuthen,
   });
 
   final String name;
@@ -28,4 +29,5 @@ class LyLich {
   final String wallet;
   final String ccid;
   final String email;
+  final String workerAuthen;
 }

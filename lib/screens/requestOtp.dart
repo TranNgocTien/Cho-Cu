@@ -79,7 +79,7 @@ class _RequestOtpScreenState extends State<RequestOtpScreen> {
                               .copyWith(
                                 color: const Color.fromRGBO(54, 92, 69, 1),
                                 fontWeight: FontWeight.bold,
-                                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
                               ),
                           textAlign: TextAlign.start,
                         ),
@@ -108,7 +108,7 @@ class _RequestOtpScreenState extends State<RequestOtpScreen> {
                                             .bodyLarge!
                                             .copyWith(
                                               fontFamily:
-                                                  GoogleFonts.robotoMono()
+                                                  GoogleFonts.montserrat()
                                                       .fontFamily,
                                             ),
                                       ),
@@ -154,7 +154,7 @@ class _RequestOtpScreenState extends State<RequestOtpScreen> {
                                   .copyWith(
                                     color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 25,
                                   ),

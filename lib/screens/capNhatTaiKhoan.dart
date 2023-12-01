@@ -109,7 +109,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                   Text(
                     'Lựa chọn tải ảnh:',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontFamily: GoogleFonts.robotoMono().fontFamily,
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
                         ),
@@ -134,7 +134,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                   .labelLarge!
                                   .copyWith(
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -157,7 +157,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                   .labelLarge!
                                   .copyWith(
                                     fontFamily:
-                                        GoogleFonts.robotoMono().fontFamily,
+                                        GoogleFonts.montserrat().fontFamily,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -181,7 +181,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
         title: Text(
           'Cập nhật tài khoản',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontFamily: GoogleFonts.robotoMono().fontFamily,
+                fontFamily: GoogleFonts.montserrat().fontFamily,
                 fontWeight: FontWeight.bold,
                 color: const Color.fromRGBO(54, 92, 69, 1),
               ),
@@ -212,7 +212,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                       child: Text(
                         'Cập nhật ảnh đại diện',
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              fontFamily: GoogleFonts.robotoMono().fontFamily,
+                              fontFamily: GoogleFonts.montserrat().fontFamily,
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
@@ -227,7 +227,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
               label: Text(
                 'Tải ảnh',
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      fontFamily: GoogleFonts.robotoMono().fontFamily,
+                      fontFamily: GoogleFonts.montserrat().fontFamily,
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
                     ),
@@ -260,7 +260,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                             style:
                                 Theme.of(context).textTheme.bodyLarge!.copyWith(
                                       fontFamily:
-                                          GoogleFonts.robotoMono().fontFamily,
+                                          GoogleFonts.montserrat().fontFamily,
                                     ),
                           ),
                         ],
@@ -315,7 +315,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                     .bodyLarge!
                                     .copyWith(
                                       fontFamily:
-                                          GoogleFonts.robotoMono().fontFamily,
+                                          GoogleFonts.montserrat().fontFamily,
                                     ),
                               ),
                             ],
@@ -340,7 +340,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                 .bodyMedium!
                                 .copyWith(
                                   fontFamily:
-                                      GoogleFonts.robotoMono().fontFamily,
+                                      GoogleFonts.montserrat().fontFamily,
                                   fontSize: 18,
                                 ),
                           ),
@@ -414,7 +414,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                 child: Text(
                   'Cập nhật',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontFamily: GoogleFonts.robotoMono().fontFamily,
+                        fontFamily: GoogleFonts.montserrat().fontFamily,
                         color: const Color.fromARGB(255, 2, 219, 134),
                       ),
                 ), // B,
