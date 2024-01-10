@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:chotot/data/job_type_data.dart';
 import 'package:chotot/models/job_type.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
@@ -54,25 +54,25 @@ class GetJobTypeController extends GetxController {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }
     } catch (error) {
-      Get.back();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text(
-                'Error',
-                textAlign: TextAlign.center,
-              ),
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text(
-                    error.toString(),
-                  ),
-                ),
-              ],
-            );
-          });
+      // Get.back();
+      // showDialog(
+      //     context: Get.context!,
+      //     builder: (context) {
+      //       return SimpleDialog(
+      //         title: const Text(
+      //           'Error',
+      //           textAlign: TextAlign.center,
+      //         ),
+      //         contentPadding: const EdgeInsets.all(20),
+      //         children: [
+      //           Center(
+      //             child: Text(
+      //               error.toString(),
+      //             ),
+      //           ),
+      //         ],
+      //       );
+      //     });
     }
   }
 }

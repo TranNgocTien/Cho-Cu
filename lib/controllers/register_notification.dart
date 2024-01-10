@@ -63,7 +63,7 @@ class RegisterNotiController {
     String? title,
     String? body,
   }) async {
-    count += 1;
+    count.value += 1;
     // print('* $count');
     final details = await _notificationDetails();
     await _localNotifications.show(id, title, body, details);
@@ -154,7 +154,7 @@ class RegisterNotiController {
     final SharedPreferences prefs = await _prefs;
     await initNotifications();
     // print('registerNoti');
-    print(fCMToken);
+
     try {
       if (Platform.isAndroid) {
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;

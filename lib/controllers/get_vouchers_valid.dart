@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:chotot/data/get_vouchers_valid_data.dart';
 import 'package:chotot/models/get_vouchers_valid_models.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
@@ -66,25 +66,25 @@ class GetVouchersValid extends GetxController {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }
     } catch (error) {
-      Get.back();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text(
-                'Error',
-                textAlign: TextAlign.center,
-              ),
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text(
-                    error.toString(),
-                  ),
-                ),
-              ],
-            );
-          });
+      // Get.back();
+      // showDialog(
+      //     context: Get.context!,
+      //     builder: (context) {
+      //       return SimpleDialog(
+      //         title: const Text(
+      //           'Error',
+      //           textAlign: TextAlign.center,
+      //         ),
+      //         contentPadding: const EdgeInsets.all(20),
+      //         children: [
+      //           Center(
+      //             child: Text(
+      //               error.toString(),
+      //             ),
+      //           ),
+      //         ],
+      //       );
+      //     });
     }
   }
 }

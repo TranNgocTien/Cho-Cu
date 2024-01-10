@@ -123,7 +123,7 @@ class _ChoScreenState extends State<ChoScreen>
                 onPressed: () {
                   if (tokenString != '') {
                     setState(() {
-                      count = 0;
+                      count.value = 0;
                     });
                     Get.to(const ThongBaoScreen());
                   } else {
@@ -153,24 +153,33 @@ class _ChoScreenState extends State<ChoScreen>
                   FontAwesomeIcons.bell,
                 ),
               ),
-              tokenString != '' && count != 0
-                  ? Positioned(
-                      right: 6,
-                      top: 6,
-                      child: Container(
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Center(
-                          child: Text(
-                            count.toString(),
-                            style: const TextStyle(color: Colors.white),
+              tokenString != ''
+                  ? ValueListenableBuilder<int>(
+                      builder:
+                          (BuildContext context, int value, Widget? child) {
+                        if (value == 0) {
+                          return const SizedBox();
+                        }
+                        return Positioned(
+                          right: 6,
+                          top: 6,
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Center(
+                              child: Text(
+                                value.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
+                      valueListenable: count,
                     )
                   : const SizedBox(),
             ]),
