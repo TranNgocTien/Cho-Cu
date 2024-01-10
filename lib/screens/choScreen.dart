@@ -1,30 +1,49 @@
+import 'dart:async';
+
+import 'package:chotot/data/notification_count.dart';
+import 'package:chotot/screens/login.dart';
+import 'package:chotot/screens/thongBaoScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/data/docu_data.dart';
 import 'package:chotot/screens/raoBan.dart';
 import 'package:chotot/controllers/get_stuffs.dart';
-import 'package:chotot/screens/thongTinSanPham.dart';
-import 'package:chotot/screens/bai_dang_chu_nha.dart';
+
+// import 'package:chotot/screens/bai_dang_chu_nha.dart';
+import 'package:chotot/widgets/docu_grid_item.dart';
+import 'package:hawk_fab_menu/hawk_fab_menu.dart';
+import 'package:refresh_loadmore/refresh_loadmore.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class ChoScreen extends StatefulWidget {
   const ChoScreen({super.key});
-
+  static const route = '/lib/screens/choScreen.dart';
   @override
   State<ChoScreen> createState() => _ChoScreenState();
 }
 
-class _ChoScreenState extends State<ChoScreen> {
+class _ChoScreenState extends State<ChoScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
   final GetStuffs _getStuffs = Get.put(GetStuffs());
+  final _storage = const FlutterSecureStorage();
   var currentIndex = 1;
-
+  bool isLoading = true;
+  bool onLoading = false;
+  String tokenString = '';
+  late var timer;
+  HawkFabMenuController hawkFabMenuController = HawkFabMenuController();
   Widget center = const Center(
     child: CircularProgressIndicator(),
   );
+  void isLogin() async {
+    tokenString = await _storage.read(key: "TOKEN") ?? '';
+  }
 
   getData() async {
-    items.clear();
     await _getStuffs.getStuffs(currentIndex - 1);
     if (items.isNotEmpty) {
       setState(() {});
@@ -33,12 +52,41 @@ class _ChoScreenState extends State<ChoScreen> {
 
   @override
   void initState() {
+    isLogin();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3800),
+      lowerBound: 0,
+      upperBound: 1,
+    );
+
+    items.clear();
+    currentIndex = 1;
+    if (mounted) {
+      timer = Timer(const Duration(seconds: 3), () {
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
+
     getData();
+    _animationController.forward();
     super.initState();
   }
 
   @override
+  void dispose() {
+    timer.cancel();
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Widget centerLoading = const Center(
+      child: CircularProgressIndicator(),
+    );
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -65,327 +113,329 @@ class _ChoScreenState extends State<ChoScreen> {
           foregroundColor: const Color.fromRGBO(54, 92, 69, 1),
           elevation: 0,
           actions: [
-            IconButton(
+            // IconButton(
+            //     onPressed: () {
+            //       Get.to(const OwnerOrder());
+            //     },
+            //     icon: const FaIcon(FontAwesomeIcons.listUl)),
+            Stack(children: [
+              IconButton(
                 onPressed: () {
-                  Get.to(const OwnerOrder());
+                  if (tokenString != '') {
+                    setState(() {
+                      count = 0;
+                    });
+                    Get.to(const ThongBaoScreen());
+                  } else {
+                    showDialog(
+                        context: Get.context!,
+                        builder: (context) {
+                          return SimpleDialog(
+                            title: const Text(
+                              'Vui lòng đăng nhập',
+                              textAlign: TextAlign.center,
+                            ),
+                            contentPadding: const EdgeInsets.all(20),
+                            children: [
+                              Center(
+                                child: TextButton(
+                                    onPressed: () {
+                                      Get.to(() => const LoginScreen());
+                                    },
+                                    child: const Text('Đăng nhập')),
+                              ),
+                            ],
+                          );
+                        });
+                  }
                 },
-                icon: const FaIcon(FontAwesomeIcons.listUl)),
+                icon: const FaIcon(
+                  FontAwesomeIcons.bell,
+                ),
+              ),
+              tokenString != '' && count != 0
+                  ? Positioned(
+                      right: 6,
+                      top: 6,
+                      child: Container(
+                        height: 20,
+                        width: 20,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: Center(
+                          child: Text(
+                            count.toString(),
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+            ]),
           ],
         ),
-        body: items.isNotEmpty
-            ? Stack(
-                children: [
-                  SingleChildScrollView(
-                    physics: const ScrollPhysics(),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: items.length,
-                            itemBuilder: (ctx, index) => Column(
+        body: HawkFabMenu(
+          icon: AnimatedIcons.menu_arrow,
+          fabColor: Colors.white,
+          iconColor: Colors.black,
+          hawkFabMenuController: hawkFabMenuController,
+          items: [
+            HawkFabMenuItem(
+                label: 'Tìm thợ nhanh',
+                ontap: () {
+                  tokenString != ''
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RaoBanScreen(),
+                          ),
+                        )
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
                               children: [
-                                Card(
-                                  color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  elevation: 10,
-                                  child: Container(
-                                    margin: const EdgeInsets.only(bottom: 25),
-                                    padding: const EdgeInsets.all(15),
-                                    // decoration: BoxDecoration(
-                                    //   border: Border.all(
-                                    //     width: 2,
-                                    //     color: const Color.fromRGBO(54, 92, 69, 1),
-                                    //   ),
-                                    //   borderRadius: BorderRadius.circular(10),
-                                    // ),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Get.to(
-                                          ThongTinSanPhamScreen(
-                                            docu: items[index],
-                                          ),
-                                        );
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
                                       },
-                                      splashColor: const Color.fromARGB(
-                                          255, 136, 217, 187),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Đồ cũ của ${items[index].name} ',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium!
-                                                .copyWith(
-                                                  color: const Color.fromRGBO(
-                                                      54, 92, 69, 1),
-                                                  // color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20,
-                                                  fontFamily:
-                                                      GoogleFonts.montserrat()
-                                                          .fontFamily,
-                                                ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                'Giá mong muốn:  ',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge!
-                                                    .copyWith(
-                                                      // color: const Color.fromRGBO(
-                                                      //     122, 191, 149, 1),
-                                                      color: Colors.black,
-                                                      fontFamily: GoogleFonts
-                                                              .montserrat()
-                                                          .fontFamily,
-                                                    ),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                              Text(
-                                                '${items[index].price} VNĐ',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge!
-                                                    .copyWith(
-                                                      // color: const Color.fromRGBO(
-                                                      //     122, 191, 149, 1),
-                                                      color: Colors.grey,
-                                                      fontFamily: GoogleFonts
-                                                              .montserrat()
-                                                          .fontFamily,
-                                                    ),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Mô tả:  ',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge!
-                                                    .copyWith(
-                                                      color: Colors.black,
-                                                      fontFamily: GoogleFonts
-                                                              .montserrat()
-                                                          .fontFamily,
-                                                    ),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                              Flexible(
-                                                child: Text(
-                                                  maxLines: 3,
-                                                  items[index].description,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge!
-                                                      .copyWith(
-                                                        color: Colors.grey,
-                                                        fontFamily: GoogleFonts
-                                                                .montserrat()
-                                                            .fontFamily,
-                                                      ),
-                                                  textAlign: TextAlign.start,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                      child: const Text('Đăng nhập')),
                                 ),
-                                const SizedBox(height: 10),
                               ],
-                            ),
+                            );
+                          });
+                },
+                icon: const Icon(FontAwesomeIcons.peopleCarryBox),
+                color: Colors.white,
+                labelColor: Colors.black,
+                labelBackgroundColor: Colors.greenAccent),
+            HawkFabMenuItem(
+                label: 'Đăng tin',
+                ontap: () {
+                  tokenString != ''
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RaoBanScreen(),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 200,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional.bottomCenter,
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.13,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 10,
+                        )
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
+                },
+                icon: const Icon(Icons.add_circle_outline),
+                labelColor: Colors.black,
+                color: Colors.white,
+                labelBackgroundColor: Colors.greenAccent),
+            HawkFabMenuItem(
+                label: 'Chợ đồ cũ',
+                ontap: () {
+                  tokenString != ''
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RaoBanScreen(),
                           ),
-                        ],
-                        color: Colors.white,
-                        border: Border(
-                          top: BorderSide(width: 1, color: Colors.transparent),
+                        )
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
+                },
+                icon: const Icon(FontAwesomeIcons.store),
+                labelColor: Colors.black,
+                color: Colors.white,
+                labelBackgroundColor: Colors.greenAccent),
+          ],
+          body: isLoading
+              ? centerLoading
+              : items.isNotEmpty
+                  ? AnimatedBuilder(
+                      animation: _animationController,
+                      builder: (context, child) => SlideTransition(
+                        position: Tween(
+                          begin: const Offset(0, 1),
+                          end: const Offset(0, 0),
+                        ).animate(
+                          CurvedAnimation(
+                              parent: _animationController,
+                              curve: Curves.easeInOut),
                         ),
+                        child: child,
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              IconButton(
-                                onPressed: () async {
-                                  setState(() {
-                                    currentIndex > 1
-                                        ? currentIndex = currentIndex - 1
-                                        : currentIndex = 1;
-                                    getData();
-                                  });
-                                },
-                                icon: const FaIcon(
-                                  FontAwesomeIcons.arrowLeft,
-                                  color: Color.fromRGBO(122, 191, 149, 1),
-                                ),
-                              ),
-                              Container(
-                                height: 35,
-                                width: 65,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 1,
-                                    color:
-                                        const Color.fromRGBO(122, 191, 149, 1),
-                                  ),
-                                ),
-                                child: Text(
-                                  '$currentIndex',
-                                  style: TextStyle(
-                                    color:
-                                        const Color.fromRGBO(122, 191, 149, 1),
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    fontSize: 20,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              IconButton(
-                                disabledColor: Colors.grey,
-                                onPressed: () {
-                                  setState(() {
-                                    currentIndex = currentIndex + 1;
-                                    getData();
-                                  });
-                                },
-                                icon: const FaIcon(
-                                  FontAwesomeIcons.arrowRight,
-                                  color: Color.fromRGBO(122, 191, 149, 1),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () async {},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor:
-                                      const Color.fromRGBO(122, 191, 149, 1),
-                                ),
-                                child: Text(
-                                  'Tìm thợ nhanh',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge!
-                                      .copyWith(
-                                        color: const Color.fromRGBO(
-                                            122, 191, 149, 1),
-                                        fontFamily:
-                                            GoogleFonts.montserrat().fontFamily,
-                                      ),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RaoBanScreen(),
-                                    ),
+                      child: RefreshLoadmore(
+                        onRefresh: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          items.clear();
+                          currentIndex = 1;
+                          timer = Timer(const Duration(seconds: 3), () {
+                            setState(() {
+                              isLoading = false;
+                              _animationController.forward();
+                            });
+                          });
+
+                          getData();
+                        },
+                        // onLoadmore: () async {
+                        //   if (onLoading == false) {
+                        //     onLoading = true;
+                        //     Timer(const Duration(seconds: 6), () {
+                        //       setState(() {
+                        //         onLoading = false;
+                        //       });
+                        //     });
+                        //     currentIndex += 1;
+                        //     await _getStuffs.getStuffs(currentIndex - 1);
+                        //     setState(() {});
+                        //   }
+                        // },
+                        onLoadmore: () async {
+                          if (onLoading == false) {
+                            await Future.delayed(const Duration(seconds: 6),
+                                () async {
+                              // onLoading = true;
+                              // Timer(const Duration(seconds: 5), () {
+                              //   setState(() {
+                              //     onLoading = false;
+                              //   });
+                              // });
+                              currentIndex += 1;
+                              await _getStuffs.getStuffs(currentIndex - 1);
+                              setState(() {
+                                // _animationController.forward();
+                              });
+                            });
+                          }
+                        },
+                        // noMoreWidget: Text(
+                        //   'Bạn đã đến cuối trang',
+                        //   style: TextStyle(
+                        //     fontSize: 18,
+                        //     color: Theme.of(context).disabledColor,
+                        //   ),
+                        // ),
+                        isLastPage: _getStuffs.isLastPage,
+                        child: items.isNotEmpty
+                            ? AlignedGridView.count(
+                                shrinkWrap: true,
+                                itemCount: items.length,
+                                physics: const ScrollPhysics(),
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 20,
+                                crossAxisSpacing: 10,
+                                itemBuilder: (context, index) {
+                                  return DoCuGridItem(
+                                    docu: items[index],
                                   );
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromRGBO(122, 191, 149, 1),
-                                  foregroundColor: Colors.white,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Text(
-                                    'Đăng tin',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                          color: Colors.white,
-                                          fontFamily: GoogleFonts.montserrat()
-                                              .fontFamily,
-                                        ),
-                                  ),
-                                ),
+                              )
+                            : const Center(
+                                child: Text('Không có sản phẩm'),
                               ),
-                              ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor:
-                                      const Color.fromRGBO(122, 191, 149, 1),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Text(
-                                    'Chợ đồ cũ',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge!
-                                        .copyWith(
-                                          color: const Color.fromRGBO(
-                                              122, 191, 149, 1),
-                                          fontFamily: GoogleFonts.montserrat()
-                                              .fontFamily,
-                                        ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
                       ),
-                    ),
-                  ),
-                ],
-              )
-            : center,
+                    )
+                  : center,
+        ),
       ),
     );
   }
 }
+// Expanded(
+//                 child: RefreshLoadmore(
+//                   onLoadmore: () async {
+//                     currentIndex += 1;
+//                     await _getStuffs.getStuffs(currentIndex - 1);
+//                   },
+//                   isLastPage: _getStuffs.isLastPage,
+//                   child: GridView(
+//                     gridDelegate:
+//                         const SliverGridDelegateWithFixedCrossAxisCount(
+//                       crossAxisCount: 2,
+//                       childAspectRatio: 1 / 2,
+//                     ),
+//                     children: [
+//                       for (final docu in items)
+//                         DoCuGridItem(
+//                           docu: docu,
+//                         ),
+//                       // Row(
+//                       //   mainAxisAlignment: MainAxisAlignment.center,
+//                       //   children: [
+//                       //     ElevatedButton(
+//                       //       onPressed: () {
+//                       //         setState(() {});
+//                       //       },
+//                       //       child: const Icon(Icons.arrow_left,
+//                       //           size: 30, color: Colors.black),
+//                       //     ),
+//                       //     const SizedBox(width: 10),
+//                       //     ElevatedButton(
+//                       //       onPressed: null,
+//                       //       child: Text(
+//                       //         '$currentIndex',
+//                       //         style: Theme.of(context)
+//                       //             .textTheme
+//                       //             .bodyMedium!
+//                       //             .copyWith(
+//                       //               fontFamily:
+//                       //                   GoogleFonts.montserrat().fontFamily,
+//                       //             ),
+//                       //       ),
+//                       //     ),
+//                       //     const SizedBox(width: 10),
+//                       //     ElevatedButton(
+//                       //         onPressed: () {
+//                       //           setState(() {});
+//                       //         },
+//                       //         child: const Icon(Icons.arrow_right,
+//                       //             size: 30, color: Colors.black)),
+//                       //   ],
+//                       // ),
+//                     ],
+//                   ),
+//                 ),
+//               )

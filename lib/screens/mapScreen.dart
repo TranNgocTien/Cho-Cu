@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:chotot/models/addressUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/models/place.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -54,7 +54,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     // getMarkerIcon();
-    // TODO: implement initState
+
     _markers.add(
       Marker(
           markerId: const MarkerId('Current position'),
@@ -70,7 +70,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     addressMap.dispose();
 
     super.dispose();
@@ -210,28 +209,36 @@ class _MapScreenState extends State<MapScreen> {
           ],
           body: Stack(
             children: [
-              GoogleMap(
-                onTap: (position) {
-                  setState(() {
-                    _pickedLocation = position;
+              SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: GoogleMap(
+                    onTap: (position) {
+                      setState(() {
+                        _pickedLocation = position;
 
-                    _markers.add(
-                      Marker(
-                          markerId: const MarkerId('m1'),
-                          position: _pickedLocation!),
-                    );
-                  });
-                },
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                },
-                myLocationButtonEnabled: false,
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(widget.currentLocation.latitude,
-                      widget.currentLocation.longitude),
-                  zoom: 18,
+                        _markers.add(
+                          Marker(
+                              markerId: const MarkerId('m1'),
+                              position: _pickedLocation!),
+                        );
+                      });
+                    },
+                    zoomControlsEnabled: false,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    myLocationButtonEnabled: false,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(widget.currentLocation.latitude,
+                          widget.currentLocation.longitude),
+                      zoom: 18,
+                    ),
+                    markers: Set.of(_markers),
+                  ),
                 ),
-                markers: Set.of(_markers),
               ),
               Positioned(
                 top: 100,
@@ -291,6 +298,8 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ),
               Positioned(
+                bottom: 5,
+                right: 5,
                 child: IconButton(
                   onPressed: () {
                     hawkFabMenuController.toggleMenu();

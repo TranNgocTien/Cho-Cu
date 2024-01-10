@@ -1,4 +1,6 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:chotot/controllers/login_controller.dart';
+import 'package:chotot/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/models/cho_do_cu.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
@@ -146,6 +148,9 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
         .replaceFirst('-', '');
     var nameStuff =
         widget.docu.name.substring(0, widget.docu.name.indexOf('-'));
+    final priceReverse = StringUtils.addCharAtPosition(
+        StringUtils.reverse(widget.docu.price), ".", 3,
+        repeat: true);
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white, elevation: 0, actions: [
         Container(
@@ -179,22 +184,24 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                 ),
         )
       ]),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white12,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Card(
-              // color: const Color.fromRGBO(139, 233, 141, 1),
-              color: Colors.grey,
-              shadowColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              elevation: 10,
-              child: Padding(
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white12,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Card(
+              //   // color: const Color.fromRGBO(139, 233, 141, 1),
+              //   color: Colors.grey,
+              //   shadowColor: Colors.black,
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(10.0),
+              //   ),
+              //   elevation: 10,
+              // child:
+              Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: CarouselSlider(
                   options: CarouselOptions(
@@ -206,13 +213,29 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                   items: widget.docu.photos.map((photo) {
                     return InstaImageViewer(
                       child: Container(
-                        margin: const EdgeInsets.all(8),
+                        // margin: const EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                         child: Center(
                           child: Builder(
                             builder: (BuildContext context) {
                               return Stack(children: [
-                                Image.network(
-                                  photo.split('"').join(''),
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                  child: Image.network(
+                                    photo.split('"').join(''),
+                                    fit: BoxFit.cover,
+                                    height: double.infinity,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.95,
+                                  ),
                                 ),
                                 Positioned(
                                   bottom: 4,
@@ -243,107 +266,76 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                   }).toList(),
                 ),
               ),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.5,
-              padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      nameStuff,
-                      softWrap: true,
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 25,
-                            fontFamily: GoogleFonts.montserrat().fontFamily,
-                          ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Ngày đăng:',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
-                                ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            dateSubmit,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                  color: Colors.grey,
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
-                                ),
-                          ),
-                        ],
+              // ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.5,
+                padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        widthFactor: double.infinity,
+                        child: Text(
+                          nameStuff,
+                          softWrap: true,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 25,
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                              ),
+                          textAlign: TextAlign.end,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(
-                            left: 15,
-                          ),
-                          child: Text(
-                            'Địa chỉ:',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
-                                ),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Text(
-                            softWrap: true,
-                            widget.docu.address,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                  color: Colors.grey,
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
-                                ),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Row(
                           children: [
                             Text(
-                              'Giá mong muốn:',
+                              'Ngày đăng:',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily:
+                                        GoogleFonts.montserrat().fontFamily,
+                                  ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              dateSubmit,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    color: Colors.grey,
+                                    fontFamily:
+                                        GoogleFonts.montserrat().fontFamily,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(
+                              left: 15,
+                            ),
+                            child: Text(
+                              'Địa chỉ:',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
@@ -355,109 +347,80 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                   ),
                               textAlign: TextAlign.start,
                             ),
-                            SizedBox(
-                              child: Text(
-                                '${widget.docu.price} VNĐ',
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: Text(
+                              softWrap: true,
+                              widget.docu.address,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                    color: Colors.grey,
+                                    fontFamily:
+                                        GoogleFonts.montserrat().fontFamily,
+                                  ),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Giá mong muốn:',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium!
                                     .copyWith(
-                                      color: Colors.grey,
-                                      fontSize: 20,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                       fontFamily:
                                           GoogleFonts.montserrat().fontFamily,
                                     ),
+                                textAlign: TextAlign.start,
                               ),
-                            ),
-                            IconButton(
-                              icon: FaIcon(
-                                FontAwesomeIcons.heart,
-                                size: 20,
-                                color: isFavorite ? Colors.red : Colors.black,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  isFavorite = !isFavorite;
-                                });
-                              },
-                            ),
-                          ]),
-                    ),
-                    const SizedBox(height: 15),
-                    Container(
-                      padding: const EdgeInsets.only(
-                        left: 15,
-                      ),
-                      child: Text(
-                        softWrap: true,
-                        'Mô tả:',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                            ),
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20))),
-                      child: Flex(direction: Axis.horizontal, children: [
-                        Flexible(
-                          child: Text(
-                            widget.docu.description,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                  color: Colors.grey,
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
+                              SizedBox(
+                                child: Text(
+                                  '${StringUtils.reverse(priceReverse)} Đ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        color: Colors.grey,
+                                        fontSize: 20,
+                                        fontFamily:
+                                            GoogleFonts.montserrat().fontFamily,
+                                      ),
                                 ),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                      ]),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          widget.docu.status == 'sold_out'
-                              ? showDialog(
-                                  context: Get.context!,
-                                  builder: (context) {
-                                    return const SimpleDialog(
-                                      contentPadding: EdgeInsets.all(20),
-                                      children: [
-                                        Center(
-                                          child: Text(
-                                            'Sản phẩm đã bán',
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  })
-                              : _showContactMethod(context);
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                              width: 1.0,
-                              color: Color.fromRGBO(5, 109, 101, 1)),
-                          backgroundColor: Colors.white,
+                              ),
+                              IconButton(
+                                icon: FaIcon(
+                                  FontAwesomeIcons.heart,
+                                  size: 20,
+                                  color: isFavorite ? Colors.red : Colors.black,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    isFavorite = !isFavorite;
+                                  });
+                                },
+                              ),
+                            ]),
+                      ),
+                      const SizedBox(height: 15),
+                      Container(
+                        padding: const EdgeInsets.only(
+                          left: 15,
                         ),
                         child: Text(
-                          'Liên hệ',
+                          softWrap: true,
+                          'Mô tả:',
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium!
@@ -466,14 +429,112 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                 fontWeight: FontWeight.bold,
                                 fontFamily: GoogleFonts.montserrat().fontFamily,
                               ),
+                          textAlign: TextAlign.start,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 10),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 1),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20))),
+                        child: Flex(direction: Axis.horizontal, children: [
+                          Flexible(
+                            child: Text(
+                              widget.docu.description,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                    color: Colors.grey,
+                                    fontFamily:
+                                        GoogleFonts.montserrat().fontFamily,
+                                  ),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ]),
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        child: OutlinedButton(
+                          onPressed: loginController.tokenString != ''
+                              ? () {
+                                  widget.docu.status == 'sold_out'
+                                      ? showDialog(
+                                          context: Get.context!,
+                                          builder: (context) {
+                                            return const SimpleDialog(
+                                              contentPadding:
+                                                  EdgeInsets.all(20),
+                                              children: [
+                                                Center(
+                                                  child: Text(
+                                                    'Sản phẩm đã bán',
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          })
+                                      : _showContactMethod(context);
+                                }
+                              : () {
+                                  showDialog(
+                                      context: Get.context!,
+                                      builder: (context) {
+                                        return SimpleDialog(
+                                          title: const Text(
+                                            'Vui lòng đăng nhập',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          contentPadding:
+                                              const EdgeInsets.all(20),
+                                          children: [
+                                            Center(
+                                              child: TextButton(
+                                                  onPressed: () {
+                                                    Get.to(() =>
+                                                        const LoginScreen());
+                                                  },
+                                                  child:
+                                                      const Text('Đăng nhập')),
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                width: 1.0,
+                                color: Color.fromRGBO(5, 109, 101, 1)),
+                            backgroundColor: Colors.white,
+                          ),
+                          child: Text(
+                            'Liên hệ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily:
+                                      GoogleFonts.montserrat().fontFamily,
+                                ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.1),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

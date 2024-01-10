@@ -2,6 +2,8 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 def localProperties = new Properties()
@@ -31,8 +33,9 @@ if (flutterVersionName == null) {
 android {
     namespace "com.example.chotot"
     compileSdkVersion 33
-    ndkVersion flutter.ndkVersion
-
+    ndkVersion "25.1.8937393"
+ 
+  
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -48,13 +51,14 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.medendx.cho40"
+        applicationId "com.gico.service"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 20
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -86,5 +90,10 @@ flutter {
 }
 
 dependencies {
-     implementation "androidx.activity:activity:1.6.0-alpha05"
+    implementation platform('com.google.firebase:firebase-bom:32.6.0')
+    implementation "androidx.activity:activity:1.6.0-alpha05"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+    implementation 'androidx.window:window:1.0.0'
+    implementation 'androidx.window:window-java:1.0.0'
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
 }

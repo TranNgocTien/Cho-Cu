@@ -8,20 +8,19 @@ import 'package:http/http.dart' as http;
 
 import 'package:chotot/utils/api_endpoints.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chotot/models/ly_lich.dart';
 import 'package:chotot/data/ly_lich.dart';
+import 'package:chotot/controllers/login_controller.dart';
 
 class LyLichController extends GetxController {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  LoginController loginController = Get.put(LoginController());
   Future<void> getInfo() async {
     // Get device information
-    final SharedPreferences prefs = await _prefs;
 
     try {
       var headers = {
         'Content-Type': 'application/json',
-        "x-access-token": prefs.getString('token').toString().trim(),
+        "x-access-token": loginController.tokenString,
       };
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.updateInfo);
@@ -37,6 +36,7 @@ class LyLichController extends GetxController {
           lyLichInfo.clear();
 
           var data = json['data'];
+
           lyLichInfo.add(
             LyLich(
               name: data['name'].toString(),
@@ -60,11 +60,16 @@ class LyLichController extends GetxController {
               context: Get.context!,
               builder: (context) {
                 return SimpleDialog(
-                  title: const Text('Error'),
+                  title: const Text(
+                    'Error',
+                    textAlign: TextAlign.center,
+                  ),
                   contentPadding: const EdgeInsets.all(20),
                   children: [
-                    Text(
-                      json['error']['message'],
+                    Center(
+                      child: Text(
+                        json['error']['message'],
+                      ),
                     ),
                   ],
                 );
@@ -81,11 +86,16 @@ class LyLichController extends GetxController {
           context: Get.context!,
           builder: (context) {
             return SimpleDialog(
-              title: const Text('Error'),
+              title: const Text(
+                'Error',
+                textAlign: TextAlign.center,
+              ),
               contentPadding: const EdgeInsets.all(20),
               children: [
-                Text(
-                  error.toString(),
+                Center(
+                  child: Text(
+                    error.toString(),
+                  ),
                 ),
               ],
             );

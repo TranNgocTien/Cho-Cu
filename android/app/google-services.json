@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "968629153457",
+    "firebase_url": "https://gico-services-default-rtdb.firebaseio.com",
+    "project_id": "gico-services",
+    "storage_bucket": "gico-services.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968629153457:android:988495420ad63508f6fc90",
+        "android_client_info": {
+          "package_name": "com.gico.service"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968629153457-5efoju0vpvbsbeqsof78sl7dhhu6cmi8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUyLepC1i-3KAqRSFg01QOMpzmCzj2boc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968629153457-5efoju0vpvbsbeqsof78sl7dhhu6cmi8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "968629153457-8av59ic047sshvl32tv94mrftrtt0o06.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gico.service"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

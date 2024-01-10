@@ -1,4 +1,6 @@
+import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:chotot/controllers/login_controller.dart';
+// import 'package:chotot/controllers/register_notification.dart';
 import 'package:chotot/screens/requestOtp.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +21,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _storage = const FlutterSecureStorage();
   final _form = GlobalKey<FormState>();
+  LyLichController lyLichController = Get.put(LyLichController());
   bool _savePassword = false;
   // LoginPost? _loginPost;
 
@@ -34,7 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _onFormSubmit() async {
+    loginController.isLogin = true;
     if (_savePassword) {
+      print('login ${_savePassword}');
       // Write values
       await _storage.write(
           key: "KEY_USERNAME",
@@ -45,7 +50,6 @@ class _LoginScreenState extends State<LoginScreen> {
       await _storage.write(key: "KEY_USERNAME", value: '');
       await _storage.write(key: "KEY_PASSWORD", value: '');
     }
-    autoLogin();
   }
 
   autoLogin() async {
@@ -59,8 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    autoLogin();
-    // TODO: implement initState
     super.initState();
   }
 
@@ -82,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 width: 300,
                 child: Image.asset(
-                  'image/MedenDx_green-slogan.png',
+                  'image/logo/logo.png',
                 ),
               ),
               const SizedBox(height: 50),
@@ -216,10 +218,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 30),
                         ElevatedButton(
                           onPressed: () async {
+                            await _onFormSubmit();
                             loginController.isLoading == true
                                 ? null
                                 : loginController.loginWithEmail();
-                            await _onFormSubmit();
+
+                            if (loginController.tokenString != '') {
+                              await lyLichController.getInfo();
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -250,10 +256,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: MediaQuery.of(context).size.width * 0.7,
                           child: CheckboxListTile(
                             value: _savePassword,
-                            onChanged: (bool? newValue) {
+                            onChanged: (bool? newValue) async {
                               setState(() {
                                 _savePassword = newValue!;
                               });
+                              await _storage.write(
+                                  key: "Save_Password",
+                                  value: _savePassword.toString());
                             },
                             title: Text(
                               "Ghi nhớ đăng nhập",

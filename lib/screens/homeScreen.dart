@@ -1,10 +1,14 @@
 import 'package:chotot/controllers/get_notis.dart';
+import 'package:chotot/controllers/login_controller.dart';
+import 'package:chotot/controllers/register_notification.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/screens/timThoScreen.dart';
 import 'package:chotot/screens/congViecScreen.dart';
 import 'package:chotot/screens/taiKhoanScreen.dart';
 import 'package:chotot/screens/choScreen.dart';
-import 'package:chotot/screens/thongBaoScreen.dart';
+// import 'package:chotot/screens/thongBaoScreen.dart';
+// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:get/get.dart';
@@ -20,7 +24,10 @@ class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   LyLichController lyLichController = Get.put(LyLichController());
+  LoginController loginController = Get.put(LoginController());
+  // final _storage = const FlutterSecureStorage();
   int selectedIndex = 0;
+  String tokenLogin = '';
   NotiController notiController = Get.put(NotiController());
   onItemClicked(int index) {
     setState(() {
@@ -29,13 +36,27 @@ class _MainScreenState extends State<MainScreen>
     });
   }
 
+  // void isLogin() async {
+  //   tokenLogin = await _storage.read(key: "TOKEN") ?? '';
+  // }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    lyLichController.getInfo();
-    notiController.getNoti(0);
-    _tabController = TabController(length: 5, vsync: this);
+    if (loginController.tokenString != '') {
+      RegisterNotiController().registerNoti();
+      lyLichController.getInfo();
+      notiController.getNoti(0);
+    }
+    _tabController = TabController(length: 4, vsync: this);
+    //scroll
+  }
+
+  @override
+  void dispose() {
+    //scroll
+
+    super.dispose();
   }
 
   @override
@@ -56,42 +77,42 @@ class _MainScreenState extends State<MainScreen>
               TimThoScreen(),
               CongViecScreen(),
               ChoScreen(),
-              ThongBaoScreen(),
+              // ThongBaoScreen(),
               TaiKhoanScreen(),
             ]),
-        bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: ConvexAppBar(
+          backgroundColor: Colors.white,
+          activeColor: const Color.fromRGBO(38, 166, 83, 1),
+          color: Colors.grey,
+          style: TabStyle.react,
+          height: 70,
           items: const [
-            BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.house),
-              label: 'Tìm thợ',
+            TabItem(
+              title: 'Trang chủ',
+              icon: FontAwesomeIcons.house,
             ),
-            BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.paperclip),
-              label: 'Công việc',
+            TabItem(
+              title: 'Công việc',
+              icon: FontAwesomeIcons.paperclip,
             ),
-            BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.shop),
-              label: 'Chợ 4.0',
+            TabItem(
+              title: 'Chợ 4.0',
+              icon: FontAwesomeIcons.shop,
             ),
-            BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.bell),
-              label: 'Thông báo',
-            ),
-            BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.user),
-              label: 'Tài khoản',
+            // TabItem(
+            //   title: 'Thông báo',
+            //   icon: FontAwesomeIcons.bell,
+            // ),
+            TabItem(
+              title: 'Tài khoản',
+              icon: FontAwesomeIcons.user,
             ),
           ],
-          elevation: 10,
-          backgroundColor: const Color.fromRGBO(5, 109, 101, 1),
-          unselectedItemColor: Colors.grey,
-          selectedItemColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          selectedLabelStyle: const TextStyle(fontSize: 14),
-          currentIndex: selectedIndex,
+          initialActiveIndex: selectedIndex,
           onTap: onItemClicked,
         ),
       ),
     );
   }
 }
+// const Color.fromRGBO(5, 109, 101, 1)

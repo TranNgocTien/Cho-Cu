@@ -1,4 +1,6 @@
+// import 'package:chotot/screens/login.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +17,7 @@ class TaiKhoanItem extends StatelessWidget {
   final String image;
   final Widget? screen;
   final Function? onTap;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -66,8 +69,8 @@ class TaiKhoanItem extends StatelessWidget {
               ),
               child: Text(title,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontFamily: GoogleFonts.robotoMono().fontFamily,
-                        fontSize: 22,
+                        fontFamily: GoogleFonts.montserrat().fontFamily,
+                        fontSize: 18,
                         fontWeight: FontWeight.w400,
                       ),
                   textAlign: TextAlign.start),

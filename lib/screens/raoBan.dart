@@ -1,10 +1,16 @@
 import 'dart:io';
 
+import 'package:chotot/controllers/get_stuffs.dart';
+import 'package:chotot/data/default_information.dart';
 import 'package:chotot/data/docu_data.dart';
 import 'package:chotot/models/place.dart';
+import 'package:chotot/screens/change_default_info.dart';
+import 'package:chotot/screens/homeScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geocoding/geocoding.dart';
+// import 'package:geocoding/geocoding.dart';
 import 'package:chotot/models/addressUpdate.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,12 +36,12 @@ class RaoBanScreen extends StatefulWidget {
 class _RaoBanScreenState extends State<RaoBanScreen> {
   final _formKey = GlobalKey<FormState>();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
+  final GetStuffs _getStuffs = Get.put(GetStuffs());
   PostStuff postStuff = Get.put(PostStuff());
   final ImagePicker imagePicker = ImagePicker();
   String service = 'Chọn dịch vụ đăng tin';
   String serviceFee = '0';
-
+  final _storage = const FlutterSecureStorage();
   Future<void> _convertCoordinatefromAddress(double lat, double lng) async {
     final url = Uri.parse(
         'https://rsapi.goong.io/Geocode?latlng=$lat,$lng&api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB');
@@ -48,11 +54,17 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
   }
 
   Future<void> _convertAddressToCoordinate(string) async {
-    List<Location> location = await locationFromAddress(string);
+    // List<Location> location = await locationFromAddress(string);
+    final url = Uri.parse(
+        'https://rsapi.goong.io/geocode?address=$string&api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB');
+    final response = await http.get(url);
+    final resData = json.decode(response.body);
+    final latlng = resData['results'][0]['geometry'];
+    final lat = latlng['location']['lat'];
+    final lng = latlng['location']['lng'];
+    postStuff.lat = lat;
 
-    postStuff.lat = location.last.latitude;
-
-    postStuff.lng = location.last.longitude;
+    postStuff.lng = lng;
 
     if (postStuff.lat == null || postStuff.lng == null) {
       return;
@@ -119,7 +131,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
               contentPadding: EdgeInsets.all(20),
               children: [
                 Text(
-                  'Điền đầy đủ các thông tin',
+                  'Vui lòng điền đầy đủ các thông tin',
                 ),
               ],
             );
@@ -144,7 +156,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
     await postStuff.postItem();
     items.clear();
     postStuff.imageFileList!.clear();
-    Get.back();
+    await _getStuffs.getStuffs(0);
+    Get.to(const MainScreen());
   }
 
   _openGallery() async {
@@ -169,6 +182,110 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
     //     ),
     //   );
     // }
+  }
+
+  _openCamera() async {
+    try {
+      List<XFile> selectedImages = [];
+      final imageFileGallery = await ImagePicker()
+          .pickImage(source: ImageSource.camera, maxWidth: 600);
+      if (imageFileGallery == null) return;
+      final imageTemp = XFile(imageFileGallery.path);
+      selectedImages.add(imageTemp);
+      setState(() {
+        postStuff.imageFileList!.addAll(selectedImages);
+      });
+    } on PlatformException catch (e) {
+      AlertDialog(
+        content: Text(
+          e.toString(),
+        ),
+      );
+    }
+    Get.back();
+  }
+
+  Future<void> _showChoiceDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: MediaQuery.of(context).size.height * 0.2,
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Lựa chọn tải ảnh:',
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _openGallery();
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Icon(FontAwesomeIcons.image),
+                            Text(
+                              'Thư viện',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                    fontFamily:
+                                        GoogleFonts.montserrat().fontFamily,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _openCamera();
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Icon(FontAwesomeIcons.camera),
+                            Text(
+                              'Chụp ảnh',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                    fontFamily:
+                                        GoogleFonts.montserrat().fontFamily,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   void showOverlay() {
@@ -224,6 +341,25 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+              onPressed: () async {
+                await Get.to(() => const ChangeDefaultInfo())!
+                    .then((_) => setState(() async {
+                          addressDefault =
+                              await _storage.read(key: "ADDRESS_DEFAULT") ?? '';
+                          nameDefault =
+                              await _storage.read(key: "NAME_DEFAULT") ?? '';
+                          numberPhoneDefault =
+                              await _storage.read(key: "NUMBER_DEFAULT") ?? '';
+                          postStuff.addressController.text = addressDefault;
+                          postStuff.phoneController.text = numberPhoneDefault;
+                          postStuff.nameController.text = nameDefault;
+                        }));
+              },
+              icon: const Icon(Icons.settings),
+            ),
+          ],
           title: Text(
             'Rao bán',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
@@ -297,6 +433,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                         ),
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(
@@ -305,7 +442,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                           bottom: 10.0,
                         ),
                         child: Container(
-                          width: MediaQuery.of(context).size.width * 0.8,
+                          width: MediaQuery.of(context).size.width * 0.75,
                           decoration: BoxDecoration(
                             border: Border.all(
                                 width: 1,
@@ -538,7 +675,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                         ElevatedButton(
                           onPressed: () {
                             postStuff.imageFileList!.length < 3
-                                ? _openGallery()
+                                ? _showChoiceDialog(context)
                                 : null;
                           },
                           style: ElevatedButton.styleFrom(

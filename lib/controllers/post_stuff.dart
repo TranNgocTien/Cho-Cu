@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chotot/controllers/get_stuffs.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:chotot/data/default_information.dart';
 
 import 'package:get/get.dart';
 
@@ -19,12 +20,16 @@ import 'package:intl/intl.dart';
 
 class PostStuff extends GetxController {
   final GetStuffs _getStuffs = Get.put(GetStuffs());
-  TextEditingController addressController = TextEditingController();
+
+  TextEditingController addressController =
+      TextEditingController(text: addressDefault);
   LoginController loginController = Get.put(LoginController());
   TextEditingController descriptionController = TextEditingController();
   TextEditingController sumPriceController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController =
+      TextEditingController(text: numberPhoneDefault);
+  TextEditingController nameController =
+      TextEditingController(text: nameDefault);
 
   double? lat;
   double? lng;
@@ -106,9 +111,7 @@ class PostStuff extends GetxController {
           await _getStuffs.getStuffs(0);
           descriptionController.clear();
           sumPriceController.clear();
-          phoneController.clear();
-          nameController.clear();
-          addressController.clear();
+
           imageLink.clear();
           Get.back();
         } else if (json['status'] == "error") {
@@ -339,8 +342,10 @@ class PostStuff extends GetxController {
             return SimpleDialog(
               contentPadding: const EdgeInsets.all(20),
               children: [
-                Text(
-                  error.toString(),
+                Center(
+                  child: Text(
+                    error.toString(),
+                  ),
                 ),
               ],
             );

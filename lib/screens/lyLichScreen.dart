@@ -35,7 +35,6 @@ class _LyLichScreenState extends State<LyLichScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     lyLichController.getInfo();
     setState(() {});
     super.initState();
@@ -45,9 +44,12 @@ class _LyLichScreenState extends State<LyLichScreen> {
   Widget build(BuildContext context) {
     return lyLichInfo[0].workerAuthen == 'false'
         ? Stack(
+            alignment: AlignmentDirectional.center,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.2,
+                // height: MediaQuery.of(context).size.height * 0.2,
+                height: MediaQuery.of(context).size.height,
+
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: Color(0xFFBFE299), // Background color
@@ -62,6 +64,14 @@ class _LyLichScreenState extends State<LyLichScreen> {
                   ),
                 ),
               ),
+              Positioned(
+                  top: 40,
+                  left: 10,
+                  child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.arrow_back))),
               Positioned(
                 top: 150,
                 child: Container(
@@ -91,55 +101,6 @@ class _LyLichScreenState extends State<LyLichScreen> {
                       ),
                       const SizedBox(
                         height: 30,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor:
-                                  const Color.fromARGB(255, 2, 219, 134),
-                              side: const BorderSide(
-                                color: Color.fromARGB(255, 2, 219, 134),
-                              ),
-                            ),
-                            child: Text(
-                              'Nhập mã voucher',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color:
-                                        const Color.fromARGB(255, 2, 219, 134),
-                                  ),
-                            ), // B,
-                            onPressed: () {},
-                          ),
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor:
-                                  const Color.fromARGB(255, 2, 219, 134),
-                              side: const BorderSide(
-                                color: Color.fromARGB(255, 2, 219, 134),
-                              ),
-                            ),
-                            child: Text(
-                              'Mua voucher',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color:
-                                        const Color.fromARGB(255, 2, 219, 134),
-                                  ),
-                            ), // B,
-                            onPressed: () {},
-                          ),
-                        ],
                       ),
                     ],
                   ),
@@ -321,7 +282,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
               ),
               Positioned(
                 top: 75,
-                left: 130,
+                // left: 130,
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.white,
@@ -334,9 +295,10 @@ class _LyLichScreenState extends State<LyLichScreen> {
             ],
           )
         : Stack(
+            alignment: AlignmentDirectional.center,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.2,
+                height: MediaQuery.of(context).size.height,
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: Color(0xFFBFE299), // Background color
@@ -351,6 +313,14 @@ class _LyLichScreenState extends State<LyLichScreen> {
                   ),
                 ),
               ),
+              Positioned(
+                  top: 40,
+                  left: 10,
+                  child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.arrow_back))),
               Positioned(
                 top: 150,
                 child: Container(
@@ -426,55 +396,6 @@ class _LyLichScreenState extends State<LyLichScreen> {
                       ),
                       const SizedBox(
                         height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor:
-                                  const Color.fromARGB(255, 2, 219, 134),
-                              side: const BorderSide(
-                                color: Color.fromARGB(255, 2, 219, 134),
-                              ),
-                            ),
-                            child: Text(
-                              'Nhập mã voucher',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color:
-                                        const Color.fromARGB(255, 2, 219, 134),
-                                  ),
-                            ), // B,
-                            onPressed: () {},
-                          ),
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor:
-                                  const Color.fromARGB(255, 2, 219, 134),
-                              side: const BorderSide(
-                                color: Color.fromARGB(255, 2, 219, 134),
-                              ),
-                            ),
-                            child: Text(
-                              'Mua voucher',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color:
-                                        const Color.fromARGB(255, 2, 219, 134),
-                                  ),
-                            ), // B,
-                            onPressed: () {},
-                          ),
-                        ],
                       ),
                     ],
                   ),
@@ -659,7 +580,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                           ),
                           const SizedBox(height: 10),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
                                 children: [
@@ -670,7 +591,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                                       },
                                       child: Image.asset(
                                         'image/the-can-cuoc.png',
-                                        width: 200,
+                                        width: 150,
                                         height: 100,
                                       ),
                                     ),
@@ -689,7 +610,6 @@ class _LyLichScreenState extends State<LyLichScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(width: 5),
                               Column(
                                 children: [
                                   Material(
@@ -700,7 +620,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                                       },
                                       child: Image.asset(
                                         'image/the-can-cuoc-mat-sau.png',
-                                        width: 200,
+                                        width: 150,
                                         height: 100,
                                       ),
                                     ),
@@ -738,7 +658,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                           ),
                           const SizedBox(height: 10),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Material(
                                 child: InkWell(
@@ -747,12 +667,11 @@ class _LyLichScreenState extends State<LyLichScreen> {
                                   },
                                   child: Image.asset(
                                     'image/profile.jpg',
-                                    width: 200,
+                                    width: 150,
                                     height: 200,
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 5),
                               Material(
                                 child: InkWell(
                                   onTap: () {
@@ -760,7 +679,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                                   },
                                   child: Image.asset(
                                     'image/profile.jpg',
-                                    width: 200,
+                                    width: 150,
                                     height: 200,
                                   ),
                                 ),
@@ -811,7 +730,8 @@ class _LyLichScreenState extends State<LyLichScreen> {
               ),
               Positioned(
                 top: 75,
-                left: 130,
+                left: 0,
+                right: 0,
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.white,

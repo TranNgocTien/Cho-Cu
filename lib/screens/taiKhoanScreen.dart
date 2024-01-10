@@ -1,4 +1,5 @@
 import 'package:chotot/controllers/get_ly_lich.dart';
+import 'package:chotot/screens/login.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/widgets/taikhoanItem.dart';
 import 'package:chotot/screens/lyLichScreen.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/controllers/log_out.dart';
 
@@ -21,6 +22,21 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
   LoginController loginController = Get.put(LoginController());
   LyLichController lyLichController = Get.put(LyLichController());
   LogOutController logOutController = Get.put(LogOutController());
+  final _storage = const FlutterSecureStorage();
+
+  String tokenString = '';
+  void isLogin() async {
+    tokenString = await _storage.read(key: "TOKEN") ?? '';
+  }
+
+  @override
+  void initState() {
+    isLogin();
+    if (loginController.tokenString != '') {
+      lyLichController.getInfo();
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,31 +62,204 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const TaiKhoanItem(
-              title: "Lý lịch",
-              image: 'image/icon/ly_lich_(1).png',
-              screen: LyLichScreen(),
-            ),
-            const TaiKhoanItem(
-                title: 'Thống kê', image: 'image/icon/icon_thong_ke_(1).png'),
-            const TaiKhoanItem(
+            TaiKhoanItem(
+                title: "Lý lịch",
+                image: 'image/icon/ly_lich_(1).png',
+                // screen: const LyLichScreen(),
+                onTap: () async {
+                  tokenString != ''
+                      ? Get.to(() => const LyLichScreen())
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
+                  // await prefs.setString('token', token.toString());
+                }),
+
+            TaiKhoanItem(
+                title: 'Thống kê',
+                image: 'image/icon/icon_thong_ke_(1).png',
+                onTap: () async {
+                  tokenString != ''
+                      ? Get.to(() => const LyLichScreen())
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
+                  // await prefs.setString('token', token.toString());
+                }),
+            TaiKhoanItem(
                 title: 'Cập nhật thông tin thợ',
-                image: 'image/icon/dang_ki_tho_(1).png'),
-            const TaiKhoanItem(
+                image: 'image/icon/dang_ki_tho_(1).png',
+                onTap: () async {
+                  tokenString != ''
+                      ? Get.to(() => const LyLichScreen())
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
+                  // await prefs.setString('token', token.toString());
+                }),
+            TaiKhoanItem(
                 title: 'Nâng cấp thợ',
-                image: 'image/icon/nang_cap_tho_(1).png'),
-            const TaiKhoanItem(
-                title: 'Nap tiền',
-                image: 'image/icon/huong_dan_nap_tien_(1).png'),
+                image: 'image/icon/nang_cap_tho_(1).png',
+                onTap: () async {
+                  tokenString != ''
+                      ? Get.to(() => const LyLichScreen())
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
+                  // await prefs.setString('token', token.toString());
+                }),
+            TaiKhoanItem(
+                title: 'Nạp tiền',
+                image: 'image/icon/huong_dan_nap_tien_(1).png',
+                onTap: () async {
+                  tokenString != ''
+                      ? Get.to(() => const LyLichScreen())
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
+                  // await prefs.setString('token', token.toString());
+                }),
             TaiKhoanItem(
                 title: 'Đăng xuất',
                 image: 'image/icon/dnag_xuat_(1).png',
                 onTap: () async {
-                  await logOutController.logOut();
+                  tokenString != ''
+                      ? await logOutController.logOut()
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
                   // await prefs.setString('token', token.toString());
                 }),
-            const TaiKhoanItem(
-                title: 'Xóa tài khoản', image: 'image/icon/dnag_xuat_(1).png'),
+            TaiKhoanItem(
+                title: 'Xóa tài khoản',
+                image: 'image/icon/dnag_xuat_(1).png',
+                onTap: () async {
+                  tokenString != ''
+                      ? Get.to(() => const LyLichScreen())
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
+                  // await prefs.setString('token', token.toString());
+                }),
             // TaiKhoanItem(
             //     title: 'Thông tin công ty', icon: FontAwesomeIcons.circleInfo),
             InkWell(
@@ -112,7 +301,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
                               .labelLarge!
                               .copyWith(
                                 fontFamily: GoogleFonts.montserrat().fontFamily,
-                                fontSize: 22,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w400,
                               ),
                           textAlign: TextAlign.start),

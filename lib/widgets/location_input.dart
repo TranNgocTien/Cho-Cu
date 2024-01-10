@@ -40,7 +40,7 @@ class _LocationInputState extends State<LocationInput> {
 
     final lat = _pickedLocation!.latitude;
     final lng = _pickedLocation!.longitude;
-    return 'https://maps.googleapis.com/maps/api/staticmap?center$lat,$lng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:S%7C$lat,$lng&key=AIzaSyBVR432H7VtiC45UpByhbYM1J_tBlJvnes';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center$lat,$lng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:S%7C$lat,$lng&key=AIzaSyB1ykQSVopyd-TB_6Mj9WtUi1hts3R8iX8';
   }
 
   Future<void> _savePlace(double latitude, double longitude) async {
@@ -138,7 +138,6 @@ class _LocationInputState extends State<LocationInput> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _pickedLocation = widget.pickedLocationAdress;
     super.initState();
   }

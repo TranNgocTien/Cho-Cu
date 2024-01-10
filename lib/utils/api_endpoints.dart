@@ -19,4 +19,7 @@ class _AuthEndPoints {
   final String updateInfo = 'update_info';
   final String changeAvatar = 'change_avatar';
   final String getNotis = 'get_notis';
+  final String getJobType = 'get_job_type';
+  final String getVouchersValid = 'get_vouchers_valid';
+  final String getNews = 'get_news';
 }

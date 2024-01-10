@@ -81,8 +81,10 @@ class ForgotPasswordController extends GetxController {
             return SimpleDialog(
               contentPadding: const EdgeInsets.all(20),
               children: [
-                Text(
-                  error.toString(),
+                Center(
+                  child: Text(
+                    error.toString(),
+                  ),
                 ),
               ],
             );
@@ -96,11 +98,16 @@ class ForgotPasswordController extends GetxController {
           context: Get.context!,
           builder: (context) {
             return const SimpleDialog(
-              title: Text('Lỗi xác thực'),
+              title: Text(
+                'Lỗi xác thực',
+                textAlign: TextAlign.center,
+              ),
               contentPadding: EdgeInsets.all(20),
               children: [
-                Text(
-                  'Nhập đầy đủ thông tin',
+                Center(
+                  child: Text(
+                    'Nhập đầy đủ thông tin',
+                  ),
                 ),
               ],
             );
@@ -113,11 +120,16 @@ class ForgotPasswordController extends GetxController {
           context: Get.context!,
           builder: (context) {
             return const SimpleDialog(
-              title: Text('Lỗi mật khẩu'),
+              title: Text(
+                'Lỗi mật khẩu',
+                textAlign: TextAlign.center,
+              ),
               contentPadding: EdgeInsets.all(20),
               children: [
-                Text(
-                  'Mật khẩu không đúng. Nhập lại mật khẩu',
+                Center(
+                  child: Text(
+                    'Mật khẩu không đúng. Nhập lại mật khẩu',
+                  ),
                 ),
               ],
             );
@@ -151,8 +163,10 @@ class ForgotPasswordController extends GetxController {
                 return SimpleDialog(
                   contentPadding: const EdgeInsets.all(20),
                   children: [
-                    Text(
-                      json['error']['message'],
+                    Center(
+                      child: Text(
+                        json['error']['message'],
+                      ),
                     ),
                   ],
                 );
@@ -178,11 +192,16 @@ class ForgotPasswordController extends GetxController {
         context: Get.context!,
         builder: (context) {
           return SimpleDialog(
-            title: const Text('Error'),
+            title: const Text(
+              'Error',
+              textAlign: TextAlign.center,
+            ),
             contentPadding: const EdgeInsets.all(20),
             children: [
-              Text(
-                error.toString(),
+              Center(
+                child: Text(
+                  error.toString(),
+                ),
               ),
             ],
           );

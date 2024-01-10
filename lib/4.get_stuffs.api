@@ -1,7 +1,0 @@
-4. Lấy ds chợ đồ cũ:
-[header:]
-"x-access-token" : login token(Lấy từ api.1.login)
-[POST]: https://vstserver.com/services/get_stuffs
-version: ‘test’/ ’publish’,
-index:[int] 0,1,2,....
-token:

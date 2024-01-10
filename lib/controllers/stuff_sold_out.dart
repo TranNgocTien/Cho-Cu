@@ -49,11 +49,13 @@ class SoldOutStuffs extends GetxController {
               context: Get.context!,
               builder: (context) {
                 return const SimpleDialog(
-                  title: Text('Thông báo'),
+                  title: Text('Thông báo', textAlign: TextAlign.center),
                   contentPadding: EdgeInsets.all(20),
                   children: [
-                    Text(
-                      'Đã cập nhật lên hệ thống',
+                    Center(
+                      child: Text(
+                        'Đã cập nhật lên hệ thống',
+                      ),
                     ),
                   ],
                 );
@@ -64,11 +66,13 @@ class SoldOutStuffs extends GetxController {
               context: Get.context!,
               builder: (context) {
                 return SimpleDialog(
-                  title: const Text('Error'),
+                  title: const Text('Error', textAlign: TextAlign.center),
                   contentPadding: const EdgeInsets.all(20),
                   children: [
-                    Text(
-                      json['error']['message'],
+                    Center(
+                      child: Text(
+                        json['error']['message'],
+                      ),
                     ),
                   ],
                 );
@@ -85,11 +89,13 @@ class SoldOutStuffs extends GetxController {
           context: Get.context!,
           builder: (context) {
             return SimpleDialog(
-              title: const Text('Error'),
+              title: const Text('Error', textAlign: TextAlign.center),
               contentPadding: const EdgeInsets.all(20),
               children: [
-                Text(
-                  error.toString(),
+                Center(
+                  child: Text(
+                    error.toString(),
+                  ),
                 ),
               ],
             );

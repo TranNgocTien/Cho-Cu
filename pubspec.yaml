@@ -59,6 +59,18 @@ dependencies:
   intl: ^0.18.1
   insta_image_viewer: ^1.0.2
   hawk_fab_menu: ^1.2.0
+  firebase_core: ^2.24.0
+  firebase_messaging: ^14.7.6
+  firebase_analytics: ^10.7.2
+  flutter_local_notifications: ^16.2.0
+  basic_utils: ^5.7.0
+  refresh_loadmore: ^2.0.5
+  flutter_staggered_grid_view: ^0.7.0
+  convex_bottom_bar: ^3.2.0
+  page_transition: "^2.1.0"
+  cached_network_image: ^3.3.0
+  awesome_dialog: ^3.1.0
+  popup_menu: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -95,7 +107,24 @@ flutter:
     - image/the-can-cuoc.png
     - image/profile.jpg
     - image/icon/thong_tin_review_1.png
-
+    - image/onboard1.png
+    - image/onboard2.png
+    - image/onboard3.png
+    - image/onboard4.jpg
+    - image/onboard5.jpeg
+    - image/logo/logo.png
+    - image/slider_example_1.jpeg
+    - image/slider_example_2.jpeg
+    - image/broom.png
+    - image/settings.png
+    - image/fix.png
+    - image/electric-heater.png
+    - image/kitchen.png
+    - image/troubleshooting.png
+    - image/air-conditioner.png
+    - image/washing-machine.png
+    - image/fan.png
+    - image/fridge.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

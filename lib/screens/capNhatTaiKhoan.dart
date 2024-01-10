@@ -373,8 +373,10 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                             return const SimpleDialog(
                               contentPadding: EdgeInsets.all(20),
                               children: [
-                                Text(
-                                  'Vui lòng nhập địa chỉ',
+                                Center(
+                                  child: Text(
+                                    'Vui lòng nhập địa chỉ',
+                                  ),
                                 ),
                               ],
                             );

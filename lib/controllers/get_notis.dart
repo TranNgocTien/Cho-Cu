@@ -77,11 +77,16 @@ class NotiController extends GetxController {
           context: Get.context!,
           builder: (context) {
             return SimpleDialog(
-              title: const Text('Error'),
+              title: const Text(
+                'Error',
+                textAlign: TextAlign.center,
+              ),
               contentPadding: const EdgeInsets.all(20),
               children: [
-                Text(
-                  error.toString(),
+                Center(
+                  child: Text(
+                    error.toString(),
+                  ),
                 ),
               ],
             );
