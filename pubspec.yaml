@@ -71,7 +71,13 @@ dependencies:
   cached_network_image: ^3.3.0
   awesome_dialog: ^3.1.0
   popup_menu: ^2.0.0
-
+  calendar_date_picker2: ^0.5.3
+  flutter_datetime_picker_plus: ^2.1.0
+  dropdown_button2: ^2.3.9
+  modal_bottom_sheet: ^2.1.2
+  getwidget: ^4.0.0
+dependency_overrides:
+  modal_bottom_sheet: ^3.0.0-pre
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -125,6 +131,22 @@ flutter:
     - image/washing-machine.png
     - image/fan.png
     - image/fridge.png
+    - image/analytics.png
+    - image/employee.png
+    - image/up-arrow.png
+    - image/ewallet.png
+    - image/logout.png
+    - image/delete-user.png
+    - image/clipboard.png
+    - image/automobile-with-wrench.png
+    - image/worker-1.png
+    - image/worker-2.png
+    - image/worker-3.png
+    - image/worker-4.png
+    - image/worker-5.png
+    - image/6678.jpg
+    - image/61568.jpg
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

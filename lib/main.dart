@@ -1,8 +1,10 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:chotot/controllers/get_job_type.dart';
+import 'package:chotot/controllers/get_jobservice.dart';
 import 'package:chotot/controllers/get_news.dart';
 import 'package:chotot/controllers/get_vouchers_valid.dart';
 import 'package:chotot/controllers/login_controller.dart';
+
 // import 'package:chotot/controllers/register_notification.dart';
 import 'package:chotot/screens/choScreen.dart';
 import 'package:chotot/screens/congViecScreen.dart';
@@ -84,13 +86,14 @@ class _SplashScreenState extends State<SplashScreen> {
   LoginController loginController = Get.put(LoginController());
   GetJobTypeController getJobTypeController = Get.put(GetJobTypeController());
   GetVouchersValid getVouchersValid = Get.put(GetVouchersValid());
+  GetJobService jobService = Get.put(GetJobService());
   GetNews getNews = Get.put(GetNews());
   @override
   void initState() {
-    getJobTypeController.getJobType();
     getVouchersValid.getVouchers();
     getNews.getNewsData();
     loginController.loginWithEmail();
+    jobService.getJobService();
     super.initState();
   }
 

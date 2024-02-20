@@ -1,4 +1,4 @@
-import 'package:chotot/models/news.dart';
+import 'package:chotot/models/get_news_models.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -32,9 +32,11 @@ class _NewsGridItemState extends State<NewsGridItem> {
     //   child: CircularProgressIndicator(),
     // );
 
-    String name = widget.newItems.name.length > 17
-        ? '${widget.newItems.name.substring(0, 17)} ...'
-        : widget.newItems.name;
+    String name = widget.newItems.tittle.length > 17
+        ? '${widget.newItems.tittle.substring(0, 17)}...'
+        : widget.newItems.tittle;
+    String date =
+        widget.newItems.date.substring(0, widget.newItems.date.indexOf('T'));
 
     return
         // isLoading
@@ -56,7 +58,8 @@ class _NewsGridItemState extends State<NewsGridItem> {
               child: AspectRatio(
                 aspectRatio: 487 / 451,
                 child: CachedNetworkImage(
-                    imageUrl: widget.newItems.imageUrl,
+                    imageUrl:
+                        'https://gihome.tech/services/${widget.newItems.link}',
                     imageBuilder: (context, imageProvider) => Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
@@ -89,7 +92,7 @@ class _NewsGridItemState extends State<NewsGridItem> {
                     textAlign: TextAlign.start,
                   ),
                   Text(
-                    widget.newItems.time,
+                    date,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           fontFamily: GoogleFonts.montserrat().fontFamily,
                           color: Colors.grey,

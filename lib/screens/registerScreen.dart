@@ -47,7 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 width: 300,
                 child: Image.asset(
-                  'image/MedenDx_green-slogan.png',
+                  'image/logo/logo.png',
                 ),
               ),
               const SizedBox(height: 50),

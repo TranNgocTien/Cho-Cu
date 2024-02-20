@@ -38,7 +38,7 @@ class _RequestOtpScreenState extends State<RequestOtpScreen> {
                 ),
                 width: 300,
                 child: Image.asset(
-                  'image/MedenDx_green-slogan.png',
+                  'image/logo/logo.png',
                 ),
               ),
               const SizedBox(height: 50),

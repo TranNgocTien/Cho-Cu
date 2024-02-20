@@ -15,76 +15,69 @@ import 'package:chotot/controllers/login_controller.dart';
 class GetVouchersValid extends GetxController {
   LoginController loginController = Get.put(LoginController());
   Future<void> getVouchers() async {
-    try {
-      var headers = {
-        "x-access-token": loginController.tokenString,
-      };
-      var url = Uri.parse(ApiEndPoints.servicesUrl +
-          ApiEndPoints.authEndPoints.getVouchersValid);
-      Map body = {
-        'token': 'anhkhongdoiqua',
-      };
-      http.Response response = await http.post(
-        url,
-        body: body,
-        headers: headers,
-      );
+    // try {
+    // var headers = {
+    //   "x-access-token": loginController.tokenString,
 
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
+    // };
+    var url = Uri.parse(
+        ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getVouchersValid);
+    Map body = {'token': 'anhkhongdoiqua', 'version': 'test'};
+    http.Response response = await http.post(
+      url,
+      body: body,
+      // headers: headers,
+    );
+    // print(response.statusCode);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final data = json['data'];
 
-        if (json['status'] == 'ok') {
-          final data = json['data'];
-          // print(data.length);
-          for (int i = 0; i < data.length; i++) {
-            vouchersValid.add(
-              VouchersValid(
-                id: data[i]['_id'].toString(),
-                code: data[i]['code'].toString(),
-                count: data[i]['count'].toString(),
-                description: data[i]['description'].toString(),
-                from: data[i]['from'].toString(),
-                img: data[i]['img'].toString(),
-                jobType: data[i]['job_type'],
-                limit: data[i]['limit'].toString(),
-                name: data[i]['name'].toString(),
-                price: data[i]['price'].toString(),
-                status: data[i]['status'].toString(),
-                sum: data[i]['sum'].toString(),
-                to: data[i]['to'].toString(),
-                type: data[i]['type'].toString(),
-                userId: data[i]['user_id'].toString(),
-                value: data[i]['value'].toString(),
-              ),
-            );
-          }
-
-          throw jsonDecode(response.body)['error']['message'] ??
-              'Unknown Error Occured';
-        }
-      } else {
-        throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
+      for (int i = 0; i < data.length; i++) {
+        vouchersValid.add(
+          VouchersValid(
+            id: data[i]['_id'].toString(),
+            code: data[i]['code'].toString(),
+            count: data[i]['count'].toString(),
+            description: data[i]['description'].toString(),
+            from: data[i]['from'].toString(),
+            img: data[i]['img'].toString(),
+            jobType: data[i]['job_type'],
+            limit: data[i]['limit'].toString(),
+            name: data[i]['name'].toString(),
+            price: data[i]['price'].toString(),
+            status: data[i]['status'].toString(),
+            sum: data[i]['sum'].toString(),
+            to: data[i]['to'].toString(),
+            type: data[i]['type'].toString(),
+            userId: data[i]['user_id'].toString(),
+            value: data[i]['value'].toString(),
+          ),
+        );
       }
-    } catch (error) {
-      // Get.back();
-      // showDialog(
-      //     context: Get.context!,
-      //     builder: (context) {
-      //       return SimpleDialog(
-      //         title: const Text(
-      //           'Error',
-      //           textAlign: TextAlign.center,
-      //         ),
-      //         contentPadding: const EdgeInsets.all(20),
-      //         children: [
-      //           Center(
-      //             child: Text(
-      //               error.toString(),
-      //             ),
-      //           ),
-      //         ],
-      //       );
-      //     });
+    } else {
+      throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
     }
+    // } catch (error) {
+    //   Get.back();
+    //   showDialog(
+    //       context: Get.context!,
+    //       builder: (context) {
+    //         return SimpleDialog(
+    //           title: const Text(
+    //             'Error1234',
+    //             textAlign: TextAlign.center,
+    //           ),
+    //           contentPadding: const EdgeInsets.all(20),
+    //           children: [
+    //             Center(
+    //               child: Text(
+    //                 error.toString(),
+    //               ),
+    //             ),
+    //           ],
+    //         );
+    //       });
+    // }
   }
 }

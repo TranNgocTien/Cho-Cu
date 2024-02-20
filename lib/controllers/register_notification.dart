@@ -168,41 +168,37 @@ class RegisterNotiController {
     } on PlatformException {
       throw Exception('get device name failed');
     }
-    try {
-      var url = Uri.parse('https://vstserver.com/CcoXPmxvIjBsvauaWrFe');
-      // print(prefs.getString('host_id'));
-      // print('device_id: ${deviceID}');
-      // print('fcmToken: ${fcmToken}');
-      // print('deviceName: ${deviceName}');
+    // try {
+    var url = Uri.parse('https://vstserver.com/CcoXPmxvIjBsvauaWrFe');
 
-      Map body = {
-        'user_id': prefs.getString('host_id'),
-        'home_id': prefs.getString('host_id'),
-        'device_id': deviceID,
-        'name': deviceName,
-        'system_os': Platform.operatingSystem,
-        'server_key': 'com.gico.service',
-        'token': 'anhkhongdoiqua',
-        'device_token': fCMToken!.trim(),
-      };
-      http.Response response = await http.post(
-        url,
-        body: body,
-      );
+    Map body = {
+      'user_id': prefs.getString('host_id'),
+      'home_id': prefs.getString('host_id'),
+      'device_id': deviceID,
+      'name': deviceName,
+      'system_os': Platform.operatingSystem,
+      'server_key': 'com.gico.service',
+      'token': 'anhkhongdoiqua',
+      'device_token': fCMToken!.trim(),
+    };
+    http.Response response = await http.post(
+      url,
+      body: body,
+    );
 
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
 
-        if (json['status'] == 'ok') {
-        } else if (json['status'] == "error") {
-          throw jsonDecode(response.body)['error']['message'] ??
-              'Unknown Error Occured1';
-        }
-      } else {
-        throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured2';
+      if (json['status'] == 'ok') {
+      } else if (json['status'] == "error") {
+        throw jsonDecode(response.body)['error']['message'] ??
+            'Unknown Error Occured1';
       }
-    } catch (error) {
-      throw 'Unknown Error Occured';
+    } else {
+      throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured2';
     }
+    // } catch (error) {
+    //   throw 'Unknown Error Occured';
+    // }
   }
 }

@@ -1,17 +1,22 @@
+import 'package:chotot/controllers/get_host_job.dart';
 import 'package:chotot/controllers/get_notis.dart';
+
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/controllers/register_notification.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/screens/timThoScreen.dart';
 import 'package:chotot/screens/congViecScreen.dart';
-import 'package:chotot/screens/taiKhoanScreen.dart';
+import 'package:chotot/screens/taiKhoanScreenRemake.dart';
 import 'package:chotot/screens/choScreen.dart';
+
 // import 'package:chotot/screens/thongBaoScreen.dart';
+
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:get/get.dart';
+import 'package:chotot/controllers/get_news.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -25,6 +30,9 @@ class _MainScreenState extends State<MainScreen>
   TabController? _tabController;
   LyLichController lyLichController = Get.put(LyLichController());
   LoginController loginController = Get.put(LoginController());
+  // GetVouchersValid getVouchersValid = Get.put(GetVouchersValid());
+  GetNews getNewsController = Get.put(GetNews());
+  GetHostJob getHostJobController = Get.put(GetHostJob());
   // final _storage = const FlutterSecureStorage();
   int selectedIndex = 0;
   String tokenLogin = '';
@@ -47,6 +55,7 @@ class _MainScreenState extends State<MainScreen>
       RegisterNotiController().registerNoti();
       lyLichController.getInfo();
       notiController.getNoti(0);
+      getHostJobController.getHostJob(0);
     }
     _tabController = TabController(length: 4, vsync: this);
     //scroll
@@ -100,9 +109,10 @@ class _MainScreenState extends State<MainScreen>
               icon: FontAwesomeIcons.shop,
             ),
             // TabItem(
-            //   title: 'Thông báo',
-            //   icon: FontAwesomeIcons.bell,
-            // ),
+            //     title: 'Thông báo',
+            //     icon: FontAwesomeIcons.bell,
+            //     activeIcon: ActionListener(
+            //         listener: listener, action: action, child: child)),
             TabItem(
               title: 'Tài khoản',
               icon: FontAwesomeIcons.user,

@@ -22,4 +22,17 @@ class _AuthEndPoints {
   final String getJobType = 'get_job_type';
   final String getVouchersValid = 'get_vouchers_valid';
   final String getNews = 'get_news';
+  final String getJobItem = 'get_jobitem';
+  final String getJobService = 'get_jobservice';
+  final String getPriceV2 = 'get_price_v2';
+  final String bookJobV3 = 'book_job_v3';
+  final String getHostJobs = 'get_host_jobs';
+  final String getAJob = 'get_a_job';
+  final String getPostJobs = 'get_post_jobs';
+  final String applyJob = 'apply_job';
+  final String acceptWorker = 'accept_worker';
+  final String workerDone = 'worker_done';
+  final String hostDone = 'host_done';
+  final String workerRate = 'worker_rate';
+  final String hostRate = 'host_rate';
 }

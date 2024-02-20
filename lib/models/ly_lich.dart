@@ -14,6 +14,8 @@ class LyLich {
     required this.ccid,
     required this.email,
     required this.workerAuthen,
+    required this.lat,
+    required this.lng,
   });
 
   final String name;
@@ -30,4 +32,6 @@ class LyLich {
   final String ccid;
   final String email;
   final String workerAuthen;
+  final String lat;
+  final String lng;
 }

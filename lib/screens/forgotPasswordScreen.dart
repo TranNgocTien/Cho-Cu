@@ -38,7 +38,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 width: 300,
                 child: Image.asset(
-                  'image/MedenDx_green-slogan.png',
+                  'image/logo/logo.png',
                 ),
               ),
               const SizedBox(height: 50),

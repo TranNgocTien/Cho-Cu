@@ -1,14 +1,18 @@
 class News {
   News({
-    required this.shortName,
     required this.id,
-    required this.item,
-    required this.jobtypeId,
-    required this.fee,
+    required this.tittle,
+    required this.author,
+    required this.link,
+    required this.date,
+    required this.content,
+    required this.decription,
   });
-  final String shortName;
+  final String tittle;
   final String id;
-  final List item;
-  final String jobtypeId;
-  final String fee;
+  final String author;
+  final String link;
+  final String date;
+  final String content;
+  final String decription;
 }

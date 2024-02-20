@@ -83,6 +83,8 @@ class UpdateInfoController extends GetxController {
         lyLichInfo.clear();
         var data = json['data'];
         lyLichInfo.add(LyLich(
+          lat: data['lat'].toString(),
+          lng: data['lng'].toString(),
           name: data['name'].toString(),
           id: data['_id'].toString(),
           address: data['address'].toString(),

@@ -312,7 +312,16 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                     return ListTile(
                         leading: const FaIcon(FontAwesomeIcons.servicestack),
                         trailing: Text('${otherFee[index].price} VNĐ'),
-                        title: Text(otherFee[index].name),
+                        title: Text(
+                          otherFee[index].name,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  fontFamily:
+                                      GoogleFonts.montserrat().fontFamily,
+                                  fontWeight: FontWeight.bold),
+                        ),
                         onTap: () {
                           setState(() {
                             service = otherFee[index].name;
@@ -361,7 +370,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
             ),
           ],
           title: Text(
-            'Rao bán',
+            'Đăng tin',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                   fontFamily: GoogleFonts.montserrat().fontFamily,
                   fontWeight: FontWeight.bold,

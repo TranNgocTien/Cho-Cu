@@ -1,3 +1,4 @@
+import 'package:chotot/controllers/get_host_job.dart';
 import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:chotot/controllers/login_controller.dart';
 // import 'package:chotot/controllers/register_notification.dart';
@@ -27,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // var _enteredEmail = '';
   // var _enteredPassword = '';
-
+  GetHostJob getHostJobController = Get.put(GetHostJob());
   LoginController loginController = Get.put(LoginController());
   Future<void> _readFromStorage() async {
     loginController.phoneNumberController.text =
@@ -39,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
   _onFormSubmit() async {
     loginController.isLogin = true;
     if (_savePassword) {
-      print('login ${_savePassword}');
       // Write values
       await _storage.write(
           key: "KEY_USERNAME",
@@ -225,6 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             if (loginController.tokenString != '') {
                               await lyLichController.getInfo();
+                              await getHostJobController.getHostJob(0);
                             }
                           },
                           style: ElevatedButton.styleFrom(

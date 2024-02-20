@@ -39,6 +39,8 @@ class LyLichController extends GetxController {
 
           lyLichInfo.add(
             LyLich(
+              lat: data['lat'].toString(),
+              lng: data['lng'].toString(),
               name: data['name'].toString(),
               id: data['_id'].toString(),
               address: data['address'].toString(),

@@ -48,7 +48,9 @@ class LoginController extends GetxController {
     _savePassword = await _storage.read(key: 'Save_Password') ?? '';
     final SharedPreferences prefs = await _prefs;
 
-    if (_savePassword == 'true' && isLogin == true) {
+    if (_savePassword == 'true'
+        // && isLogin == true
+        ) {
       await _readFromStorage();
     } else {
       await prefs.clear();
@@ -102,8 +104,6 @@ class LoginController extends GetxController {
     }
     var headers = {'Content-Type': 'application/json'};
     try {
-      print(phoneNumberController.text);
-      print(passwordController.text);
       isLoading = true;
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.loginEmail);
@@ -139,7 +139,7 @@ class LoginController extends GetxController {
               });
           tokenString = json['data']['token'];
           hostId = json['data']['_id'];
-          isLogin = false;
+          // isLogin = false;
           final SharedPreferences prefs = await _prefs;
           // RegisterNotiController().registerNoti();
           // lyLichController.getInfo();

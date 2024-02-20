@@ -1,13 +1,19 @@
 import 'dart:async';
 
+import 'package:chotot/controllers/get_post_jobs.dart';
+import 'package:chotot/data/get_post_job_data.dart';
 import 'package:chotot/data/notification_count.dart';
 import 'package:chotot/screens/login.dart';
 import 'package:chotot/screens/thongBaoScreen.dart';
+
+import 'package:chotot/screens/tim_tho_screen.dart';
+import 'package:chotot/widgets/vieclam_grid_item.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/data/docu_data.dart';
 import 'package:chotot/screens/raoBan.dart';
 import 'package:chotot/controllers/get_stuffs.dart';
@@ -29,12 +35,15 @@ class _ChoScreenState extends State<ChoScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   final GetStuffs _getStuffs = Get.put(GetStuffs());
+  final GetPostJobs _getPostJobs = Get.put(GetPostJobs());
   final _storage = const FlutterSecureStorage();
-  var currentIndex = 1;
+  var currentIndexMarket = 1;
+  var currentIndexWorker = 1;
   bool isLoading = true;
   bool onLoading = false;
   String tokenString = '';
   late var timer;
+  String selectedScreen = 'market';
   HawkFabMenuController hawkFabMenuController = HawkFabMenuController();
   Widget center = const Center(
     child: CircularProgressIndicator(),
@@ -44,8 +53,16 @@ class _ChoScreenState extends State<ChoScreen>
   }
 
   getData() async {
-    await _getStuffs.getStuffs(currentIndex - 1);
+    await _getStuffs.getStuffs(currentIndexMarket - 1);
     if (items.isNotEmpty) {
+      setState(() {});
+    }
+  }
+
+  getDataJob() async {
+    await _getPostJobs.getPostJobs(currentIndexWorker - 1);
+
+    if (postJobData.isNotEmpty) {
       setState(() {});
     }
   }
@@ -59,9 +76,10 @@ class _ChoScreenState extends State<ChoScreen>
       lowerBound: 0,
       upperBound: 1,
     );
-
+    postJobData.clear();
     items.clear();
-    currentIndex = 1;
+    currentIndexMarket = 1;
+    currentIndexWorker = 1;
     if (mounted) {
       timer = Timer(const Duration(seconds: 3), () {
         setState(() {
@@ -70,7 +88,8 @@ class _ChoScreenState extends State<ChoScreen>
       });
     }
 
-    getData();
+    selectedScreen == 'market' ? getData() : getDataJob();
+
     _animationController.forward();
     super.initState();
   }
@@ -97,20 +116,21 @@ class _ChoScreenState extends State<ChoScreen>
       },
       child: Scaffold(
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Center(
-            child: Text(
-              'Chợ đồ cũ',
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    fontFamily: GoogleFonts.montserrat().fontFamily,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromRGBO(54, 92, 69, 1),
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          foregroundColor: const Color.fromRGBO(54, 92, 69, 1),
+          backgroundColor: Colors.transparent,
+          // title: Center(
+          //   child: Text(
+          //     'Chợ đồ cũ',
+          //     style: Theme.of(context).textTheme.titleLarge!.copyWith(
+          //           fontFamily: GoogleFonts.montserrat().fontFamily,
+          //           fontWeight: FontWeight.bold,
+          //         ),
+          //     textAlign: TextAlign.center,
+          //   ),
+          // ),
+          // foregroundColor: const Color.fromRGBO(54, 92, 69, 1),
           elevation: 0,
           actions: [
             // IconButton(
@@ -193,47 +213,28 @@ class _ChoScreenState extends State<ChoScreen>
           items: [
             HawkFabMenuItem(
                 label: 'Tìm thợ nhanh',
-                ontap: () {
-                  tokenString != ''
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const RaoBanScreen(),
-                          ),
-                        )
-                      : showDialog(
-                          context: Get.context!,
-                          builder: (context) {
-                            return SimpleDialog(
-                              title: const Text(
-                                'Vui lòng đăng nhập',
-                                textAlign: TextAlign.center,
-                              ),
-                              contentPadding: const EdgeInsets.all(20),
-                              children: [
-                                Center(
-                                  child: TextButton(
-                                      onPressed: () {
-                                        Get.to(() => const LoginScreen());
-                                      },
-                                      child: const Text('Đăng nhập')),
-                                ),
-                              ],
-                            );
-                          });
+                ontap: () async {
+                  await getDataJob();
+                  isLoading = false;
+                  setState(() {
+                    selectedScreen = 'worker';
+                  });
                 },
                 icon: const Icon(FontAwesomeIcons.peopleCarryBox),
                 color: Colors.white,
                 labelColor: Colors.black,
                 labelBackgroundColor: Colors.greenAccent),
             HawkFabMenuItem(
-                label: 'Đăng tin',
+                label:
+                    selectedScreen == 'market' ? 'Đăng tin' : 'Đăng việc làm',
                 ontap: () {
                   tokenString != ''
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RaoBanScreen(),
+                            builder: (context) => selectedScreen == "market"
+                                ? const RaoBanScreen()
+                                : const TimThoThongMinhScreen(),
                           ),
                         )
                       : showDialog(
@@ -264,13 +265,13 @@ class _ChoScreenState extends State<ChoScreen>
             HawkFabMenuItem(
                 label: 'Chợ đồ cũ',
                 ontap: () {
+                  setState(() {
+                    selectedScreen = 'market';
+                  });
                   tokenString != ''
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const RaoBanScreen(),
-                          ),
-                        )
+                      ? setState(() {
+                          selectedScreen = 'market';
+                        })
                       : showDialog(
                           context: Get.context!,
                           builder: (context) {
@@ -299,95 +300,195 @@ class _ChoScreenState extends State<ChoScreen>
           ],
           body: isLoading
               ? centerLoading
-              : items.isNotEmpty
-                  ? AnimatedBuilder(
-                      animation: _animationController,
-                      builder: (context, child) => SlideTransition(
-                        position: Tween(
-                          begin: const Offset(0, 1),
-                          end: const Offset(0, 0),
-                        ).animate(
-                          CurvedAnimation(
-                              parent: _animationController,
-                              curve: Curves.easeInOut),
-                        ),
-                        child: child,
-                      ),
-                      child: RefreshLoadmore(
-                        onRefresh: () async {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          items.clear();
-                          currentIndex = 1;
-                          timer = Timer(const Duration(seconds: 3), () {
-                            setState(() {
-                              isLoading = false;
-                              _animationController.forward();
-                            });
-                          });
-
-                          getData();
-                        },
-                        // onLoadmore: () async {
-                        //   if (onLoading == false) {
-                        //     onLoading = true;
-                        //     Timer(const Duration(seconds: 6), () {
-                        //       setState(() {
-                        //         onLoading = false;
-                        //       });
-                        //     });
-                        //     currentIndex += 1;
-                        //     await _getStuffs.getStuffs(currentIndex - 1);
-                        //     setState(() {});
-                        //   }
-                        // },
-                        onLoadmore: () async {
-                          if (onLoading == false) {
-                            await Future.delayed(const Duration(seconds: 6),
-                                () async {
-                              // onLoading = true;
-                              // Timer(const Duration(seconds: 5), () {
-                              //   setState(() {
-                              //     onLoading = false;
-                              //   });
-                              // });
-                              currentIndex += 1;
-                              await _getStuffs.getStuffs(currentIndex - 1);
+              : selectedScreen == 'market'
+                  ? items.isNotEmpty
+                      ? AnimatedBuilder(
+                          animation: _animationController,
+                          builder: (context, child) => SlideTransition(
+                            position: Tween(
+                              begin: const Offset(0, 1),
+                              end: const Offset(0, 0),
+                            ).animate(
+                              CurvedAnimation(
+                                  parent: _animationController,
+                                  curve: Curves.easeInOut),
+                            ),
+                            child: child,
+                          ),
+                          child: RefreshLoadmore(
+                            onRefresh: () async {
                               setState(() {
-                                // _animationController.forward();
+                                isLoading = true;
                               });
-                            });
-                          }
-                        },
-                        // noMoreWidget: Text(
-                        //   'Bạn đã đến cuối trang',
-                        //   style: TextStyle(
-                        //     fontSize: 18,
-                        //     color: Theme.of(context).disabledColor,
-                        //   ),
-                        // ),
-                        isLastPage: _getStuffs.isLastPage,
-                        child: items.isNotEmpty
-                            ? AlignedGridView.count(
-                                shrinkWrap: true,
-                                itemCount: items.length,
-                                physics: const ScrollPhysics(),
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 20,
-                                crossAxisSpacing: 10,
-                                itemBuilder: (context, index) {
-                                  return DoCuGridItem(
-                                    docu: items[index],
-                                  );
-                                },
-                              )
-                            : const Center(
-                                child: Text('Không có sản phẩm'),
-                              ),
-                      ),
-                    )
-                  : center,
+                              items.clear();
+                              currentIndexMarket = 1;
+                              timer = Timer(const Duration(seconds: 3), () {
+                                setState(() {
+                                  isLoading = false;
+                                  _animationController.forward();
+                                });
+                              });
+
+                              getData();
+                            },
+                            // onLoadmore: () async {
+                            //   if (onLoading == false) {
+                            //     onLoading = true;
+                            //     Timer(const Duration(seconds: 6), () {
+                            //       setState(() {
+                            //         onLoading = false;
+                            //       });
+                            //     });
+                            //     currentIndex += 1;
+                            //     await _getStuffs.getStuffs(currentIndex - 1);
+                            //     setState(() {});
+                            //   }
+                            // },
+                            onLoadmore: () async {
+                              if (onLoading == false) {
+                                await Future.delayed(const Duration(seconds: 6),
+                                    () async {
+                                  // onLoading = true;
+                                  // Timer(const Duration(seconds: 5), () {
+                                  //   setState(() {
+                                  //     onLoading = false;
+                                  //   });
+                                  // });
+                                  currentIndexMarket += 1;
+                                  await _getStuffs
+                                      .getStuffs(currentIndexMarket - 1);
+                                  if (mounted) {
+                                    setState(() {
+                                      // _animationController.forward();
+                                    });
+                                  }
+                                });
+                              }
+                            },
+                            // noMoreWidget: Text(
+                            //   'Bạn đã đến cuối trang',
+                            //   style: TextStyle(
+                            //     fontSize: 18,
+                            //     color: Theme.of(context).disabledColor,
+                            //   ),
+                            // ),
+                            isLastPage: _getStuffs.isLastPage,
+                            child: items.isNotEmpty
+                                ? AlignedGridView.count(
+                                    shrinkWrap: true,
+                                    itemCount: items.length,
+                                    physics: const ScrollPhysics(),
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 20,
+                                    crossAxisSpacing: 10,
+                                    itemBuilder: (context, index) {
+                                      return DoCuGridItem(
+                                        docu: items[index],
+                                      );
+                                    },
+                                  )
+                                : const Center(
+                                    child: Text('Không có sản phẩm'),
+                                  ),
+                          ),
+                        )
+                      : const Center(
+                          child: Text('Không có sản phẩm'),
+                        )
+                  : postJobData.isNotEmpty
+                      ? AnimatedBuilder(
+                          animation: _animationController,
+                          builder: (context, child) => SlideTransition(
+                            position: Tween(
+                              begin: const Offset(0, 1),
+                              end: const Offset(0, 0),
+                            ).animate(
+                              CurvedAnimation(
+                                  parent: _animationController,
+                                  curve: Curves.easeInOut),
+                            ),
+                            child: child,
+                          ),
+                          child: RefreshLoadmore(
+                            onRefresh: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              postJobData.clear();
+                              currentIndexWorker = 1;
+                              timer = Timer(const Duration(seconds: 3), () {
+                                setState(() {
+                                  isLoading = false;
+                                  _animationController.forward();
+                                });
+                              });
+
+                              getDataJob();
+                            },
+                            // onLoadmore: () async {
+                            //   if (onLoading == false) {
+                            //     onLoading = true;
+                            //     Timer(const Duration(seconds: 6), () {
+                            //       setState(() {
+                            //         onLoading = false;
+                            //       });
+                            //     });
+                            //     currentIndex += 1;
+                            //     await _getStuffs.getStuffs(currentIndex - 1);
+                            //     setState(() {});
+                            //   }
+                            // },
+                            onLoadmore: () async {
+                              if (onLoading == false) {
+                                await Future.delayed(const Duration(seconds: 6),
+                                    () async {
+                                  // onLoading = true;
+                                  // Timer(const Duration(seconds: 5), () {
+                                  //   setState(() {
+                                  //     onLoading = false;
+                                  //   });
+                                  // });
+                                  currentIndexWorker += 1;
+                                  await _getPostJobs
+                                      .getPostJobs(currentIndexWorker - 1);
+                                  if (mounted) {
+                                    setState(() {
+                                      // _animationController.forward();
+                                    });
+                                  }
+                                });
+                              }
+                            },
+                            // noMoreWidget: Text(
+                            //   'Bạn đã đến cuối trang',
+                            //   style: TextStyle(
+                            //     fontSize: 18,
+                            //     color: Theme.of(context).disabledColor,
+                            //   ),
+                            // ),
+                            isLastPage: _getPostJobs.isLastPage,
+                            child: postJobData.isNotEmpty
+                                ? AlignedGridView.count(
+                                    shrinkWrap: true,
+                                    itemCount: postJobData.length,
+                                    physics: const ScrollPhysics(),
+                                    crossAxisCount: 1,
+                                    mainAxisSpacing: 20,
+                                    crossAxisSpacing: 10,
+                                    itemBuilder: (context, index) {
+                                      return ViecLamGridItem(
+                                        job: postJobData[index],
+                                      );
+                                    },
+                                  )
+                                : const Center(
+                                    child: Text('Không có việc làm'),
+                                  ),
+                          ),
+                        )
+                      : const Center(
+                          child: Text('Không có việc làm'),
+                        ),
         ),
       ),
     );

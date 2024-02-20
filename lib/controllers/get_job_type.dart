@@ -35,6 +35,7 @@ class GetJobTypeController extends GetxController {
 
         if (json['status'] == 'ok') {
           final data = json['data'];
+
           for (int i = 0; i < data.length; i++) {
             jobTypeList.add(
               JobTypeModel(

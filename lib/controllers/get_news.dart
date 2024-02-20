@@ -2,6 +2,8 @@ import 'dart:convert';
 
 // import 'package:flutter/material.dart';
 
+import 'package:chotot/data/get_news_data.dart';
+import 'package:chotot/models/get_news_models.dart';
 import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
@@ -12,7 +14,7 @@ import 'package:chotot/controllers/login_controller.dart';
 
 class GetNews extends GetxController {
   LoginController loginController = Get.put(LoginController());
-  Future<void> getNewsData() async {
+  Future<void> getNewsData({int index = 0}) async {
     // try {
     // var headers = {
     //   "x-access-token": loginController.tokenString,
@@ -22,20 +24,29 @@ class GetNews extends GetxController {
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getNews);
     Map body = {
       'token': 'anhkhongdoiqua',
-      'index': '0',
+      'index': '$index',
     };
     http.Response response = await http.post(
       url,
       body: body,
       // headers: headers,
     );
-    print(response.statusCode);
+    // print(response.statusCode);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      print(json);
-      if (json['status'] == 'ok') {
-        throw jsonDecode(response.body)['error']['message'] ??
-            'Unknown Error Occured';
+      // print(json);
+      for (int i = 0; i < json.length; i++) {
+        newsList.add(
+          News(
+            id: json[i]['id'],
+            tittle: json[i]['tittle'],
+            author: json[i]['author'],
+            link: json[i]['link'],
+            date: json[i]['date'],
+            content: json[i]['content'],
+            decription: json[i]['decription'],
+          ),
+        );
       }
     } else {
       throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
