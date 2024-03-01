@@ -5,18 +5,17 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // import 'dart:io';
 import 'package:chotot/controllers/login_controller.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 
 // import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:chotot/utils/api_endpoints.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 
 class GetPostJobs extends GetxController {
   // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -34,9 +33,7 @@ class GetPostJobs extends GetxController {
     // var itemsStuffIdOwner = itemsOwner.map((item) => item.id);
     // var itemsStuffId = items.map((item) => item.id);
     final tokenLogin = await _storage.read(key: "TOKEN") ?? '';
-    List<Service> seviceList = [];
-    List<Contracts> contractsList = [];
-    List<WorkersPostJob> workersList = [];
+
     // try {
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getPostJobs);
@@ -59,11 +56,11 @@ class GetPostJobs extends GetxController {
 
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
-        var data = json['data'];
         postJobData.clear();
-        seviceList.clear();
-        contractsList.clear();
-        workersList.clear();
+        // seviceList.clear();
+        // contractsList.clear();
+        // workersList.clear();
+        var data = json['data'];
         if (json['error']['code'] == 'NO_JOB_FOUND') {
           isLastPage = true;
         } else {
@@ -73,6 +70,9 @@ class GetPostJobs extends GetxController {
           return;
         }
         for (int i = 0; i < data.length; i++) {
+          List<Service> seviceList = [];
+          List<Contracts> contractsList = [];
+          List<WorkersPostJob> workersList = [];
           for (int j = 0; j < data[i]['job']['services'].length; j++) {
             seviceList.add(
               Service(
@@ -83,9 +83,11 @@ class GetPostJobs extends GetxController {
                 sum: data[i]['job']['services'][j]['sum'].toString(),
                 unitPrice:
                     data[i]['job']['services'][j]['unit_price'].toString(),
+                name: data[i]['job']['services'][j]['name'].toString(),
               ),
             );
           }
+
           for (int c = 0; c < data[i]['contracts'].length; c++) {
             contractsList.add(Contracts(
               id: data[i]['contracts'][c]['_id'].toString(),
@@ -177,25 +179,25 @@ class GetPostJobs extends GetxController {
           );
         }
       } else if (json['status'] == 'error') {
-        if (json['error']['message'] == 'Không có công việc') {
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Center(
-                      child: Text('Không còn công việc',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    fontFamily: GoogleFonts.lato().fontFamily,
-                                  )),
-                    ),
-                  ],
-                );
-              });
-          return;
-        }
+        // if (json['error']['message'] == 'Không có công việc') {
+        //   showDialog(
+        //       context: Get.context!,
+        //       builder: (context) {
+        //         return SimpleDialog(
+        //           contentPadding: const EdgeInsets.all(20),
+        //           children: [
+        //             Center(
+        //               child: Text('Không còn công việc',
+        //                   style:
+        //                       Theme.of(context).textTheme.bodyLarge!.copyWith(
+        //                             fontFamily: GoogleFonts.lato().fontFamily,
+        //                           )),
+        //             ),
+        //           ],
+        //         );
+        //       });
+        //   return;
+        // }
       }
       // final SharedPreferences? prefs = await _prefs;
       // await prefs?.setString('token', token);

@@ -21,6 +21,7 @@ class GetJobService extends GetxController {
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
+
       if (json['status'] == 'ok') {
         final data = json['data'];
 

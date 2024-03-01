@@ -62,10 +62,10 @@ class _CongViecScreenState extends State<CongViecScreen>
       text: "Tất cả",
     ),
     const Tab(
-      text: 'Có thợ ứng tuyển',
+      text: 'Công việc mới đăng',
     ),
     const Tab(
-      text: 'Công việc mới đăng',
+      text: 'Có thợ ứng tuyển',
     ),
     const Tab(
       text: 'Đã chọn thợ làm việc',
@@ -80,20 +80,12 @@ class _CongViecScreenState extends State<CongViecScreen>
       text: 'Chủ nhà đã báo hoàn tất',
     ),
   ];
-  // @override
-  // void initState() {
-
-  //   super.initState();
-  //   // Create TabController for getting the index of current tab
-  //   _controller = TabController(length: list.length, vsync: this);
-
-  //   _controller.addListener(() {
-  //     setState(() {
-  //       _selectedIndex = _controller.index;
-  //     });
-  //     // print("Selected Index: " + _controller.index.toString());
-  //   });
-  // }
+  @override
+  void initState() {
+    getHostJob.getHostJob(0);
+    setState(() {});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -304,7 +296,6 @@ class _CongViecScreenState extends State<CongViecScreen>
                             child: Image.asset(
                               'image/6678.jpg',
                               height: MediaQuery.of(context).size.height * 0.3,
-                              color: Colors.white,
                             ),
                           )
                         : TabBarView(
@@ -327,6 +318,7 @@ class _CongViecScreenState extends State<CongViecScreen>
   }
 }
 
+// ignore: must_be_immutable
 class HostJobStatus extends StatefulWidget {
   HostJobStatus({
     super.key,
@@ -340,7 +332,7 @@ class HostJobStatus extends StatefulWidget {
 class _HostJobStatusState extends State<HostJobStatus> {
   GetHostJob getHostJob = Get.put(GetHostJob());
   GetAJob getAJob = Get.put(GetAJob());
-  // @override
+  @override
   // void initState() {
   //   getHostJob.statusHostJob = widget.status;
   //   getHostJob.getHostJob(0);
@@ -359,8 +351,10 @@ class _HostJobStatusState extends State<HostJobStatus> {
                   // imgUrl.removeAt(0);
                   // imgUrl.removeAt(imgUrl.length - 1);
                   var dateTime = DateTime.fromMillisecondsSinceEpoch(
-                          int.parse(item.workDate))
+                          int.parse(item.workDate),
+                          isUtc: true)
                       .toString();
+
                   var dateStringList = dateTime.split(' ');
                   var date = dateStringList[0];
                   var time = dateStringList[1];
@@ -379,7 +373,7 @@ class _HostJobStatusState extends State<HostJobStatus> {
                         return 'Công việc đã hủy';
                       case 'worker_done':
                         return 'Thợ đã báo làm xong';
-                      case 'finish_job':
+                      case 'finish':
                         return 'Chủ nhà đã báo hoàn tất';
                     }
                   }
@@ -419,27 +413,32 @@ class _HostJobStatusState extends State<HostJobStatus> {
                                       topLeft: Radius.circular(10),
                                       bottomLeft: Radius.circular(10)),
                                 ),
-                                child: CachedNetworkImage(
-                                    imageUrl:
-                                        item.photos[0].split('"').join(''),
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(10),
-                                                    topRight:
-                                                        Radius.circular(10)),
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,
+                                child: item.photos.isEmpty
+                                    ? Image.asset('image/no_image.png',
+                                        color: Colors.grey)
+                                    : CachedNetworkImage(
+                                        imageUrl:
+                                            item.photos[0].split('"').join(''),
+                                        imageBuilder: (context,
+                                                imageProvider) =>
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(10),
+                                                        topRight:
+                                                            Radius.circular(
+                                                                10)),
+                                                image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                    memCacheWidth: 200,
-                                    maxHeightDiskCache: 200,
-                                    maxWidthDiskCache: 200),
+                                        memCacheWidth: 200,
+                                        maxHeightDiskCache: 200,
+                                        maxWidthDiskCache: 200),
                               ),
                               Flexible(
                                 child: Column(

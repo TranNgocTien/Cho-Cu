@@ -33,7 +33,7 @@ class _ThongTinJobScreenState extends State<ThongTinJobScreen> {
         return 'Công việc đã hủy';
       case 'worker_done':
         return 'Thợ đã báo làm xong';
-      case 'finish_job':
+      case 'finish':
         return 'Chủ nhà đã báo hoàn tất';
     }
   }
@@ -56,59 +56,93 @@ class _ThongTinJobScreenState extends State<ThongTinJobScreen> {
                 enableInfiniteScroll: false,
                 viewportFraction: 1,
               ),
-              items: widget.jobInfo[0].photos.map((photo) {
-                return InstaImageViewer(
-                  child: Container(
-                    // margin: const EdgeInsets.all(8),
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                    child: Center(
-                      child: Builder(
-                        builder: (BuildContext context) {
-                          return Stack(children: [
-                            Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                              child: Image.network(
-                                photo.split('"').join(''),
-                                fit: BoxFit.cover,
-                                height: double.infinity,
-                                width: MediaQuery.of(context).size.width,
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 4,
-                              right: 4,
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 30,
-                                width: 30,
-                                decoration: const BoxDecoration(
-                                  color: Color.fromARGB(93, 0, 0, 0),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Text(
-                                  '${widget.jobInfo[0].photos.indexOf(photo) + 1}/${widget.jobInfo[0].photos.length}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
+              items: widget.jobInfo[0].photos.isEmpty
+                  ? [
+                      InstaImageViewer(
+                        child: Container(
+                          // margin: const EdgeInsets.all(8),
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          child: Center(
+                            child: Builder(
+                              builder: (BuildContext context) {
+                                return Stack(children: [
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                    child: Image.asset(
+                                      'image/no_image.png',
+                                      fit: BoxFit.cover,
+                                      height: double.infinity,
+                                      width: MediaQuery.of(context).size.width,
+                                    ),
                                   ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            )
-                          ]);
-                        },
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
+                                ]);
+                              },
+                            ),
+                          ),
+                        ),
+                      )
+                    ]
+                  : widget.jobInfo[0].photos.map((photo) {
+                      return InstaImageViewer(
+                        child: Container(
+                          // margin: const EdgeInsets.all(8),
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          child: Center(
+                            child: Builder(
+                              builder: (BuildContext context) {
+                                return Stack(children: [
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                    child: Image.network(
+                                      photo.split('"').join(''),
+                                      fit: BoxFit.cover,
+                                      height: double.infinity,
+                                      width: MediaQuery.of(context).size.width,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 4,
+                                    right: 4,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      height: 30,
+                                      width: 30,
+                                      decoration: const BoxDecoration(
+                                        color: Color.fromARGB(93, 0, 0, 0),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Text(
+                                        '${widget.jobInfo[0].photos.indexOf(photo) + 1}/${widget.jobInfo[0].photos.length}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  )
+                                ]);
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
             ),
             const SizedBox(height: 30),
             Padding(
@@ -133,7 +167,7 @@ class _ThongTinJobScreenState extends State<ThongTinJobScreen> {
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Text(jobStatus(widget.jobInfo[0].status),
+              child: Text(jobStatus(widget.jobInfo[0].status.toString()),
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       fontFamily: GoogleFonts.lato().fontFamily,
                       fontWeight: FontWeight.w600,

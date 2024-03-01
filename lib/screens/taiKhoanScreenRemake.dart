@@ -1,8 +1,16 @@
 // import 'dart:ui';
 
+import 'package:chotot/controllers/get_job_type.dart';
 import 'package:chotot/controllers/get_ly_lich.dart';
+import 'package:chotot/controllers/statistics.dart';
+import 'package:chotot/controllers/statistics_user.dart';
+import 'package:chotot/data/statistics_user_data.dart';
+import 'package:chotot/data/type_user.dart';
 import 'package:chotot/screens/login.dart';
-import 'package:chotot/screens/worker_rate_screen.dart';
+import 'package:chotot/screens/nap_tien_screen.dart';
+// import 'package:chotot/screens/statistics_screen.dart';
+import 'package:chotot/screens/statistics_user_screen.dart';
+// import 'package:chotot/screens/worker_rate_screen.dart';
 
 import 'package:flutter/material.dart';
 
@@ -27,8 +35,10 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
   LoginController loginController = Get.put(LoginController());
   LyLichController lyLichController = Get.put(LyLichController());
   LogOutController logOutController = Get.put(LogOutController());
+  Statistics statistics = Get.put(Statistics());
+  GetJobTypeController getJobTypeController = Get.put(GetJobTypeController());
   final _storage = const FlutterSecureStorage();
-
+  StatisticsUser statisticsUser = Get.put(StatisticsUser());
   String tokenString = '';
   void isLogin() async {
     tokenString = await _storage.read(key: "TOKEN") ?? '';
@@ -38,11 +48,32 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
     }
   }
 
+  DateTime now = DateTime.now();
+  getStatisticsData() async {
+    statisticsUserData.clear();
+    await statisticsUser.getStatisticsUser(
+        type,
+        '${now.year}-${now.month < 10 ? '0' : ''}${now.month}-01',
+        '${now.year}-${now.month + 1 < 10 ? '0' : ''}${now.month + 1 > 12 ? 12 : now.month + 1}-${now.month + 1 > 12 ? '30' : ''}');
+    statisticsUserData.add(statisticsUser.statisticsUser);
+  }
+
+  getStatisticsDataTotal() async {
+    statisticsUserDataTotal.clear();
+    await statisticsUser.getStatisticsUser(
+        type, '${now.year}-01-01', '${now.year}-12-30');
+    statisticsUserDataTotal.add(statisticsUser.statisticsUser);
+  }
+
   @override
   void initState() {
+    getJobTypeController.getJobType();
+    statistics.getStatistics();
     isLogin();
     if (loginController.tokenString != '') {
       lyLichController.getInfo();
+      getStatisticsData();
+      getStatisticsDataTotal();
     }
     super.initState();
   }
@@ -152,7 +183,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
               GestureDetector(
                 onTap: () async {
                   tokenString != ''
-                      ? Get.to(() => const WorkerRateScreen())
+                      ? Get.to(() => const StatisticsUserScreen())
                       : showDialog(
                           context: Get.context!,
                           builder: (context) {
@@ -203,7 +234,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
               GestureDetector(
                 onTap: () async {
                   tokenString != ''
-                      ? Get.to(() => const LyLichScreen())
+                      ? Get.to(() => const NapTienScreen())
                       : showDialog(
                           context: Get.context!,
                           builder: (context) {
@@ -427,6 +458,68 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
                         ),
                       ),
                     ),
+              GestureDetector(
+                onTap: () async {
+                  tokenString != ''
+                      ? setState(() {
+                          type = type == 'host' ? 'worker' : 'host';
+                          getStatisticsData();
+                          getStatisticsDataTotal();
+                        })
+                      : showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: const Text(
+                                'Vui lòng đăng nhập',
+                                textAlign: TextAlign.center,
+                              ),
+                              contentPadding: const EdgeInsets.all(20),
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                      child: const Text('Đăng nhập')),
+                                ),
+                              ],
+                            );
+                          });
+                  // await prefs.setString('token', token.toString());
+                },
+                child: Card(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.height * 0.3,
+                          child: Row(children: [
+                            Image.asset(
+                              type == 'host'
+                                  ? 'image/mechanic.png'
+                                  : 'image/computer-worker.png',
+                              height: 30,
+                              width: 30,
+                            ),
+                            const SizedBox(width: 20),
+                            Text(
+                              type == 'host'
+                                  ? 'Chuyển đổi thợ'
+                                  : 'Chuyển đổi chủ nhà',
+                            ),
+                          ]),
+                        ),
+                        const Icon(Icons.change_circle_outlined)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               tokenString != ''
                   ? lyLichInfo[0].workerAuthen == 'true'
                       ? GestureDetector(

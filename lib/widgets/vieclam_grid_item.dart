@@ -43,7 +43,8 @@ class ViecLamGridItem extends StatelessWidget {
     }
 
     var dateTime = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(job.job.workDate.toString()));
+        int.parse(job.job.workDate.toString()),
+        isUtc: true);
 
     // var dateStringList = dateTime.split(' ');
     // var date = dateStringList[0];

@@ -16,6 +16,14 @@ import 'package:chotot/utils/api_endpoints.dart';
 class GetHostJob extends GetxController {
   // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   // final _storage = const FlutterSecureStorage();
+
+  List<String> hostJobDataPostingIndex = [];
+  List<String> hostJobDataApplyIndex = [];
+  List<String> hostJobDataAcceptIndex = [];
+  List<String> hostJobDataCancelIndex = [];
+  List<String> hostJobDataWorkerDoneIndex = [];
+  List<String> hostJobDataFinishJobIndex = [];
+
   bool isLoading = true;
   bool isLastPage = false;
   String statusHostJob = '';
@@ -53,16 +61,13 @@ class GetHostJob extends GetxController {
 
         statusHostJob = '';
         hostJobDataAll.clear();
-        hostJobDataPosting.clear();
-        hostJobDataApply.clear();
-        hostJobDataAccept.clear();
-        hostJobDataCancel.clear();
-        hostJobDataWorkerDone.clear();
-        hostJobDataFinishJob.clear();
+
         for (int i = 0; i < data.length; i++) {
           tempPhoto = data[i]['photos'].toList();
 
-          if (tempPhoto[0].contains(']')) {
+          if (data[i]['photos'][0] == '[]') {
+            photos = [];
+          } else if (tempPhoto[0].contains(']')) {
             photos = jsonDecode(tempPhoto[0].replaceAll(RegExp(r'^\[\]$'), ''));
           } else {
             photos = [...data[i]['photos']];
@@ -104,7 +109,9 @@ class GetHostJob extends GetxController {
             ),
           );
 
-          if (data[i]['status'] == 'posting') {
+          if (data[i]['status'] == 'posting' &&
+              hostJobDataPostingIndex.contains(data[i]['_id']) == false) {
+            hostJobDataPostingIndex.add(data[i]['_id']);
             hostJobDataPosting.add(
               HostJob(
                 id: data[i]['_id'].toString(),
@@ -143,7 +150,9 @@ class GetHostJob extends GetxController {
               ),
             );
           }
-          if (data[i]['status'] == 'apply') {
+          if (data[i]['status'] == 'apply' &&
+              hostJobDataApplyIndex.contains(data[i]['_id']) == false) {
+            hostJobDataApplyIndex.add(data[i]['_id']);
             hostJobDataApply.add(
               HostJob(
                 id: data[i]['_id'].toString(),
@@ -182,7 +191,9 @@ class GetHostJob extends GetxController {
               ),
             );
           }
-          if (data[i]['status'] == 'accept') {
+          if (data[i]['status'] == 'accept' &&
+              hostJobDataAcceptIndex.contains(data[i]['_id']) == false) {
+            hostJobDataAcceptIndex.add(data[i]['_id']);
             hostJobDataAccept.add(
               HostJob(
                 id: data[i]['_id'].toString(),
@@ -221,7 +232,9 @@ class GetHostJob extends GetxController {
               ),
             );
           }
-          if (data[i]['status'] == 'cancel') {
+          if (data[i]['status'] == 'cancel' &&
+              hostJobDataCancelIndex.contains(data[i]['_id']) == false) {
+            hostJobDataCancelIndex.add(data[i]['_id']);
             hostJobDataCancel.add(
               HostJob(
                 id: data[i]['_id'].toString(),
@@ -260,7 +273,9 @@ class GetHostJob extends GetxController {
               ),
             );
           }
-          if (data[i]['status'] == 'worker_done') {
+          if (data[i]['status'] == 'worker_done' &&
+              hostJobDataWorkerDoneIndex.contains(data[i]['_id']) == false) {
+            hostJobDataWorkerDoneIndex.add(data[i]['_id']);
             hostJobDataWorkerDone.add(
               HostJob(
                 id: data[i]['_id'].toString(),
@@ -299,7 +314,9 @@ class GetHostJob extends GetxController {
               ),
             );
           }
-          if (data[i]['status'] == 'finish_job') {
+          if (data[i]['status'] == 'finish' &&
+              hostJobDataFinishJobIndex.contains(data[i]['_id']) == false) {
+            hostJobDataFinishJobIndex.add(data[i]['_id']);
             hostJobDataFinishJob.add(
               HostJob(
                 id: data[i]['_id'].toString(),

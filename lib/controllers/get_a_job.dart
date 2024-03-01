@@ -37,7 +37,7 @@ class GetAJob extends GetxController {
     );
 
     final json = jsonDecode(response.body);
-
+ 
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         jobInfo.clear();
@@ -48,8 +48,9 @@ class GetAJob extends GetxController {
 
         tempPhoto = data['job']['photos'].toList();
 
-        // print(photos);
-        if (tempPhoto[0].contains(']')) {
+        if (data['job']['photos'][0] == '[]') {
+          photos = [];
+        } else if (tempPhoto[0].contains(']')) {
           photos = jsonDecode(tempPhoto[0].replaceAll(RegExp(r'^\[\]$'), ''));
         } else {
           photos = [...data['photos']];

@@ -60,6 +60,10 @@ class _NewsGridItemState extends State<NewsGridItem> {
                 child: CachedNetworkImage(
                     imageUrl:
                         'https://gihome.tech/services/${widget.newItems.link}',
+                    // placeholder: (context, url) =>
+                    //     const CircularProgressIndicator(strokeWidth: 5.0),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                     imageBuilder: (context, imageProvider) => Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(

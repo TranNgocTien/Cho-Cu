@@ -10,6 +10,7 @@ import 'package:chotot/data/get_vouchers_valid_data.dart';
 import 'package:chotot/data/job_service_data.dart';
 
 import 'package:chotot/screens/login.dart';
+import 'package:chotot/screens/tim_tho_screen.dart';
 import 'package:chotot/widgets/news_grid_item.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
@@ -170,6 +171,7 @@ class _TimThoScreenState extends State<TimThoScreen>
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
                         fontFamily: GoogleFonts.montserrat().fontFamily,
                         color: Colors.white,
+                        fontSize: 17,
                       ),
                 ),
                 loginController.tokenString != ''
@@ -182,6 +184,7 @@ class _TimThoScreenState extends State<TimThoScreen>
                               fontFamily: GoogleFonts.montserrat().fontFamily,
                               fontWeight: FontWeight.w900,
                               color: Colors.white,
+                              fontSize: 17,
                             ),
                       )
                     : const SizedBox(),
@@ -423,7 +426,7 @@ class _TimThoScreenState extends State<TimThoScreen>
                     'DỊCH VỤ',
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: Colors.grey,
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                         ),
                     textAlign: TextAlign.start,
                   ),
@@ -496,48 +499,56 @@ class _TimThoScreenState extends State<TimThoScreen>
                             //   ),
                             // ),
                             ...jobServiceList.map((jobService) {
-                              return Container(
-                                margin: jobService.code == 'PC_SV'
-                                    ? const EdgeInsets.only(left: 0, right: 0)
-                                    : const EdgeInsets.only(right: 30),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                        padding: const EdgeInsets.all(15.0),
-                                        decoration: BoxDecoration(
-                                            color: const Color.fromRGBO(
-                                                230, 246, 235, 1),
-                                            borderRadius:
-                                                BorderRadius.circular(50)),
-                                        child: CachedNetworkImage(
-                                          imageUrl: jobService.img,
-                                          placeholder: (context, url) =>
-                                              const CircularProgressIndicator(),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                          height: 50,
-                                          width: 50,
-                                        )
-                                        // child: Image.network(jobService.img,
-                                        //     height: 50, width: 50),
-                                        ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      jobService.shortName,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .copyWith(
-                                            fontFamily: GoogleFonts.montserrat()
-                                                .fontFamily,
-                                            color: Colors.grey,
+                              return GestureDetector(
+                                onTap: () {
+                                  Get.to(() => TimThoThongMinhScreen(
+                                      codeService: jobService.code));
+                                },
+                                child: Container(
+                                  margin: jobService.code == 'PC_SV'
+                                      ? const EdgeInsets.only(left: 0, right: 0)
+                                      : const EdgeInsets.only(right: 30),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          padding: const EdgeInsets.all(15.0),
+                                          decoration: BoxDecoration(
+                                              color: const Color.fromRGBO(
+                                                  230, 246, 235, 1),
+                                              borderRadius:
+                                                  BorderRadius.circular(50)),
+                                          child: CachedNetworkImage(
+                                            imageUrl: jobService.img,
+                                            placeholder: (context, url) =>
+                                                const CircularProgressIndicator(),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                            height: 50,
+                                            width: 50,
+                                          )
+                                          // child: Image.network(jobService.img,
+                                          //     height: 50, width: 50),
                                           ),
-                                      maxLines: 2,
-                                      softWrap: false,
-                                      overflow: TextOverflow.clip,
-                                    ),
-                                  ],
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        jobService.shortName,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .copyWith(
+                                              fontFamily:
+                                                  GoogleFonts.montserrat()
+                                                      .fontFamily,
+                                              color: Colors.grey,
+                                            ),
+                                        maxLines: 2,
+                                        softWrap: false,
+                                        overflow: TextOverflow.clip,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             }).toList()

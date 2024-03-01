@@ -5,6 +5,7 @@ import 'package:chotot/controllers/host_done.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/controllers/worker_done.dart';
 import 'package:chotot/data/acceptorker_data.dart';
+import 'package:chotot/data/ly_lich.dart';
 import 'package:chotot/models/get_post_job_model.dart';
 import 'package:chotot/screens/host_rate_screen.dart';
 import 'package:chotot/screens/worker_rate_screen.dart';
@@ -31,6 +32,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
   var readMoreContract = 1;
   final _formKey = GlobalKey<FormState>();
   bool chooseWorker = false;
+
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   void showCustomDialog(BuildContext context) {
     showGeneralDialog(
@@ -59,6 +61,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                           TextFormField(
                             controller: applyJob.description,
                           ),
+                          const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -105,9 +108,10 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var createAt = DateTime.parse(widget.job.job.createdAt);
+    // var createAt = DateTime.parse(widget.job.job.createdAt);
     var dateTime = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(widget.job.job.workDate.toString()));
+        int.parse(widget.job.job.workDate.toString()),
+        isUtc: true);
     final priceReverse = StringUtils.addCharAtPosition(
         StringUtils.reverse(widget.job.job.sumPrice), ".", 3,
         repeat: true);
@@ -167,7 +171,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                     child: Column(
                       children: [
                         Text(
-                          'Lương',
+                          'Giá',
                           style:
                               Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     fontFamily: GoogleFonts.lato().fontFamily,
@@ -217,7 +221,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
             Padding(
               padding: const EdgeInsets.all(15),
               child: Text(
-                'Thời gian khởi tạo:',
+                'Thời gian làm việc:',
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontFamily: GoogleFonts.lato().fontFamily,
                     ),
@@ -227,7 +231,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 20),
               child: Text(
-                '${createAt.hour < 10 ? 0 : ''}${createAt.hour}:${createAt.minute < 10 ? 0 : ''}${createAt.minute} - ${createAt.day < 10 ? 0 : ''}${createAt.day}/${createAt.month < 10 ? 0 : ''}${createAt.month}/${createAt.year}',
+                '${dateTime.hour < 10 ? 0 : ''}${dateTime.hour}:${dateTime.minute < 10 ? 0 : ''}${dateTime.minute} - ${dateTime.day < 10 ? 0 : ''}${dateTime.day}/${dateTime.month < 10 ? 0 : ''}${dateTime.month}/${dateTime.year}',
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontFamily: GoogleFonts.lato().fontFamily,
                       color: Colors.grey,
@@ -254,46 +258,70 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                     ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Text(
-                'Địa chỉ:',
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontFamily: GoogleFonts.lato().fontFamily,
-                    ),
-                textAlign: TextAlign.start,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: Text(
-                widget.job.job.address,
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontFamily: GoogleFonts.lato().fontFamily,
-                      color: Colors.grey,
-                    ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Text(
-                'Số điện thoại:',
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontFamily: GoogleFonts.lato().fontFamily,
-                    ),
-                textAlign: TextAlign.start,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: Text(
-                widget.job.job.phone,
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontFamily: GoogleFonts.lato().fontFamily,
-                      color: Colors.grey,
-                    ),
-              ),
-            ),
+            acceptWorkerData.isNotEmpty
+                ? loginController.hostId == acceptWorkerData[0].employeeId ||
+                        loginController.hostId == acceptWorkerData[0].hostId
+                    ? Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Text(
+                          'Địa chỉ:',
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    fontFamily: GoogleFonts.lato().fontFamily,
+                                  ),
+                          textAlign: TextAlign.start,
+                        ),
+                      )
+                    : const SizedBox()
+                : const SizedBox(),
+            acceptWorkerData.isNotEmpty
+                ? loginController.hostId == acceptWorkerData[0].employeeId ||
+                        loginController.hostId == acceptWorkerData[0].hostId
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          widget.job.job.address,
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    fontFamily: GoogleFonts.lato().fontFamily,
+                                    color: Colors.grey,
+                                  ),
+                        ),
+                      )
+                    : const SizedBox()
+                : const SizedBox(),
+            acceptWorkerData.isNotEmpty
+                ? loginController.hostId == acceptWorkerData[0].employeeId ||
+                        loginController.hostId == acceptWorkerData[0].hostId
+                    ? Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Text(
+                          'Số điện thoại:',
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    fontFamily: GoogleFonts.lato().fontFamily,
+                                  ),
+                          textAlign: TextAlign.start,
+                        ),
+                      )
+                    : const SizedBox()
+                : const SizedBox(),
+            acceptWorkerData.isNotEmpty
+                ? loginController.hostId == acceptWorkerData[0].employeeId ||
+                        loginController.hostId == acceptWorkerData[0].hostId
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          widget.job.job.phone,
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    fontFamily: GoogleFonts.lato().fontFamily,
+                                    color: Colors.grey,
+                                  ),
+                        ),
+                      )
+                    : const SizedBox()
+                : const SizedBox(),
             Padding(
               padding: const EdgeInsets.all(15),
               child: Text(
@@ -317,14 +345,14 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                       child: ListTile(
                         leading: Container(
                           padding: const EdgeInsets.only(
-                              right: 20, top: 10, bottom: 10),
+                              right: 5, top: 10, bottom: 10),
                           decoration: const BoxDecoration(
                             border: Border(
                               right: BorderSide(color: Colors.grey),
                             ),
                           ),
                           child: Text(
-                            service.qt.toString(),
+                            '${StringUtils.reverse(priceReverseUnitPrice)} x ${service.qt}',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
@@ -335,9 +363,9 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                           ),
                         ),
                         title: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 2.5),
                           child: Text(
-                            service.description,
+                            service.name.toString(),
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
@@ -348,9 +376,9 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                           ),
                         ),
                         subtitle: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 2.5),
                           child: Text(
-                            '${StringUtils.reverse(priceReverseUnitPrice)} Đ x ${service.qt}',
+                            service.description,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
@@ -362,7 +390,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                         ),
                         trailing: Container(
                           padding: const EdgeInsets.only(
-                              left: 20, top: 10, bottom: 10),
+                              left: 5, top: 10, bottom: 10),
                           decoration: const BoxDecoration(
                             border: Border(
                               left: BorderSide(color: Colors.grey),
@@ -409,21 +437,25 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                           fontFamily: GoogleFonts.lato().fontFamily,
                           color: Colors.green),
                     )),
-            chooseWorker != true
-                ? loginController.hostId == widget.job.job.hostId
-                    ? Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Text(
-                          'Danh sách thợ ứng tuyển:',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+            widget.job.contracts.isEmpty
+                ? const SizedBox()
+                : chooseWorker != true
+                    ? loginController.hostId == widget.job.job.hostId
+                        ? Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Text(
+                              'Danh sách thợ ứng tuyển:',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
                                     fontFamily: GoogleFonts.lato().fontFamily,
                                   ),
-                          textAlign: TextAlign.start,
-                        ),
-                      )
-                    : const SizedBox()
-                : const SizedBox(),
+                              textAlign: TextAlign.start,
+                            ),
+                          )
+                        : const SizedBox()
+                    : const SizedBox(),
             ...widget.job.contracts.map((contract) {
               var createAt = DateTime.parse(contract.createdAt);
 
@@ -501,15 +533,18 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                       ),
                                     ),
                                     child: Text(
-                                      contract.status,
+                                      'Chọn thợ',
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleSmall!
                                           .copyWith(
-                                              fontFamily:
-                                                  GoogleFonts.lato().fontFamily,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black87),
+                                            color: const Color.fromRGBO(
+                                                38, 166, 83, 1),
+                                            fontFamily:
+                                                GoogleFonts.lato().fontFamily,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
@@ -519,56 +554,196 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                       : const SizedBox()
                   : const SizedBox();
             }).toList(),
-            chooseWorker != true
-                ? loginController.hostId == widget.job.job.hostId
-                    ? readMoreContract == 1
-                        ? TextButton(
-                            onPressed: () {
-                              setState(() {
-                                readMoreContract = 0;
-                              });
-                            },
-                            child: Text(
-                              'Thu gọn',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                      fontFamily: GoogleFonts.lato().fontFamily,
-                                      color: Colors.red),
-                            ),
-                          )
-                        : TextButton(
-                            onPressed: () {
-                              setState(() {
-                                readMoreContract = 1;
-                              });
-                            },
-                            child: Text(
-                              'Xem thêm',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                      fontFamily: GoogleFonts.lato().fontFamily,
-                                      color: Colors.green),
-                            ))
-                    : const SizedBox()
-                : const SizedBox(),
+            widget.job.contracts.isEmpty
+                ? const SizedBox()
+                : chooseWorker != true
+                    ? loginController.hostId == widget.job.job.hostId
+                        ? readMoreContract == 1
+                            ? TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    readMoreContract = 0;
+                                  });
+                                },
+                                child: Text(
+                                  'Thu gọn',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                          fontFamily:
+                                              GoogleFonts.lato().fontFamily,
+                                          color: Colors.red),
+                                ),
+                              )
+                            : TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    readMoreContract = 1;
+                                  });
+                                },
+                                child: Text(
+                                  'Xem thêm',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                          fontFamily:
+                                              GoogleFonts.lato().fontFamily,
+                                          color: Colors.green),
+                                ))
+                        : const SizedBox()
+                    : const SizedBox(),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.only(
+                top: 20,
+                left: 150,
+              ),
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              child: Column(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Phí di chuyển:',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                          ),
+                    ),
+                    Text(
+                      StringUtils.reverse(StringUtils.addCharAtPosition(
+                          StringUtils.reverse(
+                            widget.job.job.movingFee,
+                          ),
+                          ".",
+                          3,
+                          repeat: true)),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Giảm giá:',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                          ),
+                    ),
+                    Text(
+                      StringUtils.reverse(StringUtils.addCharAtPosition(
+                          StringUtils.reverse(
+                            widget.job.job.discount,
+                          ),
+                          ".",
+                          3,
+                          repeat: true)),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Giá dịch vụ:',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                          ),
+                    ),
+                    Text(
+                      StringUtils.reverse(StringUtils.addCharAtPosition(
+                          StringUtils.reverse(
+                            widget.job.job.price,
+                          ),
+                          ".",
+                          3,
+                          repeat: true)),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Phụ thu ngày lễ:',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                          ),
+                    ),
+                    Text(
+                      StringUtils.reverse(StringUtils.addCharAtPosition(
+                          StringUtils.reverse(
+                            widget.job.job.discount,
+                          ),
+                          ".",
+                          3,
+                          repeat: true)),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                          ),
+                    ),
+                  ],
+                ),
+              ]),
+            ),
             loginController.hostId != widget.job.job.hostId
                 ? chooseWorker != true
                     ? Center(
                         child: OutlinedButton(
-                          onPressed: () {
-                            showCustomDialog(context);
-                          },
+                          onPressed: applyJob.registerSuccess == true
+                              ? null
+                              : () {
+                                  lyLichInfo[0].workerAuthen == 'true'
+                                      ? showCustomDialog(context)
+                                      : showDialog(
+                                          context: Get.context!,
+                                          builder: (context) {
+                                            return SimpleDialog(
+                                              contentPadding:
+                                                  const EdgeInsets.all(20),
+                                              children: [
+                                                Center(
+                                                  child: Text(
+                                                    'Bạn cần phải đăng ký thợ để ứng tuyển công việc',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge!
+                                                        .copyWith(
+                                                            fontFamily:
+                                                                GoogleFonts
+                                                                        .rubik()
+                                                                    .fontFamily),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                },
                           style: OutlinedButton.styleFrom(
                               elevation: 1,
                               foregroundColor: Colors.lightGreen,
                               side: const BorderSide(
                                   color: Colors.green, width: 2.0)),
                           child: Text(
-                            'Đăng ký công việc',
+                            applyJob.registerSuccess
+                                ? 'Chờ xác nhận của chủ nhà'
+                                : 'Đăng ký công việc',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
@@ -580,8 +755,11 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                           ),
                         ),
                       )
-                    : const Center(
-                        child: Text('Công việc đã tuyển được thợ'),
+                    : Center(
+                        child: Text(loginController.hostId ==
+                                acceptWorkerData[0].employeeId
+                            ? 'Chủ nhà đã chọn bạn thực hiện công việc'
+                            : 'Công việc đã tuyển được thợ'),
                       )
                 : const SizedBox(),
             chooseWorker == true

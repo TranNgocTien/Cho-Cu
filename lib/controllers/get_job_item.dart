@@ -24,6 +24,7 @@ class GetJobItem extends GetxController {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
+
         if (json['status'] == 'ok') {
           jobItemList.clear();
           final data = json['data'];

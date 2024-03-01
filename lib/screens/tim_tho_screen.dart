@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 // import 'package:basic_utils/basic_utils.dart';
+import 'package:basic_utils/basic_utils.dart' as basic;
 import 'package:chotot/controllers/book_job_v3.dart';
 import 'package:chotot/controllers/get_job_item.dart';
 import 'package:chotot/controllers/get_jobservice.dart';
@@ -39,8 +40,8 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class TimThoThongMinhScreen extends StatefulWidget {
-  const TimThoThongMinhScreen({super.key});
-
+  const TimThoThongMinhScreen({super.key, required this.codeService});
+  final String codeService;
   @override
   State<TimThoThongMinhScreen> createState() => _TimThoThongMinhScreenState();
 }
@@ -56,6 +57,8 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
   BookJob bookJob = Get.put(BookJob());
   String serviceSelected = '';
   String workHour = '';
+  int timeStampWorkhour = 0;
+  int countGetPrice = 0;
   Future<void> _convertCoordinatefromAddress(double lat, double lng) async {
     final url = Uri.parse(
         'https://rsapi.goong.io/Geocode?latlng=$lat,$lng&api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB');
@@ -87,21 +90,21 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
   }
 
   bookJobV3() async {
-    if (bookJob.imageFileList!.isEmpty || bookJob.imageFileList!.length > 3) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Đăng tối thiểu 1 ảnh, tối đa 3 ảnh',
-                ),
-              ],
-            );
-          });
-      return;
-    }
+    // if (bookJob.imageFileList!.isEmpty || bookJob.imageFileList!.length > 3) {
+    //   showDialog(
+    //       context: Get.context!,
+    //       builder: (context) {
+    //         return const SimpleDialog(
+    //           contentPadding: EdgeInsets.all(20),
+    //           children: [
+    //             Text(
+    //               'Đăng tối thiểu 1 ảnh, tối đa 3 ảnh',
+    //             ),
+    //           ],
+    //         );
+    //       });
+    //   return;
+    // }
     await bookJob.uploadJobPhoto();
     if (bookJob.addressController.text.isEmpty) {
       showDialog(
@@ -296,7 +299,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
     DateTime.now(),
   ];
   var time = DateTime.now();
-  var idSevice = '';
+  // var idSevice = '';
   final List<String> items = [
     'Item1',
     'Item2',
@@ -327,17 +330,24 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
     return formattedDate;
   }
 
+// millisecondsSinceEpoch
   getPriceFunc() async {
     if (code.runtimeType != String) code = '';
     var workDate = '$dateConvertToString$hourConvertToString'
         'Z';
+
     if (dateConvertToString != '' && hourConvertToString != '') {
       var milisecondsConvert = DateTime.parse(workDate);
+
       var timeStamp = milisecondsConvert.millisecondsSinceEpoch;
 
       await getPrice.getPrice(
-          idSevice, timeStamp.toString(), jobItemsSelected, code);
+          countGetPrice == 0 ? '' : getPrice.dataPrice.priceId,
+          timeStamp.toString(),
+          jobItemsSelected,
+          code);
       setState(() {});
+      countGetPrice++;
     } else {
       showDialog(
           context: Get.context!,
@@ -355,11 +365,103 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
     }
   }
 
+  void _modalBottomSheetMenu() async {
+    await getJobItem.getJobItem(widget.codeService);
+    showMaterialModalBottomSheet(
+        context: Get.context!,
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(
+              leading: Container(),
+              title: Text(
+                jobServiceList
+                    .firstWhere((element) => element.code == widget.codeService)
+                    .name,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontFamily: GoogleFonts.montserrat().fontFamily,
+                    ),
+              ),
+            ),
+            body: SafeArea(
+              child: ListView.builder(
+                itemCount: jobItemList.length,
+                itemBuilder: (context, int index) {
+                  final priceReverse = basic.StringUtils.addCharAtPosition(
+                      basic.StringUtils.reverse(jobItemList[index].price),
+                      ".",
+                      3,
+                      repeat: true);
+                  return GFListTile(
+                      avatar: GFAvatar(
+                        shape: GFAvatarShape.circle,
+                        backgroundColor:
+                            const Color.fromARGB(128, 105, 240, 175),
+                        child: Image.asset('image/automobile-with-wrench.png'),
+                      ),
+                      // titleText: vouchersValid[index].name,
+                      title: Text(jobItemList[index].name,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith()),
+                      subTitle: Text(
+                          '${basic.StringUtils.reverse(priceReverse)} VNĐ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontWeight: FontWeight.w900,
+                              )),
+                      description: Text(jobItemList[index].description,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                              )),
+                      // icon: Icon(Icons.home, color: Colors.red),
+                      padding: EdgeInsets.zero,
+                      radius: 50,
+                      onTap: () {
+                        setState(() {
+                          selectedItems.add(
+                              '${jobServiceList.firstWhere((element) => element.code == jobItemList[index].jobserviceId).name} - ${jobItemList[index].name}');
+
+                          List<JobItems> id = jobItemList
+                              .where((element) =>
+                                  element.name == jobItemList[index].name)
+                              .toList();
+                          int indexJobItemList = jobItemList.indexWhere(
+                              (element) =>
+                                  element.name == jobItemList[index].name);
+
+                          jobItemsSelected.add(jobItemList[indexJobItemList]);
+                          selectedItemsId.add(id[0].id);
+                          serviceSelected = jobServiceList
+                              .firstWhere((element) =>
+                                  element.code ==
+                                  jobItemList[index].jobserviceId)
+                              .name;
+                          Navigator.pop(context);
+                        });
+                      }
+                      // title: Text('$dateTo-$dateFrom'),
+                      );
+                },
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   void initState() {
     hourConvertToString =
         ' ${time.hour < 10 ? 0 : ''}${time.hour.toString()}:${time.minute < 10 ? 0 : ''}${time.minute.toString()}:${time.second < 10 ? 0 : ''}${time.second.toString()}';
-
+    if (widget.codeService != '') {
+      _modalBottomSheetMenu();
+    }
     super.initState();
   }
 
@@ -615,18 +717,19 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  Text(
+                    'Chọn thời gian: ',
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 10),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(
-                        'Chọn thời gian: ',
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      const SizedBox(height: 10),
                       Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
                         padding:
                             const EdgeInsets.only(top: 8, bottom: 8, right: 10),
                         decoration: BoxDecoration(
@@ -665,6 +768,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                         ),
                       ),
                       Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
                         padding:
                             const EdgeInsets.only(top: 8, bottom: 8, right: 10),
                         decoration: BoxDecoration(
@@ -683,6 +787,8 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                     workHour =
                                         ' ${date.hour < 10 ? 0 : ''}${date.hour.toString()}:${date.minute < 10 ? 0 : ''}${date.minute.toString()}';
 
+                                    timeStampWorkhour =
+                                        date.hour * 3600 + date.minute * 60;
                                     hourConvertToString =
                                         ' ${date.hour < 10 ? 0 : ''}${date.hour.toString()}:${date.minute < 10 ? 0 : ''}${date.minute.toString()}:${date.second < 10 ? 0 : ''}${date.second.toString()}';
                                   });
@@ -768,9 +874,9 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                           jobServiceList[
                                                   nameService.indexOf(item)]
                                               .code);
-                                      idSevice = jobServiceList[
-                                              nameService.indexOf(item)]
-                                          .id;
+                                      // idSevice = jobServiceList[
+                                      //         nameService.indexOf(item)]
+                                      //     .id;
 
                                       var jobItemName =
                                           await showBarModalBottomSheet(
@@ -972,7 +1078,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                                     left: BorderSide(
                                                         color: Colors.grey))),
                                             child: IconButton(
-                                              onPressed: () {
+                                              onPressed: () async {
                                                 setState(() {
                                                   selectedItems.remove(
                                                       selectedItems[index]);
@@ -983,6 +1089,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                                     jobItemsSelected[index]);
                                                 selectedItemsId.remove(
                                                     selectedItemsId[index]);
+                                                await getPriceFunc();
                                               },
                                               icon: const FaIcon(
                                                 FontAwesomeIcons.minus,

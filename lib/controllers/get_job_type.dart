@@ -39,6 +39,7 @@ class GetJobTypeController extends GetxController {
           for (int i = 0; i < data.length; i++) {
             jobTypeList.add(
               JobTypeModel(
+                name: data[i]['name'],
                 shortName: data[i]['short_name'],
                 id: data[i]['_id'],
                 item: data[i]['item'],

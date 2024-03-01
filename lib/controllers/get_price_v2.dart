@@ -15,10 +15,10 @@ class GetPrice extends GetxController {
   String tokenString = '';
   String hostId = '';
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  bool isResponse = false;
+
   Price dataPrice = Price();
-  Future<void> getPrice(
-      String id, String miliseconds, List jobItem, String voucherCode) async {
+  Future<void> getPrice(String priceId, String miliseconds, List jobItem,
+      String voucherCode) async {
     final SharedPreferences prefs = await _prefs;
     tokenString = await _storage.read(key: "TOKEN") ?? '';
     hostId = prefs.getString('host_id')!;
@@ -33,8 +33,9 @@ class GetPrice extends GetxController {
     //       'name': name,
     //       'price': price,
     //     };
+
     Map body = {
-      'id': (isResponse != false ? id : ''),
+      'id': priceId,
       'host_id': hostId,
       'work_date': miliseconds,
       'services': jobItem,

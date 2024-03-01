@@ -88,8 +88,9 @@ class Service {
   final int qt;
   final String sum;
   final String unitPrice;
-
+  final String name;
   Service({
+    required this.name,
     required this.description,
     required this.code,
     required this.qt,

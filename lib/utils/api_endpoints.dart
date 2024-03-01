@@ -35,4 +35,6 @@ class _AuthEndPoints {
   final String hostDone = 'host_done';
   final String workerRate = 'worker_rate';
   final String hostRate = 'host_rate';
+  final String statistics = 'statistics';
+  final String statisticsUser = 'statistics_user';
 }

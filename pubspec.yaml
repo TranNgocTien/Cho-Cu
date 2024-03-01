@@ -76,6 +76,9 @@ dependencies:
   dropdown_button2: ^2.3.9
   modal_bottom_sheet: ^2.1.2
   getwidget: ^4.0.0
+  percent_indicator: ^4.2.3
+  syncfusion_flutter_charts: ^24.2.8
+
 dependency_overrides:
   modal_bottom_sheet: ^3.0.0-pre
 dev_dependencies:
@@ -146,6 +149,11 @@ flutter:
     - image/worker-5.png
     - image/6678.jpg
     - image/61568.jpg
+    - image/job-search.png
+    - image/workers-statistics.png
+    - image/no_image.png
+    - image/mechanic.png
+    - image/computer-worker.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
