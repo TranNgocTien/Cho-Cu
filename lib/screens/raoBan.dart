@@ -1,13 +1,17 @@
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:basic_utils/basic_utils.dart';
 import 'package:chotot/controllers/get_stuffs.dart';
-import 'package:chotot/data/default_information.dart';
+// import 'package:chotot/data/default_information.dart';
 import 'package:chotot/data/docu_data.dart';
 import 'package:chotot/models/place.dart';
-import 'package:chotot/screens/change_default_info.dart';
+// import 'package:chotot/screens/change_default_info.dart';
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter/services.dart';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:geocoding/geocoding.dart';
@@ -24,6 +28,7 @@ import 'package:chotot/controllers/post_stuff.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RaoBanScreen extends StatefulWidget {
@@ -73,85 +78,75 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
 
   postStuffService() async {
     if (service == 'Chọn dịch vụ đăng tin') {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Chọn dịch vụ đăng',
-                ),
-              ],
-            );
-          });
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.info,
+        animType: AnimType.rightSlide,
+        title: 'Chọn dịch vụ đăng',
+        titleTextStyle: GoogleFonts.poppins(fontSize: 16),
+      ).show();
+      // showDialog(
+      //     context: Get.context!,
+      //     builder: (context) {
+      //       return const SimpleDialog(
+      //         contentPadding: EdgeInsets.all(20),
+      //         children: [
+      //           Text(
+      //             'Chọn dịch vụ đăng',
+      //           ),
+      //         ],
+      //       );
+      //     });
       return;
     }
 
     if (postStuff.imageFileList!.isEmpty ||
         postStuff.imageFileList!.length > 3) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Đăng tối thiểu 1 ảnh, tối đa 3 ảnh',
-                ),
-              ],
-            );
-          });
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Đăng tối thiểu 1 ảnh, tối đa 3 ảnh',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
       return;
     }
     await postStuff.uploadJobPhoto();
     if (postStuff.addressController.text.isEmpty) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Vui lòng chọn theo tên gợi ý!',
-                ),
-              ],
-            );
-          });
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng chọn theo tên gợi ý!',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
     }
     if (postStuff.addressController.text.isEmpty ||
         postStuff.descriptionController.text.isEmpty ||
         postStuff.nameController.text.isEmpty ||
         postStuff.phoneController.text.isEmpty ||
         postStuff.sumPriceController.text.isEmpty) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Vui lòng điền đầy đủ các thông tin',
-                ),
-              ],
-            );
-          });
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng điền đầy đủ các thông tin',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
     }
     await _convertAddressToCoordinate(postStuff.addressController.text);
 
     if (postStuff.lat == null || postStuff.lng == null) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Nhập lại địa chỉ',
-                ),
-              ],
-            );
-          });
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Nhập lại địa chỉ',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
     }
     await postStuff.postItem();
     items.clear();
@@ -184,7 +179,61 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
     // }
   }
 
-  _openCamera() async {
+  showAlertDialog(context) => AwesomeDialog(
+      // autoDismiss: false,
+      context: Get.context!,
+      animType: AnimType.scale,
+      dialogType: DialogType.info,
+      body: Center(
+        child: Text(
+          'Cấp phép truy cập máy ảnh',
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: GoogleFonts.poppins().fontFamily),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      btnOk: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color.fromRGBO(39, 166, 82, 1),
+        ),
+        onPressed: () => openAppSettings(),
+        child: Text(
+          'Cài đặt',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      btnCancel: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(39, 166, 82, 1)),
+        onPressed: () {
+          Get.back();
+        },
+        child: Text(
+          'Hủy bỏ',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      btnOkOnPress: () => openAppSettings(),
+      btnCancelOnPress: () {
+        Get.back();
+      }).show();
+  _openCamera(context) async {
+    var status = await Permission.camera.status;
+
+    if (status.isPermanentlyDenied) {
+      showAlertDialog(context);
+      return;
+    }
+
     try {
       List<XFile> selectedImages = [];
       final imageFileGallery = await ImagePicker()
@@ -206,86 +255,146 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
   }
 
   Future<void> _showChoiceDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Container(
-              width: MediaQuery.of(context).size.width * 0.3,
-              height: MediaQuery.of(context).size.height * 0.2,
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    'Lựa chọn tải ảnh:',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          _openGallery();
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Icon(FontAwesomeIcons.image),
-                            Text(
-                              'Thư viện',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          _openCamera();
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Icon(FontAwesomeIcons.camera),
-                            Text(
-                              'Chụp ảnh',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+    return AwesomeDialog(
+            width: double.infinity,
+            context: Get.context!,
+            animType: AnimType.scale,
+            dialogType: DialogType.info,
+            body: Center(
+              child: Text(
+                'Lựa chọn tải ảnh',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: GoogleFonts.poppins().fontFamily),
+                textAlign: TextAlign.center,
               ),
             ),
-          );
-        });
+            btnOk: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(38, 166, 83, 1)),
+              onPressed: () {
+                _openGallery();
+                Get.back();
+              },
+              icon: const FaIcon(FontAwesomeIcons.image, color: Colors.white),
+              label: Text(
+                'Thư viện',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            btnCancel: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(38, 166, 83, 1),
+              ),
+              onPressed: () async {
+                await _openCamera(context);
+              },
+              icon: const FaIcon(
+                FontAwesomeIcons.camera,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Máy ảnh',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            btnOkOnPress: () {},
+            btnCancelOnPress: () async {})
+        .show();
+
+    // showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       return AlertDialog(
+    //         content: Container(
+    //           width: MediaQuery.of(context).size.width * 0.3,
+    //           height: MediaQuery.of(context).size.height * 0.2,
+    //           padding: const EdgeInsets.all(10),
+    //           child: Column(
+    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //             children: [
+    //               const SizedBox(
+    //                 height: 20,
+    //               ),
+    //               Text(
+    //                 'Lựa chọn tải ảnh:',
+    //                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
+    //                       fontFamily: GoogleFonts.poppins().fontFamily,
+    //                       color: Colors.black,
+    //                       fontWeight: FontWeight.w600,
+    //                     ),
+    //                 textAlign: TextAlign.center,
+    //               ),
+    //               const SizedBox(height: 20),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: [
+    //                   GestureDetector(
+    //                     onTap: () {
+    //                       _openGallery();
+    //                     },
+    //                     child: Column(
+    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                       children: [
+    //                         const Icon(FontAwesomeIcons.image),
+    //                         Text(
+    //                           'Thư viện',
+    //                           style: Theme.of(context)
+    //                               .textTheme
+    //                               .labelLarge!
+    //                               .copyWith(
+    //                                 fontFamily:
+    //                                     GoogleFonts.poppins().fontFamily,
+    //                                 color: Colors.black,
+    //                                 fontWeight: FontWeight.w600,
+    //                               ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                   GestureDetector(
+    //                     onTap: () {
+    //                       _openCamera();
+    //                     },
+    //                     child: Column(
+    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                       children: [
+    //                         const Icon(FontAwesomeIcons.camera),
+    //                         Text(
+    //                           'Chụp ảnh',
+    //                           style: Theme.of(context)
+    //                               .textTheme
+    //                               .labelLarge!
+    //                               .copyWith(
+    //                                 fontFamily:
+    //                                     GoogleFonts.poppins().fontFamily,
+    //                                 color: Colors.black,
+    //                                 fontWeight: FontWeight.w600,
+    //                               ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //       );
+    //     });
+  }
+
+  priceReverse(price) {
+    return StringUtils.addCharAtPosition(StringUtils.reverse(price), ".", 3,
+        repeat: true);
   }
 
   void showOverlay() {
@@ -296,9 +405,10 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
             contentPadding: const EdgeInsets.all(20),
             children: [
               Text(
-                'Chọn dịch vụ đăng tin',
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: const Color.fromRGBO(5, 109, 101, 1),
+                'Chọn dịch vụ đăng tin lên hot new',
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: const Color.fromRGBO(38, 166, 83, 1),
+                      fontFamily: GoogleFonts.poppins().fontFamily,
                     ),
                 textAlign: TextAlign.center,
               ),
@@ -311,15 +421,17 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   itemBuilder: (context, index) {
                     return ListTile(
                         leading: const FaIcon(FontAwesomeIcons.servicestack),
-                        trailing: Text('${otherFee[index].price} VNĐ'),
+                        trailing: Text(
+                          '${StringUtils.reverse(priceReverse(otherFee[index].price))} GP',
+                          softWrap: true,
+                        ),
                         title: Text(
-                          otherFee[index].name,
+                          index == 3 ? 'Bình thường' : '${index + 1} ngày',
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
                               .copyWith(
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.bold),
                         ),
                         onTap: () {
@@ -349,37 +461,52 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          actions: [
-            IconButton(
-              onPressed: () async {
-                await Get.to(() => const ChangeDefaultInfo())!
-                    .then((_) => setState(() async {
-                          addressDefault =
-                              await _storage.read(key: "ADDRESS_DEFAULT") ?? '';
-                          nameDefault =
-                              await _storage.read(key: "NAME_DEFAULT") ?? '';
-                          numberPhoneDefault =
-                              await _storage.read(key: "NUMBER_DEFAULT") ?? '';
-                          postStuff.addressController.text = addressDefault;
-                          postStuff.phoneController.text = numberPhoneDefault;
-                          postStuff.nameController.text = nameDefault;
-                        }));
-              },
-              icon: const Icon(Icons.settings),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+                  Color.fromRGBO(39, 166, 82, 1),
+                  Color.fromRGBO(1, 142, 33, 1),
+                  Color.fromRGBO(23, 162, 73, 1),
+                  Color.fromRGBO(84, 181, 111, 1),
+                ],
+              ),
             ),
-          ],
+          ),
+          // actions: [
+          //   IconButton(
+          //     onPressed: () async {
+          //       await Get.to(() => const ChangeDefaultInfo())!
+          //           .then((_) => setState(() async {
+          //                 addressDefault =
+          //                     await _storage.read(key: "ADDRESS_DEFAULT") ?? '';
+          //                 nameDefault =
+          //                     await _storage.read(key: "NAME_DEFAULT") ?? '';
+          //                 numberPhoneDefault =
+          //                     await _storage.read(key: "NUMBER_DEFAULT") ?? '';
+          //                 postStuff.addressController.text = addressDefault;
+          //                 postStuff.phoneController.text = numberPhoneDefault;
+          //                 postStuff.nameController.text = nameDefault;
+          //               }));
+          //     },
+          //     icon: const Icon(Icons.settings),
+          //   ),
+          // ],
           title: Text(
-            'Đăng tin',
+            'Đăng tin chợ',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontFamily: GoogleFonts.montserrat().fontFamily,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.bold,
-                  color: const Color.fromRGBO(54, 92, 69, 1),
+                  color: Colors.white,
                 ),
             textAlign: TextAlign.center,
           ),
           backgroundColor: Colors.white,
-          foregroundColor: const Color.fromRGBO(54, 92, 69, 1),
+          foregroundColor: Colors.white,
           elevation: 0,
         ),
         body: Padding(
@@ -393,8 +520,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Tên chủ đơn hàng: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          color: const Color.fromRGBO(5, 109, 101, 1),
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -402,7 +529,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                           width: 1,
-                          color: const Color.fromARGB(255, 185, 184, 184)),
+                          color: const Color.fromARGB(255, 192, 244, 210)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Padding(
@@ -436,13 +563,14 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Địa chỉ của bạn: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          color: const Color.fromRGBO(5, 109, 101, 1),
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(
@@ -451,12 +579,12 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                           bottom: 10.0,
                         ),
                         child: Container(
-                          width: MediaQuery.of(context).size.width * 0.75,
+                          width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
                             border: Border.all(
                                 width: 1,
                                 color:
-                                    const Color.fromARGB(255, 185, 184, 184)),
+                                    const Color.fromARGB(255, 192, 244, 210)),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: TypeAheadField<AddressUpdate?>(
@@ -487,7 +615,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                       .bodyMedium!
                                       .copyWith(
                                         fontFamily:
-                                            GoogleFonts.montserrat().fontFamily,
+                                            GoogleFonts.poppins().fontFamily,
                                         fontSize: 18,
                                       ),
                                 ),
@@ -511,7 +639,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                           ),
                         ),
                       ),
-                      IconButton(
+                      MaterialButton(
                         onPressed: () async {
                           final SharedPreferences prefs = await _prefs;
 
@@ -538,9 +666,23 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                           _convertCoordinatefromAddress(pickedLocation.latitude,
                               pickedLocation.longitude);
                         },
-                        icon: const FaIcon(FontAwesomeIcons.locationPin),
-                        style: IconButton.styleFrom(
-                            iconSize: 20, foregroundColor: Colors.red),
+
+                        shape: const CircleBorder(
+                            eccentricity: 0.0,
+                            side: BorderSide(
+                              color: Color.fromRGBO(38, 166, 83, 1),
+                              width: 2.0,
+                            )),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 10),
+                        elevation: 20.0,
+                        child: const FaIcon(FontAwesomeIcons.locationPin,
+                            size: 25, color: Color.fromRGBO(38, 166, 83, 1)),
+                        // style: IconButton.styleFrom(
+                        //   iconSize: 25,
+                        //     foregroundColor:
+
+                        //     ),
                       ),
                     ],
                   ),
@@ -548,8 +690,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Số điện thoại liên hệ:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          color: const Color.fromRGBO(5, 109, 101, 1),
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -557,7 +699,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                           width: 1,
-                          color: const Color.fromARGB(255, 185, 184, 184)),
+                          color: const Color.fromARGB(255, 192, 244, 210)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Padding(
@@ -589,10 +731,10 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Mô tả:',
+                    'Thông tin chi tiết về sản phẩm:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          color: const Color.fromRGBO(5, 109, 101, 1),
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -601,7 +743,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                           width: 1,
-                          color: const Color.fromARGB(255, 185, 184, 184)),
+                          color: const Color.fromARGB(255, 192, 244, 210)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Padding(
@@ -610,7 +752,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                       child: TextFormField(
                         controller: postStuff.descriptionController,
                         decoration: const InputDecoration(
-                          hintText: 'Viết vài dòng mô tả sản phẩm ...',
+                          hintText:
+                              'Viết vài dòng về chi tiết thông tin sản phẩm',
                           border: InputBorder.none,
                         ),
                         keyboardType: TextInputType.multiline,
@@ -636,8 +779,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                   Text(
                     'Giá mong muốn: (VNĐ)',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          color: const Color.fromRGBO(5, 109, 101, 1),
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -645,7 +788,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                           width: 1,
-                          color: const Color.fromARGB(255, 185, 184, 184)),
+                          color: const Color.fromARGB(255, 192, 244, 210)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Padding(
@@ -689,20 +832,20 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
-                                const Color.fromRGBO(5, 109, 101, 1),
+                                const Color.fromRGBO(38, 166, 83, 1),
                             foregroundColor: Colors.white,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(2.0),
                             child: Text(
-                              'Thêm Ảnh Chụp',
+                              'Thêm ảnh chụp',
                               style: Theme.of(context)
                                   .textTheme
                                   .labelLarge!
                                   .copyWith(
                                     color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
+                                        GoogleFonts.poppins().fontFamily,
                                   ),
                             ),
                           ),
@@ -714,9 +857,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                 .textTheme
                                 .labelLarge!
                                 .copyWith(
-                                  color: const Color.fromRGBO(5, 109, 101, 1),
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
+                                  color: Colors.black,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
                                 ),
                           ),
                           IconButton(
@@ -735,7 +877,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                                     color: const Color.fromRGBO(
                                                         5, 109, 101, 1),
                                                     fontFamily:
-                                                        GoogleFonts.montserrat()
+                                                        GoogleFonts.poppins()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -794,7 +936,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                                       },
                                                       child: const FaIcon(
                                                           FontAwesomeIcons
-                                                              .minus,
+                                                              .trashCan,
                                                           size: 20,
                                                           color: Colors.red),
                                                     ),
@@ -807,7 +949,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                             },
                             icon: const FaIcon(FontAwesomeIcons.image,
                                 size: 20,
-                                color: Color.fromRGBO(5, 109, 101, 1)),
+                                color: Color.fromRGBO(38, 166, 83, 1)),
                           ),
                         ]),
                       ]),
@@ -826,7 +968,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
-                                const Color.fromRGBO(5, 109, 101, 1),
+                                const Color.fromRGBO(38, 166, 83, 1),
                             foregroundColor: Colors.white,
                           ),
                           child: Padding(
@@ -839,7 +981,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                                   .copyWith(
                                     color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
+                                        GoogleFonts.poppins().fontFamily,
                                   ),
                             ),
                           ),
@@ -850,8 +992,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                               .textTheme
                               .labelLarge!
                               .copyWith(
-                                color: const Color.fromRGBO(5, 109, 101, 1),
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                color: Colors.black,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                               ),
                         ),
                       ]),
@@ -865,18 +1007,18 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                               .textTheme
                               .labelLarge!
                               .copyWith(
-                                color: const Color.fromRGBO(5, 109, 101, 1),
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                color: Colors.black,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                               ),
                         ),
                         Text(
-                          '$serviceFee GP',
+                          '${StringUtils.reverse(priceReverse(serviceFee))} GP',
                           style: Theme.of(context)
                               .textTheme
                               .labelLarge!
                               .copyWith(
-                                color: const Color.fromRGBO(5, 109, 101, 1),
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                color: Colors.black,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                               ),
                         ),
                       ]),
@@ -887,7 +1029,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                         postStuffService();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(5, 109, 101, 1),
+                        backgroundColor: const Color.fromRGBO(38, 166, 83, 1),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -903,7 +1045,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                               .labelLarge!
                               .copyWith(
                                 color: Colors.white,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontSize: 20,
                               ),
                         ),

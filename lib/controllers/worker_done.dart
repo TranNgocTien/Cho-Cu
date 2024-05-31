@@ -17,15 +17,18 @@ class Workerdone extends GetxController {
   //   'Content-Type': 'application/json',
   // };
   LoginController loginController = Get.put(LoginController());
-  Future<void> workerDone() async {
+  Future<void> workerDone(
+      {contractId = '', jobId = '', employeeId = '', employeeName = ''}) async {
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.workerDone);
     Map body = {
-      'version': 'test',
-      'contract_id': acceptWorkerData[0].contractId,
-      'job_id': acceptWorkerData[0].jobId,
-      'employee_id': acceptWorkerData[0].employeeId,
-      'employee_name': acceptWorkerData[0].employeeName,
+      'version': 'publish',
+      'contract_id':
+          contractId == '' ? acceptWorkerData[0].contractId : contractId,
+      'job_id': jobId == '' ? acceptWorkerData[0].jobId : jobId,
+      'employee_id': employeeId == '' ? acceptWorkerData[0].employeeId : '',
+      'employee_name':
+          employeeName == '' ? acceptWorkerData[0].employeeName : '',
       'token': 'anhkhongdoiqua',
     };
 
@@ -51,10 +54,12 @@ class Workerdone extends GetxController {
                   children: [
                     Center(
                       child: Text('Không còn công việc',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    fontFamily: GoogleFonts.lato().fontFamily,
-                                  )),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                              )),
                     ),
                   ],
                 );

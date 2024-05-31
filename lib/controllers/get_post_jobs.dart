@@ -56,6 +56,8 @@ class GetPostJobs extends GetxController {
 
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
+        var photos = [];
+        var tempPhoto = [];
         postJobData.clear();
         // seviceList.clear();
         // contractsList.clear();
@@ -73,6 +75,16 @@ class GetPostJobs extends GetxController {
           List<Service> seviceList = [];
           List<Contracts> contractsList = [];
           List<WorkersPostJob> workersList = [];
+
+          tempPhoto = data[i]['job']['photos'].toList();
+
+          if (tempPhoto.isEmpty || data[i]['job']['photos'][0] == '[]') {
+            photos = [];
+          } else if (tempPhoto[0].contains(']')) {
+            photos = jsonDecode(tempPhoto[0].replaceAll(RegExp(r'^\[\]$'), ''));
+          } else {
+            photos = [...data[i]['photos']];
+          }
           for (int j = 0; j < data[i]['job']['services'].length; j++) {
             seviceList.add(
               Service(
@@ -146,7 +158,7 @@ class GetPostJobs extends GetxController {
                 jobId: data[i]['job']['job_id'].toString(),
                 movingFee: data[i]['job']['moving_fee'].toString(),
                 phone: data[i]['job']['phone'].toString(),
-                photos: data[i]['job']['photos'],
+                photos: photos,
                 services: seviceList,
                 status: data[i]['job']['status'].toString(),
                 updatedAt: data[i]['job']['updated_at'].toString(),

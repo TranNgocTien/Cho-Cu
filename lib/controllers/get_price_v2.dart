@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/models/get_price_model.dart';
+import 'package:chotot/screens/confirm_book_worker.dart';
 import 'package:chotot/utils/api_endpoints.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,11 +15,18 @@ class GetPrice extends GetxController {
   final _storage = const FlutterSecureStorage();
   String tokenString = '';
   String hostId = '';
+  bool isSuccess = false;
+  bool isNext = false;
+  dynamic code = '';
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Price dataPrice = Price();
-  Future<void> getPrice(String priceId, String miliseconds, List jobItem,
-      String voucherCode) async {
+  Future<void> getPrice(
+    String priceId,
+    String miliseconds,
+    List jobItem,
+    Function bookJobV3,
+  ) async {
     final SharedPreferences prefs = await _prefs;
     tokenString = await _storage.read(key: "TOKEN") ?? '';
     hostId = prefs.getString('host_id')!;
@@ -39,8 +47,9 @@ class GetPrice extends GetxController {
       'host_id': hostId,
       'work_date': miliseconds,
       'services': jobItem,
-      'voucher': voucherCode,
+      'voucher': code,
       'token': 'anhkhongdoiqua',
+      'version': 'publish'
     };
 
     http.Response response =
@@ -68,7 +77,17 @@ class GetPrice extends GetxController {
           sumPrice: data['sum_price'].toString(),
           workDate: data['work_date'].toString(),
         );
+        isSuccess = true;
+        if (isNext == true) {
+          Get.to(ConfirmBookWorkerScreen(
+            dataPrice: dataPrice,
+            bookJob: bookJobV3,
+            miliseconds: miliseconds,
+            jobItemConfirm: jobItem,
+          ));
+        }
       } else {
+        code = '';
         AwesomeDialog(
           context: Get.context!,
           animType: AnimType.scale,
@@ -82,8 +101,6 @@ class GetPrice extends GetxController {
               textAlign: TextAlign.center,
             ),
           ),
-          title: 'This is Ignored',
-          desc: 'This is also Ignored',
         ).show();
       }
     }

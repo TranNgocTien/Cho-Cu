@@ -22,7 +22,7 @@ class GetVouchersValid extends GetxController {
     // };
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getVouchersValid);
-    Map body = {'token': 'anhkhongdoiqua', 'version': 'test'};
+    Map body = {'token': 'anhkhongdoiqua', 'version': 'publish'};
     http.Response response = await http.post(
       url,
       body: body,
@@ -31,6 +31,7 @@ class GetVouchersValid extends GetxController {
     // print(response.statusCode);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
+
       final data = json['data'];
 
       for (int i = 0; i < data.length; i++) {
@@ -55,9 +56,10 @@ class GetVouchersValid extends GetxController {
           ),
         );
       }
-    } else {
-      throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
     }
+    // else {
+    //   throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
+    // }
     // } catch (error) {
     //   Get.back();
     //   showDialog(

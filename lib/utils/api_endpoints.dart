@@ -21,7 +21,7 @@ class _AuthEndPoints {
   final String getNotis = 'get_notis';
   final String getJobType = 'get_job_type';
   final String getVouchersValid = 'get_vouchers_valid';
-  final String getNews = 'get_news';
+  final String getNews = 'get_newss';
   final String getJobItem = 'get_jobitem';
   final String getJobService = 'get_jobservice';
   final String getPriceV2 = 'get_price_v2';
@@ -37,4 +37,11 @@ class _AuthEndPoints {
   final String hostRate = 'host_rate';
   final String statistics = 'statistics';
   final String statisticsUser = 'statistics_user';
+  final String getWorkerJobs = 'get_worker_jobs';
+  final String getAUser = 'get_a_user';
+  final String deactiveUser = 'deactive_user';
+  final String activeUser = 'active_user';
+  final String requestOtpAccount = 'request_otp';
+  final String getOrdersUser = 'get_orders_user';
+  final String getJobsByType2 = 'get_jobs_by_type_2';
 }

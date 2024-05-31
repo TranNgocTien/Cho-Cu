@@ -6,7 +6,6 @@ class News {
     required this.link,
     required this.date,
     required this.content,
-    required this.decription,
   });
   final String tittle;
   final String id;
@@ -14,5 +13,4 @@ class News {
   final String link;
   final String date;
   final String content;
-  final String decription;
 }

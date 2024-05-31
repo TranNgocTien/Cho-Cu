@@ -4,7 +4,7 @@ import 'package:chotot/data/docu_data.dart';
 import 'package:chotot/models/cho_do_cu.dart';
 // import 'dart:io';
 import 'package:chotot/controllers/login_controller.dart';
-import 'package:flutter/material.dart';
+
 // import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
@@ -38,6 +38,7 @@ class GetStuffs extends GetxController {
       Map body = {
         'version': 'test',
         'index': '$index',
+        // 'index': '1',
         'token': 'anhkhongdoiqua',
       };
 
@@ -51,7 +52,7 @@ class GetStuffs extends GetxController {
         },
       );
       final json = jsonDecode(response.body);
-
+      // print(json);
       if (response.statusCode == 200) {
         if (json['status'] == 'ok') {
           var data = json['data'];
@@ -69,13 +70,13 @@ class GetStuffs extends GetxController {
           for (int i = 0; i < data.length; i++) {
             tempPhoto = data[i]['photos'].toList();
 
-            // print(photos);
             if (tempPhoto[0].contains(']')) {
               photos =
                   jsonDecode(tempPhoto[0].replaceAll(RegExp(r'^\[\]$'), ''));
             } else {
               photos = [...data[i]['photos']];
             }
+
             if (loginController.hostId == data[i]['host_id'] &&
                 itemsStuffIdOwner.contains(data[i]['stuff_id']) == false) {
               itemsOwner.add(
@@ -126,25 +127,25 @@ class GetStuffs extends GetxController {
         throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
       }
     } catch (error) {
-      error.printError();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text(
-                'Error',
-                textAlign: TextAlign.center,
-              ),
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text(
-                    error.toString(),
-                  ),
-                ),
-              ],
-            );
-          });
+      // error.printError();
+      // showDialog(
+      //     context: Get.context!,
+      //     builder: (context) {
+      //       return SimpleDialog(
+      //         title: const Text(
+      //           'Error',
+      //           textAlign: TextAlign.center,
+      //         ),
+      //         contentPadding: const EdgeInsets.all(20),
+      //         children: [
+      //           Center(
+      //             child: Text(
+      //               error.toString(),
+      //             ),
+      //           ),
+      //         ],
+      //       );
+      //     });
     } finally {
       isLoading = false;
     }

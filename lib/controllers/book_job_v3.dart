@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:chotot/controllers/get_price_v2.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/data/default_information.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -22,7 +25,7 @@ class BookJob extends GetxController {
       TextEditingController(text: addressDefault);
   LoginController loginController = Get.put(LoginController());
   TextEditingController descriptionController = TextEditingController();
-
+  GetPrice getPrice = Get.put(GetPrice());
   TextEditingController phoneController =
       TextEditingController(text: numberPhoneDefault);
   TextEditingController nameController =
@@ -111,7 +114,16 @@ class BookJob extends GetxController {
           descriptionController.clear();
 
           imageLink.clear();
-          // Get.back();
+          await AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.success,
+            animType: AnimType.rightSlide,
+            title: 'Đặt việc thành công',
+            titleTextStyle: GoogleFonts.poppins(),
+            autoHide: const Duration(milliseconds: 600),
+          ).show();
+          getPrice.code = '';
+          Get.back();
         } else if (json['status'] == "error") {
           imageLink.clear();
           showDialog(
@@ -171,112 +183,112 @@ class BookJob extends GetxController {
     // }
     final hostId = prefs.getString('host_id');
 
-    try {
-      convertXFileToFile();
-      var url = Uri.parse(
-          ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.uploadJobPhoto);
+    // try {
+    convertXFileToFile();
+    var url = Uri.parse(
+        ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.uploadJobPhoto);
 
-      var request = http.MultipartRequest('POST', url);
+    var request = http.MultipartRequest('POST', url);
 
-      request.headers["Content-Type"] = "multipart/form-data";
-      request.headers["x-access-token"] = 'anhkhongdoiqua';
-      // request.fields['user_id'] = hostId.toString();
+    request.headers["Content-Type"] = "multipart/form-data";
+    request.headers["x-access-token"] = 'anhkhongdoiqua';
+    // request.fields['user_id'] = hostId.toString();
 
-      for (File file in imageConvertedFile) {
-        // request.files.add(http.MultipartFile.fromBytes(
-        //     'file', File(file.path).readAsBytesSync(),
-        //     filename: file.path));
-        request.files.add(http.MultipartFile(
-            'file',
-            File(file.path).readAsBytes().asStream(),
-            File(file.path).lengthSync(),
-            filename: file.path.split("/").last));
-      }
-      Map<String, String> obj = {"user_id": hostId!};
-
-      request.fields.addAll(obj);
-
-      // request.headers.clear();
-      // request.headers.addEntries(headers.entries);
-      var res = await request.send();
-      var response = await http.Response.fromStream(res);
-
-      // if (imageFileList!.isEmpty) {
-      //   showDialog(
-      //     context: Get.context!,
-      //     builder: (context) {
-      //       return const SimpleDialog(
-      //         contentPadding: EdgeInsets.all(20),
-      //         children: [
-      //           Text('Take at least 1 picture'),
-      //         ],
-      //       );
-      //     },
-      //   );
-      //   return;
-      // }
-      final json = jsonDecode(response.body);
-      // print(json);
-      if (response.statusCode == 200) {
-        var data = json['data'];
-
-        if (json['status'] == 'ok') {
-          imageLink = data["photos"];
-          imageConvertedFile.clear();
-          imageFileList!.clear();
-        } else if (json['status'] == 'error') {
-          imageConvertedFile.clear();
-          imageFileList!.clear();
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Text(
-                      json['error']['message'],
-                    ),
-                  ],
-                );
-              });
-        }
-        // final json = jsonDecode(res.body);
-        // if (json['status'] == 'ok') {
-        //   print(json);
-        // } else if (json['status'] == "error") {
-        //   showDialog(
-        //       context: Get.context!,
-        //       builder: (context) {
-        //         return SimpleDialog(
-        //           title: const Text('Error'),
-        //           contentPadding: const EdgeInsets.all(20),
-        //           children: [
-        //             Text(
-        //               json['error']['message'],
-        //             ),
-        //           ],
-        //         );
-        //       });
-        //   throw jsonDecode(response.body)['error']['message'] ??
-        //       'Unknown Error Occured';
-        // }
-      } else {
-        throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
-      }
-      // throw jsonDecode(res.headers)['Message'] ?? 'Unknown Error Occured';
-    } catch (error) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Text(
-                  error.toString(),
-                ),
-              ],
-            );
-          });
+    for (File file in imageConvertedFile) {
+      // request.files.add(http.MultipartFile.fromBytes(
+      //     'file', File(file.path).readAsBytesSync(),
+      //     filename: file.path));
+      request.files.add(http.MultipartFile(
+          'file',
+          File(file.path).readAsBytes().asStream(),
+          File(file.path).lengthSync(),
+          filename: file.path.split("/").last));
     }
+    Map<String, String> obj = {"user_id": hostId!};
+
+    request.fields.addAll(obj);
+
+    // request.headers.clear();
+    // request.headers.addEntries(headers.entries);
+    var res = await request.send();
+    var response = await http.Response.fromStream(res);
+
+    // if (imageFileList!.isEmpty) {
+    //   showDialog(
+    //     context: Get.context!,
+    //     builder: (context) {
+    //       return const SimpleDialog(
+    //         contentPadding: EdgeInsets.all(20),
+    //         children: [
+    //           Text('Take at least 1 picture'),
+    //         ],
+    //       );
+    //     },
+    //   );
+    //   return;
+    // }
+    final json = jsonDecode(response.body);
+    // print(json);
+    if (response.statusCode == 200) {
+      var data = json['data'];
+
+      if (json['status'] == 'ok') {
+        imageLink = data["photos"];
+        imageConvertedFile.clear();
+        imageFileList!.clear();
+      } else if (json['status'] == 'error') {
+        imageConvertedFile.clear();
+        imageFileList!.clear();
+        // showDialog(
+        //     context: Get.context!,
+        //     builder: (context) {
+        //       return SimpleDialog(
+        //         contentPadding: const EdgeInsets.all(20),
+        //         children: [
+        //           Text(
+        //             json['error']['message'],
+        //           ),
+        //         ],
+        //       );
+        //     });
+      }
+      // final json = jsonDecode(res.body);
+      // if (json['status'] == 'ok') {
+      //   print(json);
+      // } else if (json['status'] == "error") {
+      //   showDialog(
+      //       context: Get.context!,
+      //       builder: (context) {
+      //         return SimpleDialog(
+      //           title: const Text('Error'),
+      //           contentPadding: const EdgeInsets.all(20),
+      //           children: [
+      //             Text(
+      //               json['error']['message'],
+      //             ),
+      //           ],
+      //         );
+      //       });
+      //   throw jsonDecode(response.body)['error']['message'] ??
+      //       'Unknown Error Occured';
+      // }
+    } else {
+      throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
+    }
+    // throw jsonDecode(res.headers)['Message'] ?? 'Unknown Error Occured';
+    // } catch (error) {
+    //   showDialog(
+    //       context: Get.context!,
+    //       builder: (context) {
+    //         return SimpleDialog(
+    //           contentPadding: const EdgeInsets.all(20),
+    //           children: [
+    //             Text(
+    //               error.toString(),
+    //             ),
+    //           ],
+    //         );
+    //       });
+    // }
   }
 }

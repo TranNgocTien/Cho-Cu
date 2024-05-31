@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+// import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -65,20 +67,14 @@ class ChangeAvatarController extends GetxController {
         imageFileUpdateConvert?.delete();
         imageFileUpdate?.delete();
       } else if (json['status'] == 'error') {
-        showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return SimpleDialog(
-                contentPadding: const EdgeInsets.all(20),
-                children: [
-                  Center(
-                    child: Text(
-                      json['error']['message'],
-                    ),
-                  ),
-                ],
-              );
-            });
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.error,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 100),
+        ).show();
       }
       // final json = jsonDecode(res.body);
       // if (json['status'] == 'ok') {
@@ -100,9 +96,10 @@ class ChangeAvatarController extends GetxController {
       //   throw jsonDecode(response.body)['error']['message'] ??
       //       'Unknown Error Occured';
       // }
-    } else {
-      throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
     }
+    // else {
+    //   throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
+    // }
     // throw jsonDecode(res.headers)['Message'] ?? 'Unknown Error Occured';
     // } catch (error) {
     //   showDialog(

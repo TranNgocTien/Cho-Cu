@@ -25,6 +25,7 @@ class GetNews extends GetxController {
     Map body = {
       'token': 'anhkhongdoiqua',
       'index': '$index',
+      'version': 'test'
     };
     http.Response response = await http.post(
       url,
@@ -32,25 +33,29 @@ class GetNews extends GetxController {
       // headers: headers,
     );
     // print(response.statusCode);
+
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
+      final data = json['data'];
       // print(json);
-      for (int i = 0; i < json.length; i++) {
-        newsList.add(
-          News(
-            id: json[i]['id'],
-            tittle: json[i]['tittle'],
-            author: json[i]['author'],
-            link: json[i]['link'],
-            date: json[i]['date'],
-            content: json[i]['content'],
-            decription: json[i]['decription'],
-          ),
-        );
+      if (json['status'] == 'ok') {
+        for (int i = 0; i < data.length; i++) {
+          newsList.add(
+            News(
+              id: data[i]['_id'],
+              tittle: data[i]['title'],
+              author: data[i]['author'],
+              link: data[i]['photo'],
+              date: data[i]['created_at'],
+              content: data[i]['content'],
+            ),
+          );
+        }
       }
-    } else {
-      throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
     }
+    // else {
+    //   throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
+    // }
     // } catch (error) {
     //   Get.back();
     //   showDialog(

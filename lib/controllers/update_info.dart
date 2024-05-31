@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -27,37 +29,27 @@ class UpdateInfoController extends GetxController {
 
     // try {
     if (lat == null || lng == null) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text(
-                    'Tọa độ không lấy được',
-                  ),
-                ),
-              ],
-            );
-          });
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Tọa độ không lấy được',
+        titleTextStyle: GoogleFonts.poppins(),
+        autoHide: const Duration(milliseconds: 100),
+      ).show();
+
       return;
     }
     if (nameController.text.isEmpty) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text(
-                    'Nhập tên chủ tài khoản',
-                  ),
-                ),
-              ],
-            );
-          });
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Nhập tên chủ tài khoản',
+        titleTextStyle: GoogleFonts.poppins(),
+        autoHide: const Duration(milliseconds: 100),
+      ).show();
+
       return;
     }
 
@@ -83,6 +75,7 @@ class UpdateInfoController extends GetxController {
         lyLichInfo.clear();
         var data = json['data'];
         lyLichInfo.add(LyLich(
+          wf: data['WF'].toString(),
           lat: data['lat'].toString(),
           lng: data['lng'].toString(),
           name: data['name'].toString(),
@@ -100,44 +93,42 @@ class UpdateInfoController extends GetxController {
           email: data['email'].toString(),
           workerAuthen: data['worker_authen'].toString(),
         ));
-
-        showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return const SimpleDialog(
-                contentPadding: EdgeInsets.all(20),
-                children: [
-                  Center(
-                    child: Text(
-                      'Cập nhật tài khoản thành công',
-                    ),
-                  ),
-                ],
-              );
-            });
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.success,
+          animType: AnimType.rightSlide,
+          title: 'Cập nhật tài khoản thành công',
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 100),
+        ).show();
+        // showDialog(
+        //     context: Get.context!,
+        //     builder: (context) {
+        //       return const SimpleDialog(
+        //         contentPadding: EdgeInsets.all(20),
+        //         children: [
+        //           Center(
+        //             child: Text(
+        //               'Cập nhật tài khoản thành công',
+        //             ),
+        //           ),
+        //         ],
+        //       );
+        //     });
         nameController.clear();
         addressController.clear();
         lat = 0;
         lng = 0;
       } else if (json['status'] == "error") {
-        showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return SimpleDialog(
-                title: const Text(
-                  'Error',
-                  textAlign: TextAlign.center,
-                ),
-                contentPadding: const EdgeInsets.all(20),
-                children: [
-                  Center(
-                    child: Text(
-                      json['error']['message'],
-                    ),
-                  ),
-                ],
-              );
-            });
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 100),
+        ).show();
+
         throw jsonDecode(response.body)['error']['message'] ??
             'Unknown Error Occured';
       }

@@ -68,7 +68,7 @@ class _ChangeDefaultInfoState extends State<ChangeDefaultInfo> {
           title: Text(
             'Thay đổi thông tin mặc định',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontFamily: GoogleFonts.montserrat().fontFamily,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.bold,
                   color: const Color.fromRGBO(54, 92, 69, 1),
                 ),
@@ -89,7 +89,7 @@ class _ChangeDefaultInfoState extends State<ChangeDefaultInfo> {
                   Text(
                     'Tên mặc định',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -132,7 +132,7 @@ class _ChangeDefaultInfoState extends State<ChangeDefaultInfo> {
                   Text(
                     'Địa chỉ của bạn: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -182,7 +182,7 @@ class _ChangeDefaultInfoState extends State<ChangeDefaultInfo> {
                                       .bodyMedium!
                                       .copyWith(
                                         fontFamily:
-                                            GoogleFonts.montserrat().fontFamily,
+                                            GoogleFonts.poppins().fontFamily,
                                         fontSize: 18,
                                       ),
                                 ),
@@ -242,7 +242,7 @@ class _ChangeDefaultInfoState extends State<ChangeDefaultInfo> {
                   Text(
                     'Số điện thoại mặc định:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           color: const Color.fromRGBO(5, 109, 101, 1),
                           fontWeight: FontWeight.bold,
                         ),
@@ -314,7 +314,7 @@ class _ChangeDefaultInfoState extends State<ChangeDefaultInfo> {
                               .labelLarge!
                               .copyWith(
                                 color: Colors.white,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontSize: 20,
                               ),
                         ),

@@ -148,7 +148,7 @@ class _LocationInputState extends State<LocationInput> {
       'Chưa có địa điểm',
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.labelLarge!.copyWith(
-            fontFamily: GoogleFonts.rubik().fontFamily,
+            fontFamily: GoogleFonts.poppins().fontFamily,
             color: Colors.black,
             fontWeight: FontWeight.w600,
           ),
@@ -193,8 +193,11 @@ class _LocationInputState extends State<LocationInput> {
                 await _getCurrentLocation('');
                 _selectOnMap(widget.state, _currentLocation!);
               },
-              icon: const Icon(Icons.map),
-              label: const Text('Chọn trên bản đồ'),
+              icon:
+                  const Icon(Icons.map, color: Color.fromRGBO(38, 166, 83, 1)),
+              label: Text('Chọn trên bản đồ',
+                  style: GoogleFonts.poppins(
+                      color: const Color.fromRGBO(38, 166, 83, 1))),
             ),
           ],
         ),

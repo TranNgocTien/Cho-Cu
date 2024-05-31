@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:chotot/screens/homeScreen.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:get/get.dart';
@@ -31,9 +31,7 @@ class LogOutController extends GetxController {
     try {
       var url =
           Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.logout);
-      Map body = {
-        'token': 'anhkhongdoiqua',
-      };
+      Map body = {'token': 'anhkhongdoiqua', 'version': 'publish'};
       http.Response response =
           await http.post(url, body: jsonEncode(body), headers: headers);
       if (response.statusCode == 200) {
@@ -53,24 +51,24 @@ class LogOutController extends GetxController {
           await _storage.delete(key: "Save_Password");
           Get.offAll(const MainScreen());
         } else if (json['status'] == "error") {
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  title: const Text(
-                    'Error',
-                    textAlign: TextAlign.center,
-                  ),
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Center(
-                      child: Text(
-                        json['error']['message'],
-                      ),
-                    ),
-                  ],
-                );
-              });
+          // showDialog(
+          //     context: Get.context!,
+          //     builder: (context) {
+          //       return SimpleDialog(
+          //         title: const Text(
+          //           'Error',
+          //           textAlign: TextAlign.center,
+          //         ),
+          //         contentPadding: const EdgeInsets.all(20),
+          //         children: [
+          //           Center(
+          //             child: Text(
+          //               json['error']['message'],
+          //             ),
+          //           ),
+          //         ],
+          //       );
+          //     });
           throw jsonDecode(response.body)['error']['message'] ??
               'Unknown Error Occured';
         }
@@ -79,24 +77,24 @@ class LogOutController extends GetxController {
       }
     } catch (error) {
       Get.back();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text(
-                'Error',
-                textAlign: TextAlign.center,
-              ),
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text(
-                    error.toString(),
-                  ),
-                ),
-              ],
-            );
-          });
+      // showDialog(
+      //     context: Get.context!,
+      //     builder: (context) {
+      //       return SimpleDialog(
+      //         title: const Text(
+      //           'Error',
+      //           textAlign: TextAlign.center,
+      //         ),
+      //         contentPadding: const EdgeInsets.all(20),
+      //         children: [
+      //           Center(
+      //             child: Text(
+      //               error.toString(),
+      //             ),
+      //           ),
+      //         ],
+      //       );
+      //     });
     }
   }
 }

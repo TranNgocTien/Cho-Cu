@@ -17,6 +17,8 @@ import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart' as permission;
+// import 'package:permission_handler/permission_handler.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,6 +36,7 @@ class LoginController extends GetxController {
   double longitude = 106.0;
   String _savePassword = '';
   bool isLogin = false;
+  bool isEnableTracking = false;
   var isLoading = false;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   String tokenString = '';
@@ -52,6 +55,18 @@ class LoginController extends GetxController {
         // && isLogin == true
         ) {
       await _readFromStorage();
+      if (phoneNumberController.text.isEmpty ||
+          passwordController.text.isEmpty) {
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: 'Vui lòng điền đầy đủ thông tin đăng nhập.',
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
+        return;
+      }
     } else {
       await prefs.clear();
       // await prefs.setString('token', token.toString());
@@ -107,11 +122,13 @@ class LoginController extends GetxController {
       isLoading = true;
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.loginEmail);
+
       Map body = {
         'user_id': phoneNumberController.text.trim(),
         'password': passwordController.text,
         'device': deviceName,
         'token': 'anhkhongdoiqua',
+        'version': 'publish',
       };
 
       http.Response response =
@@ -123,22 +140,31 @@ class LoginController extends GetxController {
           if (currentHostID != json['data']['_id']) {
             addressDefault = '';
           }
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Center(
-                      child: Text(
-                        json['error']['message'],
-                      ),
-                    ),
-                  ],
-                );
-              });
-          tokenString = json['data']['token'];
+          await AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.success,
+            animType: AnimType.rightSlide,
+            title: json['error']['message'],
+            titleTextStyle: GoogleFonts.poppins(),
+            autoHide: const Duration(milliseconds: 800),
+          ).show();
+          // showDialog(
+          //     context: Get.context!,
+          //     builder: (context) {
+          //       return SimpleDialog(
+          //         contentPadding: const EdgeInsets.all(20),
+          //         children: [
+          //           Center(
+          //             child: Text(
+          //               json['error']['message'],
+          //             ),
+          //           ),
+          //         ],
+          //       );
+          //     });
+          tokenString = json?['data']['token'];
           hostId = json['data']['_id'];
+
           // isLogin = false;
           final SharedPreferences prefs = await _prefs;
           // RegisterNotiController().registerNoti();
@@ -167,15 +193,13 @@ class LoginController extends GetxController {
             nameDefault = nameFromPref;
             numberPhoneDefault = numberFromPref;
           }
-          // print('=========================');
-          // print(
-          //   prefs.getString('token'),
-          // );
+
           phoneNumberController.clear();
           passwordController.clear();
           await RegisterNotiController().registerNoti();
           if (addressFromPref == '') {
             AwesomeDialog(
+                // autoDismiss: false,
                 context: Get.context!,
                 animType: AnimType.scale,
                 dialogType: DialogType.info,
@@ -184,32 +208,31 @@ class LoginController extends GetxController {
                     'Vui lòng cho chúng tôi biết địa điểm của bạn để tối ưu các dịch vụ.',
                     style: TextStyle(
                         color: Colors.black,
-                        fontFamily: GoogleFonts.montserrat().fontFamily),
+                        fontFamily: GoogleFonts.poppins().fontFamily),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                title: 'This is Ignored',
-                desc: 'This is also Ignored',
                 btnOk: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent),
+                    backgroundColor: const Color.fromRGBO(39, 166, 82, 1),
+                  ),
                   onPressed: () {
                     Get.offAll(
-                      const OnboardingScreenFour(),
+                      const OnboardingScreenFour(isMap: true),
                     );
                   },
                   child: Text(
-                    'Chọn địa điểm',
+                    'Bản đồ',
                     style: TextStyle(
                       color: Colors.white,
-                      fontFamily: GoogleFonts.montserrat().fontFamily,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
                 btnCancel: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(5, 109, 101, 1)),
+                      backgroundColor: const Color.fromRGBO(39, 166, 82, 1)),
                   onPressed: () async {
                     // await _storage.write(
                     //     key: "ADDRESS_DEFAULT", value: currentAddress);
@@ -217,26 +240,42 @@ class LoginController extends GetxController {
                     // _convertCoordinatefromAddress(addressDefault);
                     // Get.offAll(const MainScreen());
                     await _getCurrentLocation();
-                    Get.offAll(
-                      OnboardingScreenFour(
-                        currentLocation: PlaceLocation(
-                            latitude: latitude,
-                            longitude: longitude,
-                            address: currentAddress),
-                      ),
-                    );
+                    if (isEnableTracking) {
+                      Get.offAll(
+                        OnboardingScreenFour(
+                          isMap: false,
+                          currentLocation: PlaceLocation(
+                              latitude: latitude,
+                              longitude: longitude,
+                              address: currentAddress),
+                        ),
+                      );
+                    }
+                    // else {
+                    //   await AwesomeDialog(
+                    //     context: Get.context!,
+                    //     dialogType: DialogType.info,
+                    //     animType: AnimType.rightSlide,
+                    //     title: 'Vui lòng cho phép ứng dụng theo dõi',
+                    //     // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
+                    //     autoHide: const Duration(milliseconds: 600),
+                    //     titleTextStyle: GoogleFonts.poppins(),
+                    //   ).show();
+                    //   Get.back();
+                    // }
                   },
                   child: Text(
                     'Vị trí hiện tại',
                     style: TextStyle(
                       color: Colors.white,
-                      fontFamily: GoogleFonts.montserrat().fontFamily,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                btnOkOnPress: () {
+                btnOkOnPress: () async {
                   Get.offAll(OnboardingScreenFour(
+                    isMap: true,
                     currentLocation: PlaceLocation(
                         latitude: latitude,
                         longitude: longitude,
@@ -245,12 +284,27 @@ class LoginController extends GetxController {
                 },
                 btnCancelOnPress: () async {
                   await _getCurrentLocation();
-                  Get.offAll(OnboardingScreenFour(
-                    currentLocation: PlaceLocation(
-                        latitude: latitude,
-                        longitude: longitude,
-                        address: currentAddress),
-                  ));
+                  if (isEnableTracking) {
+                    Get.offAll(OnboardingScreenFour(
+                      isMap: false,
+                      currentLocation: PlaceLocation(
+                          latitude: latitude,
+                          longitude: longitude,
+                          address: currentAddress),
+                    ));
+                  }
+                  // else {
+                  //   await AwesomeDialog(
+                  //     context: Get.context!,
+                  //     dialogType: DialogType.info,
+                  //     animType: AnimType.rightSlide,
+                  //     title: 'Vui lòng cho phép ứng dụng theo dõi',
+                  //     // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
+                  //     autoHide: const Duration(milliseconds: 600),
+                  //     titleTextStyle: GoogleFonts.poppins(),
+                  //   ).show();
+                  //   Get.back();
+                  // }
                 }).show();
           } else {
             addressDefault = addressFromPref;
@@ -259,24 +313,33 @@ class LoginController extends GetxController {
           }
         } else if (json['status'] == "error") {
           isLoading = false;
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  title: const Text(
-                    'Error',
-                    textAlign: TextAlign.center,
-                  ),
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Center(
-                      child: Text(
-                        json['error']['message'],
-                      ),
-                    ),
-                  ],
-                );
-              });
+
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: json['error']['message'],
+            titleTextStyle: GoogleFonts.poppins(),
+            autoHide: const Duration(milliseconds: 800),
+          ).show();
+          // showDialog(
+          //     context: Get.context!,
+          //     builder: (context) {
+          //       return SimpleDialog(
+          //         title: const Text(
+          //           'Error',
+          //           textAlign: TextAlign.center,
+          //         ),
+          //         contentPadding: const EdgeInsets.all(20),
+          //         children: [
+          //           Center(
+          //             child: Text(
+          //               json['error']['message'],
+          //             ),
+          //           ),
+          //         ],
+          //       );
+          //     });
           throw jsonDecode(response.body)['error']['message'] ??
               'Unknown Error Occured';
         }
@@ -285,24 +348,32 @@ class LoginController extends GetxController {
       }
     } catch (error) {
       Get.back();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text(
-                'Error',
-                textAlign: TextAlign.center,
-              ),
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text(
-                    error.toString(),
-                  ),
-                ),
-              ],
-            );
-          });
+      // AwesomeDialog(
+      //   context: Get.context!,
+      //   dialogType: DialogType.warning,
+      //   animType: AnimType.rightSlide,
+      //   title: error.toString(),
+      //   // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
+      //   titleTextStyle: GoogleFonts.poppins(),
+      // ).show();
+      // showDialog(
+      //     context: Get.context!,
+      //     builder: (context) {
+      //       return SimpleDialog(
+      //         title: const Text(
+      //           'Error',
+      //           textAlign: TextAlign.center,
+      //         ),
+      //         contentPadding: const EdgeInsets.all(20),
+      //         children: [
+      //           Center(
+      //             child: Text(
+      //               error.toString(),
+      //             ),
+      //           ),
+      //         ],
+      //       );
+      //     });
       return;
     }
   }
@@ -320,6 +391,53 @@ class LoginController extends GetxController {
     await prefs.setString('currentAddress', address);
   }
 
+  showAlertDialog(context) => AwesomeDialog(
+      // autoDismiss: false,
+      context: Get.context!,
+      animType: AnimType.scale,
+      dialogType: DialogType.info,
+      body: Center(
+        child: Text(
+          'Cấp phép truy cập vị trí',
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: GoogleFonts.poppins().fontFamily),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      btnOk: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color.fromRGBO(39, 166, 82, 1),
+        ),
+        onPressed: () => permission.openAppSettings(),
+        child: Text(
+          'Cài đặt',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      btnCancel: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(39, 166, 82, 1)),
+        onPressed: () {
+          Get.back();
+        },
+        child: Text(
+          'Hủy bỏ',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      btnOkOnPress: () => permission.openAppSettings(),
+      btnCancelOnPress: () {
+        Get.back();
+      }).show();
   Future<void> _getCurrentLocation() async {
     Location location = Location();
 
@@ -330,15 +448,16 @@ class LoginController extends GetxController {
     serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
-      if (!serviceEnabled) {
-        return;
-      }
+
+      isEnableTracking = false;
     }
 
     permissionGranted = await location.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
       if (permissionGranted != PermissionStatus.granted) {
+        showAlertDialog(Get.context!);
+
         return;
       }
     }
@@ -359,6 +478,7 @@ class LoginController extends GetxController {
     longitude = lng;
     await prefs.setDouble('lat', lat);
     await prefs.setDouble('lng', lng);
+    isEnableTracking = true;
   }
 
   Future<void> _convertCoordinatefromAddress(String address) async {

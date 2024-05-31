@@ -1,5 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:chotot/controllers/get_job_type.dart';
+// import 'package:chotot/controllers/get_job_type.dart';
 import 'package:chotot/controllers/get_jobservice.dart';
 import 'package:chotot/controllers/get_news.dart';
 import 'package:chotot/controllers/get_vouchers_valid.dart';
@@ -27,7 +27,7 @@ final theme = ThemeData(
     brightness: Brightness.light,
     seedColor: const Color.fromARGB(107, 184, 137, 255),
   ),
-  textTheme: GoogleFonts.latoTextTheme(),
+  textTheme: GoogleFonts.poppinsTextTheme(),
 );
 
 void main() async {
@@ -84,15 +84,15 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   LoginController loginController = Get.put(LoginController());
-  GetJobTypeController getJobTypeController = Get.put(GetJobTypeController());
+
   GetVouchersValid getVouchersValid = Get.put(GetVouchersValid());
   GetJobService jobService = Get.put(GetJobService());
   GetNews getNews = Get.put(GetNews());
   @override
   void initState() {
+    loginController.loginWithEmail();
     getVouchersValid.getVouchers();
     getNews.getNewsData();
-    loginController.loginWithEmail();
     jobService.getJobService();
     super.initState();
   }
@@ -102,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return AnimatedSplashScreen(
       splash: Center(
         widthFactor: 300,
-        child: Image.asset('image/logo/logo.png'),
+        child: Image.asset('image/logo_tho_thong_minh.jpeg'),
       ),
       backgroundColor: Colors.white,
       nextScreen: const MainScreen(),

@@ -69,7 +69,7 @@ class TaiKhoanItem extends StatelessWidget {
               ),
               child: Text(title,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontFamily: GoogleFonts.montserrat().fontFamily,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
                       ),

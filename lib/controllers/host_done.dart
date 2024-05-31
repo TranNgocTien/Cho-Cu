@@ -17,15 +17,17 @@ class HostDone extends GetxController {
   //   'Content-Type': 'application/json',
   // };
   LoginController loginController = Get.put(LoginController());
-  Future<void> hostDone() async {
+  Future<void> hostDone(
+      {contractId = '', jobId = '', hostId = '', hostName = ''}) async {
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.hostDone);
     Map body = {
-      'version': 'test',
-      'contract_id': acceptWorkerData[0].contractId,
-      'job_id': acceptWorkerData[0].jobId,
-      'host_id': acceptWorkerData[0].hostId,
-      'host_name': acceptWorkerData[0].hostName,
+      'version': 'publish',
+      'contract_id':
+          contractId == '' ? acceptWorkerData[0].contractId : contractId,
+      'job_id': jobId == '' ? acceptWorkerData[0].jobId : jobId,
+      'host_id': hostId == '' ? acceptWorkerData[0].hostId : hostId,
+      'host_name': hostName == '' ? acceptWorkerData[0].hostName : hostName,
       'token': 'anhkhongdoiqua',
     };
 
@@ -51,10 +53,12 @@ class HostDone extends GetxController {
                   children: [
                     Center(
                       child: Text('Không còn công việc',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    fontFamily: GoogleFonts.lato().fontFamily,
-                                  )),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                              )),
                     ),
                   ],
                 );

@@ -31,7 +31,7 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
     // Widget centerLoading = const Center(
     //   child: CircularProgressIndicator(),
     // );
-
+    final widthDevice = MediaQuery.of(context).size.width;
     final priceReverse = StringUtils.addCharAtPosition(
         StringUtils.reverse(widget.docu.price), ".", 3,
         repeat: true);
@@ -92,26 +92,24 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
             //     ),
             //   ),
             // ),
-            Center(
-              child: AspectRatio(
-                aspectRatio: 487 / 451,
-                child: CachedNetworkImage(
-                    imageUrl: widget.docu.photos[0].split('"').join(''),
-                    imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10)),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
+            AspectRatio(
+              aspectRatio: 487 / 451,
+              child: CachedNetworkImage(
+                  imageUrl: widget.docu.photos[0].split('"').join(''),
+                  imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10)),
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                    memCacheWidth: 200,
-                    maxHeightDiskCache: 200,
-                    maxWidthDiskCache: 200),
-              ),
+                      ),
+                  memCacheWidth: 200,
+                  maxHeightDiskCache: 200,
+                  maxWidthDiskCache: 200),
             ),
 
             Container(
@@ -124,34 +122,39 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
                   Text(
                     name,
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          fontSize: 20,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontSize: widthDevice * 0.05,
                           fontWeight: FontWeight.bold,
                         ),
                     textAlign: TextAlign.start,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         'Giá bán:',
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontSize: widthDevice * 0.035,
                               color: Colors.black,
                             ),
                         textAlign: TextAlign.start,
                       ),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(left: 5),
                         child: Text(
-                          '${StringUtils.reverse(priceReverse)} Đ',
+                          '${StringUtils.reverse(priceReverse)} VNĐ',
                           style: Theme.of(context)
                               .textTheme
-                              .bodySmall!
+                              .bodyMedium!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                color: Colors.redAccent,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                color: Colors.red,
                                 fontWeight: FontWeight.w900,
+                                fontSize: widthDevice * 0.03,
                               ),
                           textAlign: TextAlign.start,
                         ),
@@ -168,9 +171,10 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
                               .textTheme
                               .bodySmall!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 color: Colors.grey,
                                 fontWeight: FontWeight.bold,
+                                fontSize: widthDevice * 0.03,
                               ),
                         ),
                         Text(
@@ -179,9 +183,10 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
                               .textTheme
                               .bodySmall!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 color: Colors.grey,
                                 fontWeight: FontWeight.bold,
+                                fontSize: widthDevice * 0.03,
                               ),
                         )
                       ]),

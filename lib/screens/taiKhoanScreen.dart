@@ -47,7 +47,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
           child: Text(
             'Tài khoản',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontFamily: GoogleFonts.montserrat().fontFamily,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.bold,
                   color: const Color.fromRGBO(54, 92, 69, 1),
                 ),
@@ -300,7 +300,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
                               .textTheme
                               .labelLarge!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w400,
                               ),

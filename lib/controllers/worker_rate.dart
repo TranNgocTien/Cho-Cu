@@ -17,15 +17,18 @@ class WorkerRate extends GetxController {
   // };
   // LoginController loginController = Get.put(LoginController());
   TextEditingController contentController = TextEditingController(text: '');
-  Future<void> workerRate(double reatingPoint) async {
+  Future<void> workerRate(
+      double reatingPoint, contractId, jobId, employeeId, hostId) async {
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.workerRate);
     Map body = {
-      'version': 'test',
-      'contract_id': acceptWorkerData[0].contractId,
-      'job_id': acceptWorkerData[0].jobId,
-      'worker_id': acceptWorkerData[0].employeeId,
-      'host_id': acceptWorkerData[0].employeeName,
+      'version': 'publish',
+      'contract_id':
+          contractId == '' ? acceptWorkerData[0].contractId : contractId,
+      'job_id': jobId == '' ? acceptWorkerData[0].jobId : jobId,
+      'worker_id':
+          employeeId == '' ? acceptWorkerData[0].employeeId : employeeId,
+      'host_id': hostId == "" ? acceptWorkerData[0].employeeName : hostId,
       'content': contentController.text,
       'ds': reatingPoint.toString(),
       'token': 'anhkhongdoiqua',
@@ -50,10 +53,12 @@ class WorkerRate extends GetxController {
                   children: [
                     Center(
                       child: Text('Không còn công việc',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    fontFamily: GoogleFonts.lato().fontFamily,
-                                  )),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                              )),
                     ),
                   ],
                 );

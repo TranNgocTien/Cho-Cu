@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/ly_lich.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -15,7 +17,8 @@ class ApplyJob extends GetxController {
   // final _storage = const FlutterSecureStorage();
   // bool isLoading = true;
   // bool isLastPage = false;
-  TextEditingController description = TextEditingController(text: '--');
+  TextEditingController description =
+      TextEditingController(text: 'Tôi muốn nhận công việc này.');
   LoginController loginController = Get.put(LoginController());
   bool registerSuccess = false;
   Future<void> applyJob(String jobId, String workerId) async {
@@ -33,6 +36,7 @@ class ApplyJob extends GetxController {
       'lat': lyLichInfo[0].lat,
       'lng': lyLichInfo[0].lng,
       'token': 'anhkhongdoiqua',
+      'version': 'publish'
     };
 
     http.Response response = await http.post(
@@ -46,6 +50,16 @@ class ApplyJob extends GetxController {
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         registerSuccess = true;
+
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.success,
+          animType: AnimType.rightSlide,
+          title: 'Ứng tuyển thành công',
+          titleTextStyle: GoogleFonts.poppins(),
+        ).show();
+
+        Get.back();
       } else {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }

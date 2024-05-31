@@ -1,18 +1,31 @@
+import 'package:chotot/controllers/get_price_v2.dart';
 import 'package:chotot/data/get_vouchers_valid_data.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:getwidget/getwidget.dart';
 
-class VoucherValidPageView extends StatelessWidget {
+class VoucherValidPageView extends StatefulWidget {
   const VoucherValidPageView({super.key});
+
+  @override
+  State<VoucherValidPageView> createState() => _VoucherValidPageViewState();
+}
+
+class _VoucherValidPageViewState extends State<VoucherValidPageView> {
+  GetPrice getPrice = Get.put(GetPrice());
+
   @override
   Widget build(BuildContext context) {
     TextEditingController voucherCodeController =
         TextEditingController(text: '');
+
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -74,7 +87,7 @@ class VoucherValidPageView extends StatelessWidget {
               Text(
                 'Các mã giảm giá còn hiệu lực',
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      fontFamily: GoogleFonts.montserrat().fontFamily,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
                     ),
               ),
               ...vouchersValid.map((voucher) {
@@ -85,23 +98,35 @@ class VoucherValidPageView extends StatelessWidget {
                 var dateFrom = DateFormat('d/M/y').format(tsFrom);
                 var dateTo = DateFormat('d/M/y').format(tsTo);
                 return GFListTile(
-                    avatar: GFAvatar(
-                      shape: GFAvatarShape.square,
-                      backgroundColor: Colors.white,
-                      child: Image.network(voucher.img),
-                    ),
-                    titleText: voucher.name,
-                    subTitleText: '$dateFrom - $dateTo',
-                    description: Text(voucher.description),
-                    // icon: Icon(Icons.home, color: Colors.red),
-                    padding: EdgeInsets.zero,
-                    radius: 50,
-                    onTap: () {
-                      Navigator.pop(context, voucher.code);
-                    }
-
-                    // title: Text('$dateTo-$dateFrom'),
-                    );
+                  avatar: GFAvatar(
+                    shape: GFAvatarShape.square,
+                    backgroundColor: Colors.white,
+                    child: Image.network(voucher.img),
+                  ),
+                  titleText: voucher.name,
+                  subTitleText: '$dateFrom - $dateTo',
+                  description: Text(voucher.description),
+                  // icon: Icon(Icons.home, color: Colors.red),
+                  padding: EdgeInsets.zero,
+                  radius: 50,
+                  onTap: () {
+                    Navigator.pop(context, voucher.code);
+                  },
+                  icon: getPrice.code == voucher.code
+                      ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              getPrice.code = '';
+                            });
+                          },
+                          icon: const FaIcon(
+                            FontAwesomeIcons.circleMinus,
+                            color: Colors.red,
+                          ),
+                        )
+                      : const SizedBox(),
+                  // title: Text('$dateTo-$dateFrom'),
+                );
               }).toList()
             ],
           ),

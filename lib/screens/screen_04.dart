@@ -17,6 +17,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 // import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreenFour extends StatefulWidget {
@@ -27,7 +29,9 @@ class OnboardingScreenFour extends StatefulWidget {
     this.currentLocation = const PlaceLocation(
         latitude: 10.762622, longitude: 106.660172, address: ''),
     this.isSelecting = true,
+    required this.isMap,
   });
+  final isMap;
   final PlaceLocation currentLocation;
   final PlaceLocation location;
   final bool isSelecting;
@@ -44,7 +48,8 @@ class _OnboardingScreenFourState extends State<OnboardingScreenFour> {
   // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   // late Uint8List markerIcon;
   final _storage = const FlutterSecureStorage();
-  bool _savePassword = false;
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  bool _savePassword = true;
   LatLng? _pickedLocation;
   final List<Marker> _markers = [];
   double? cameraPositionLat;
@@ -96,6 +101,11 @@ class _OnboardingScreenFourState extends State<OnboardingScreenFour> {
         addressDefault = addressMap.text;
       });
       await _storage.write(key: "ADDRESS_DEFAULT", value: addressMap.text);
+      if (widget.isMap) {
+        final SharedPreferences prefs = await _prefs;
+        await prefs.setDouble('lat', _pickedLocation!.latitude);
+        await prefs.setDouble('lng', _pickedLocation!.longitude);
+      }
     } else {
       addressDefault = addressMap.text;
       await _storage.write(key: "ADDRESS_DEFAULT", value: '');
@@ -125,6 +135,9 @@ class _OnboardingScreenFourState extends State<OnboardingScreenFour> {
     final address = resData['results'][0]['formatted_address'];
     setState(() {
       addressMap.text = address;
+      if (widget.isMap) {
+        _pickedLocation = LatLng(lat, lng);
+      }
     });
   }
 
@@ -289,7 +302,7 @@ class _OnboardingScreenFourState extends State<OnboardingScreenFour> {
                                       .bodyMedium!
                                       .copyWith(
                                         fontFamily:
-                                            GoogleFonts.montserrat().fontFamily,
+                                            GoogleFonts.poppins().fontFamily,
                                         fontSize: 18,
                                       ),
                                 ),
@@ -322,10 +335,10 @@ class _OnboardingScreenFourState extends State<OnboardingScreenFour> {
                           title: Text(
                             "Ghi nhớ địa chỉ",
                             style: TextStyle(
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
                             ),
                           ),
-                          activeColor: const Color.fromRGBO(5, 109, 101, 1),
+                          activeColor: const Color.fromRGBO(39, 166, 82, 1),
                         ),
                       ),
                       SizedBox(
@@ -337,15 +350,18 @@ class _OnboardingScreenFourState extends State<OnboardingScreenFour> {
                           Get.offAll(() => const MainScreen());
                         },
                         icon: const FaIcon(FontAwesomeIcons.locationPin,
-                            color: Colors.red),
+                            color: Colors.redAccent),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromRGBO(38, 166, 83, 1),
+                        ),
                         label: Text(
                           'Lưu vị trí',
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                color: Colors.black,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),

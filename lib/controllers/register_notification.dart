@@ -1,29 +1,28 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chotot/main.dart';
-import 'package:chotot/screens/choScreen.dart';
+import 'package:chotot/controllers/get_a_job.dart';
+// import 'package:chotot/main.dart';
+// import 'package:chotot/screens/choScreen.dart';
+import 'package:chotot/screens/thong_tin_job_screen.dart';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:chotot/data/notification_count.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> handleBackgroundMessage(RemoteMessage message) async {
-  // print('Title : ${message.notification?.title}');
-  // print('Body : ${message.notification?.body}');
-  // print('Payload : ${message.data}');
-}
-
 class RegisterNotiController {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final _firebaseMessaging = FirebaseMessaging.instance;
-
+  GetAJob getAJob = Get.put(GetAJob());
   String? fCMToken;
+
   final _androidChannel = const AndroidNotificationChannel(
     'high_importance_channel',
     'High Important Notifications',
@@ -31,11 +30,54 @@ class RegisterNotiController {
     importance: Importance.defaultImportance,
   );
   final _localNotifications = FlutterLocalNotificationsPlugin();
-  void handleMessage(RemoteMessage? message) {
+  Future<void> handleBackgroundMessage(RemoteMessage message) async {
+    // print('Title : ${message.notification?.title}');
+    // print('Body : ${message.notification?.body}');
+    // print('Payload : ${message.data}');
+
+    var json = jsonEncode(message.data);
+    var jobId = jsonDecode(json)['action'];
+    await getAJob.getAJob(jobId);
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(
+        int.parse(getAJob.jobInfo[0].workDate),
+        isUtc: true);
+    var date = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+    var time = '${dateTime.hour}:${dateTime.minute}';
+    Get.to(
+      () => ThongTinJobScreen(
+        jobInfo: getAJob.jobInfo,
+        date: date,
+        time: time,
+      ),
+    );
+  }
+
+  void handleMessage(RemoteMessage? message) async {
     if (message == null) return;
-    navigatorKey.currentState?.pushNamed(
-      ChoScreen.route,
-      arguments: message,
+    // await getAJob.getAJob(item.jobId);
+    // Get.to(ThongTinJobScreen(
+    //   jobInfo: [],
+    // ));
+    // print(message);
+    // navigatorKey.currentState?.pushNamed(
+    //   ChoScreen.route,
+    //   arguments: message,
+    // );\
+
+    var json = jsonEncode(message.data);
+    var jobId = jsonDecode(json)['action'];
+    await getAJob.getAJob(jobId);
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(
+        int.parse(getAJob.jobInfo[0].workDate),
+        isUtc: true);
+    var date = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+    var time = '${dateTime.hour}:${dateTime.minute}';
+    Get.to(
+      () => ThongTinJobScreen(
+        jobInfo: getAJob.jobInfo,
+        date: date,
+        time: time,
+      ),
     );
   }
 
@@ -66,6 +108,7 @@ class RegisterNotiController {
     count.value += 1;
     // print('* $count');
     final details = await _notificationDetails();
+
     await _localNotifications.show(id, title, body, details);
   }
 
@@ -78,6 +121,7 @@ class RegisterNotiController {
     // count += 1;
     // print('*** $count');
     final details = await _notificationDetails();
+
     await _localNotifications.show(id, title, body, details, payload: payload);
   }
 
@@ -94,6 +138,7 @@ class RegisterNotiController {
           title: message.notification?.title,
           body: message.notification?.body,
           payload: payload);
+
       handleMessage(message);
     });
     final platform = _localNotifications.resolvePlatformSpecificImplementation<
@@ -130,6 +175,7 @@ class RegisterNotiController {
         ),
         payload: jsonEncode(message.toMap()),
       );
+
       await showNotification(
           id: message.notification.hashCode,
           title: message.notification!.title,
@@ -140,9 +186,9 @@ class RegisterNotiController {
   Future<void> initNotifications() async {
     await _firebaseMessaging.requestPermission();
     fCMToken = await _firebaseMessaging.getToken();
-
+    // print(fCMToken);
     initPushNotifications();
-    initLocalNotifications();
+    // initLocalNotifications();
   }
 
   Future<void> registerNoti() async {

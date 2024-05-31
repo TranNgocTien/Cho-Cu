@@ -40,7 +40,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                 ),
                 width: 300,
                 child: Image.asset(
-                  'image/MedenDx_green-slogan.png',
+                  'image/logo_tho_thong_minh.jpeg',
                 ),
               ),
               const SizedBox(height: 50),
@@ -79,16 +79,16 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                               .textTheme
                               .titleMedium!
                               .copyWith(
-                                color: const Color.fromRGBO(54, 92, 69, 1),
+                                color: const Color.fromRGBO(38, 166, 83, 1),
                                 fontWeight: FontWeight.bold,
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                               ),
                           textAlign: TextAlign.start,
                         ),
                         const SizedBox(height: 30),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 211, 210, 210),
+                            color: const Color.fromARGB(255, 192, 244, 210),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Padding(
@@ -108,9 +108,8 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily:
-                                                  GoogleFonts.montserrat()
-                                                      .fontFamily,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -141,7 +140,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
-                                const Color.fromRGBO(5, 109, 101, 1),
+                                const Color.fromRGBO(38, 166, 83, 1),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -154,7 +153,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                                   .copyWith(
                                     color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
+                                        GoogleFonts.poppins().fontFamily,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 25,
                                   ),
@@ -171,7 +170,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                                 .textTheme
                                 .labelLarge!
                                 .copyWith(
-                                  color: const Color.fromRGBO(5, 109, 101, 1),
+                                  color: const Color.fromRGBO(38, 166, 83, 1),
                                 ),
                           ),
                         ),

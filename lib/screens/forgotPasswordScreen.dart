@@ -38,7 +38,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 width: 300,
                 child: Image.asset(
-                  'image/logo/logo.png',
+                  'image/logo_tho_thong_minh.jpeg',
                 ),
               ),
               const SizedBox(height: 50),
@@ -79,10 +79,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     .titleMedium!
                                     .copyWith(
                                       color:
-                                          const Color.fromRGBO(54, 92, 69, 1),
+                                          const Color.fromRGBO(38, 166, 83, 1),
                                       fontWeight: FontWeight.bold,
                                       fontFamily:
-                                          GoogleFonts.montserrat().fontFamily,
+                                          GoogleFonts.poppins().fontFamily,
                                     ),
                                 textAlign: TextAlign.start,
                               ),
@@ -90,7 +90,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               Container(
                                 decoration: BoxDecoration(
                                   color:
-                                      const Color.fromARGB(255, 211, 210, 210),
+                                      const Color.fromARGB(255, 192, 244, 210),
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 child: Padding(
@@ -112,7 +112,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.montserrat()
+                                                        GoogleFonts.poppins()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -148,7 +148,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
-                                      const Color.fromRGBO(5, 109, 101, 1),
+                                      const Color.fromRGBO(38, 166, 83, 1),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -160,8 +160,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily: GoogleFonts.montserrat()
-                                              .fontFamily,
+                                          fontFamily:
+                                              GoogleFonts.poppins().fontFamily,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
                                         ),
@@ -175,7 +175,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               Container(
                                 decoration: BoxDecoration(
                                   color:
-                                      const Color.fromARGB(255, 211, 210, 210),
+                                      const Color.fromARGB(255, 192, 244, 210),
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 child: Padding(
@@ -197,7 +197,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.montserrat()
+                                                        GoogleFonts.poppins()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -228,7 +228,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               Container(
                                 decoration: BoxDecoration(
                                   color:
-                                      const Color.fromARGB(255, 211, 210, 210),
+                                      const Color.fromARGB(255, 192, 244, 210),
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 child: Padding(
@@ -250,7 +250,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.montserrat()
+                                                        GoogleFonts.poppins()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -282,7 +282,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               Container(
                                 decoration: BoxDecoration(
                                   color:
-                                      const Color.fromARGB(255, 211, 210, 210),
+                                      const Color.fromARGB(255, 192, 244, 210),
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 child: Padding(
@@ -304,7 +304,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   .bodyLarge!
                                                   .copyWith(
                                                     fontFamily:
-                                                        GoogleFonts.montserrat()
+                                                        GoogleFonts.poppins()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -339,7 +339,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
-                                      const Color.fromRGBO(5, 109, 101, 1),
+                                      const Color.fromRGBO(38, 166, 83, 1),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -351,8 +351,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily: GoogleFonts.montserrat()
-                                              .fontFamily,
+                                          fontFamily:
+                                              GoogleFonts.poppins().fontFamily,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
                                         ),

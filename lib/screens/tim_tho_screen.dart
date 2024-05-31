@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 // import 'package:basic_utils/basic_utils.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:basic_utils/basic_utils.dart' as basic;
 import 'package:chotot/controllers/book_job_v3.dart';
 import 'package:chotot/controllers/get_job_item.dart';
@@ -10,14 +11,17 @@ import 'package:chotot/controllers/get_price_v2.dart';
 
 import 'package:chotot/data/get_job_item_data.dart';
 import 'package:chotot/data/job_service_data.dart';
+import 'package:chotot/data/selected_items.dart';
 
 import 'package:chotot/models/addressUpdate.dart';
 import 'package:chotot/models/job_item.dart';
 import 'package:chotot/models/place.dart';
+
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:chotot/screens/job_item_screen.dart';
 import 'package:chotot/screens/mapScreen.dart';
-import 'package:chotot/screens/voucher_valid_screen.dart';
+// import 'package:chotot/screens/voucher_valid_screen.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -33,6 +37,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
@@ -40,8 +45,13 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class TimThoThongMinhScreen extends StatefulWidget {
-  const TimThoThongMinhScreen({super.key, required this.codeService});
+  const TimThoThongMinhScreen({
+    super.key,
+    required this.codeService,
+    required this.nameService,
+  });
   final String codeService;
+  final String nameService;
   @override
   State<TimThoThongMinhScreen> createState() => _TimThoThongMinhScreenState();
 }
@@ -59,6 +69,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
   String workHour = '';
   int timeStampWorkhour = 0;
   int countGetPrice = 0;
+
   Future<void> _convertCoordinatefromAddress(double lat, double lng) async {
     final url = Uri.parse(
         'https://rsapi.goong.io/Geocode?latlng=$lat,$lng&api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB');
@@ -90,68 +101,51 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
   }
 
   bookJobV3() async {
-    // if (bookJob.imageFileList!.isEmpty || bookJob.imageFileList!.length > 3) {
-    //   showDialog(
-    //       context: Get.context!,
-    //       builder: (context) {
-    //         return const SimpleDialog(
-    //           contentPadding: EdgeInsets.all(20),
-    //           children: [
-    //             Text(
-    //               'Đăng tối thiểu 1 ảnh, tối đa 3 ảnh',
-    //             ),
-    //           ],
-    //         );
-    //       });
-    //   return;
-    // }
+    if (bookJob.imageFileList!.length > 3) {
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Đăng tối thiểu 1 ảnh, tối đa 3 ảnh',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+
+      return;
+    }
     await bookJob.uploadJobPhoto();
     if (bookJob.addressController.text.isEmpty) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Vui lòng chọn theo tên gợi ý!',
-                ),
-              ],
-            );
-          });
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng chọn theo tên gợi ý!',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
     }
     if (bookJob.addressController.text.isEmpty ||
-        bookJob.descriptionController.text.isEmpty ||
         bookJob.nameController.text.isEmpty ||
         bookJob.phoneController.text.isEmpty) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Vui lòng điền đầy đủ các thông tin',
-                ),
-              ],
-            );
-          });
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng điền đầy đủ các thông tin',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
     }
     await _convertAddressToCoordinate(bookJob.addressController.text);
 
     if (bookJob.lat == null || bookJob.lng == null) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Nhập lại địa chỉ',
-                ),
-              ],
-            );
-          });
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Nhập lại địa chỉ',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
     }
 
     await bookJob.bookJob(
@@ -168,7 +162,16 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
 
   _openGallery() async {
     final List<XFile> selectedImages = await imagePicker.pickMultiImage();
-
+    if (selectedImages.length > 3) {
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng chọn không quá 3 hình ảnh',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
+    }
     if (selectedImages.isNotEmpty) {
       bookJob.imageFileList!.addAll(selectedImages);
     }
@@ -190,7 +193,62 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
     // }
   }
 
-  _openCamera() async {
+  showAlertDialog(context) => AwesomeDialog(
+      // autoDismiss: false,
+      context: Get.context!,
+      animType: AnimType.scale,
+      dialogType: DialogType.info,
+      body: Center(
+        child: Text(
+          'Cấp phép truy cập máy ảnh',
+          style: TextStyle(
+              color: Colors.black,
+              fontFamily: GoogleFonts.poppins().fontFamily),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      btnOk: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color.fromRGBO(39, 166, 82, 1),
+        ),
+        onPressed: () => openAppSettings(),
+        child: Text(
+          'Cài đặt',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      btnCancel: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(39, 166, 82, 1)),
+        onPressed: () {
+          Get.back();
+        },
+        child: Text(
+          'Hủy bỏ',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      btnOkOnPress: () => openAppSettings(),
+      btnCancelOnPress: () {
+        Get.back();
+      }).show();
+
+  _openCamera(context) async {
+    var status = await Permission.camera.status;
+
+    if (status.isPermanentlyDenied) {
+      showAlertDialog(context);
+      return;
+    }
+
     try {
       List<XFile> selectedImages = [];
       final imageFileGallery = await ImagePicker()
@@ -212,86 +270,142 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
   }
 
   Future<void> _showChoiceDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Container(
-              width: MediaQuery.of(context).size.width * 0.3,
-              height: MediaQuery.of(context).size.height * 0.2,
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    'Lựa chọn tải ảnh:',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          _openGallery();
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Icon(FontAwesomeIcons.image),
-                            Text(
-                              'Thư viện',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          _openCamera();
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Icon(FontAwesomeIcons.camera),
-                            Text(
-                              'Chụp ảnh',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+    return AwesomeDialog(
+            width: double.infinity,
+            context: Get.context!,
+            animType: AnimType.scale,
+            dialogType: DialogType.info,
+            body: Center(
+              child: Text(
+                'Lựa chọn tải ảnh',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontFamily: GoogleFonts.poppins().fontFamily),
+                textAlign: TextAlign.center,
               ),
             ),
-          );
-        });
+            btnOk: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(38, 166, 83, 1)),
+              onPressed: () {
+                _openGallery();
+                Get.back();
+              },
+              icon: const FaIcon(FontAwesomeIcons.image, color: Colors.white),
+              label: Text(
+                'Thư viện',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            btnCancel: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(38, 166, 83, 1),
+              ),
+              onPressed: () async {
+                await _openCamera(context);
+              },
+              icon: const FaIcon(
+                FontAwesomeIcons.camera,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Máy ảnh',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            btnOkOnPress: () {},
+            btnCancelOnPress: () async {})
+        .show();
+
+    // showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       return AlertDialog(
+    //         content: Container(
+    //           width: MediaQuery.of(context).size.width * 0.3,
+    //           height: MediaQuery.of(context).size.height * 0.2,
+    //           padding: const EdgeInsets.all(10),
+    //           child: Column(
+    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //             children: [
+    //               const SizedBox(
+    //                 height: 20,
+    //               ),
+    //               Text(
+    //                 'Lựa chọn tải ảnh:',
+    //                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
+    //                       fontFamily: GoogleFonts.poppins().fontFamily,
+    //                       color: Colors.black,
+    //                       fontWeight: FontWeight.w600,
+    //                     ),
+    //                 textAlign: TextAlign.center,
+    //               ),
+    //               const SizedBox(height: 20),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: [
+    //                   GestureDetector(
+    //                     onTap: () {
+    //                       _openGallery();
+    //                     },
+    //                     child: Column(
+    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                       children: [
+    //                         const Icon(FontAwesomeIcons.image),
+    //                         Text(
+    //                           'Thư viện',
+    //                           style: Theme.of(context)
+    //                               .textTheme
+    //                               .labelLarge!
+    //                               .copyWith(
+    //                                 fontFamily:
+    //                                     GoogleFonts.poppins().fontFamily,
+    //                                 color: Colors.black,
+    //                                 fontWeight: FontWeight.w600,
+    //                               ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                   GestureDetector(
+    //                     onTap: () {
+    //                       _openCamera();
+    //                     },
+    //                     child: Column(
+    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                       children: [
+    //                         const Icon(FontAwesomeIcons.camera),
+    //                         Text(
+    //                           'Chụp ảnh',
+    //                           style: Theme.of(context)
+    //                               .textTheme
+    //                               .labelLarge!
+    //                               .copyWith(
+    //                                 fontFamily:
+    //                                     GoogleFonts.poppins().fontFamily,
+    //                                 color: Colors.black,
+    //                                 fontWeight: FontWeight.w600,
+    //                               ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //       );
+    //     });
   }
 
   List<XFile>? imageFileList = [];
@@ -309,13 +423,13 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
     'Item6',
     'Item7',
   ];
-  List<String> selectedItems = [];
+
   List<String> selectedItemsId = [];
   String dateConvertToString = '';
   String hourConvertToString = '';
+  int tempTotalPrice = 0;
 
-  List<JobItems> jobItemsSelected = [];
-  dynamic code = '';
+  // dynamic code = '';
   String _getValueText(
     CalendarDatePicker2Type datePickerType,
     List<DateTime?> values,
@@ -332,7 +446,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
 
 // millisecondsSinceEpoch
   getPriceFunc() async {
-    if (code.runtimeType != String) code = '';
+    if (getPrice.code.runtimeType != String) getPrice.code = '';
     var workDate = '$dateConvertToString$hourConvertToString'
         'Z';
 
@@ -340,12 +454,30 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
       var milisecondsConvert = DateTime.parse(workDate);
 
       var timeStamp = milisecondsConvert.millisecondsSinceEpoch;
+      if (jobItemsSelected.isEmpty) {
+        AwesomeDialog(
+          context: Get.context!,
+          animType: AnimType.scale,
+          dialogType: DialogType.info,
+          body: Center(
+            child: Text(
+              'Vui lòng chọn dịch vụ',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: GoogleFonts.montserrat().fontFamily),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ).show();
 
+        return;
+      }
       await getPrice.getPrice(
-          countGetPrice == 0 ? '' : getPrice.dataPrice.priceId,
-          timeStamp.toString(),
-          jobItemsSelected,
-          code);
+        countGetPrice == 0 ? '' : getPrice.dataPrice.priceId,
+        timeStamp.toString(),
+        jobItemsSelected,
+        bookJobV3,
+      );
       setState(() {});
       countGetPrice++;
     } else {
@@ -365,20 +497,125 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
     }
   }
 
+  List image = [];
+  List dienuoc = ['image/DICH VU DIEN-NUOC/KIEM TRA KHAC PHUC DIEN NUOC.png'];
+  List maygiat = [
+    'image/DICH VU MAY GIAT/1 VS CUA TREN.png',
+    'image/DICH VU MAY GIAT/2 VS CUA TRUOC.png'
+  ];
+  List maylanh = [
+    'image/DICH VU MAY LANH/1 VSML 1-1.5HP.png',
+    'image/DICH VU MAY LANH/2 VSML 2-2.5HP.png',
+    'image/DICH VU MAY LANH/3 VSML AM TRAN.png',
+    'image/DICH VU MAY LANH/4 VSML TU DUNG.png',
+    'image/DICH VU MAY LANH/5 VSML MULTI.png',
+    'image/DICH VU MAY LANH/6 LAP DAT TREO TUONG (THAO NGUYEN BO).png',
+    'image/DICH VU MAY LANH/7 LAP DAT TREO TUONG (LAP NGUYEN BO).png',
+    'image/DICH VU MAY LANH/8 LAP DAT TREO TUONG(THAO VA LAP).png',
+    'image/DICH VU MAY LANH/9 LAP DAT TREO TUONG (THAY DAN NONG.png',
+    'image/DICH VU MAY LANH/10 LAP DAT TREO TUONG(THAY DAN LANH).png',
+    'image/DICH VU MAY LANH/11 LAP DAT TU DUNG,AP TRAN, AM TRAN(THAO).png',
+    'image/DICH VU MAY LANH/12 LAP DAT TU DUNG, AP TRAN, AM TRAN(LAP).png',
+    'image/DICH VU MAY LANH/13 LAP DAT TU DUNG (THAO VA LAP).png',
+    'image/DICH VU MAY LANH/14 LAP DAT TU DUNG,AP TRAN, AM TRAN(THAY DAN NONG).png',
+    'image/DICH VU MAY LANH/15 LAP DAT TU DUNG,AM TRAN,AP TRAN(THAY DAN LANH).png',
+    'image/DICH VU MAY LANH/16-20 SAC GAS.png',
+    'image/DICH VU MAY LANH/16-20 SAC GAS.png',
+    'image/DICH VU MAY LANH/16-20 SAC GAS.png',
+    'image/DICH VU MAY LANH/16-20 SAC GAS.png',
+    'image/DICH VU MAY LANH/16-20 SAC GAS.png',
+  ];
+  List quatmay = [
+    'image/DICH VU QUAT MAY/1 VS QUAT DIEU HOA.png',
+    'image/DICH VU QUAT MAY/2 VS QUAT KHO.png',
+  ];
+  List tulanh = [
+    'image/DICH VU TU LANH/1 VS TU LANH THUONG.png',
+    'image/DICH VU TU LANH/2 VS TU LANH 2 CANH.png',
+    'image/DICH VU TU LANH/3 SUA CHUA TU LANH.png',
+  ];
+  List giadung = [
+    'image/DV LAP DAT THIET BI GIA DUNG/LAP DAT THIET BI GIA DUNG.png',
+  ];
+  List maytinh = [
+    'image/DV MAY TINH-IN/1 SUA CHUA MAY TINH.png',
+    'image/DV MAY TINH-IN/2 BAO TRI MAY TINH.png',
+    'image/DV MAY TINH-IN/3 BAO TRI MAY IN.png',
+  ];
+
+  chooseListImage(nameService) {
+    switch (nameService) {
+      case "Dịch vụ máy lạnh":
+        return maylanh;
+      case "Dịch vụ máy giặt":
+        return maygiat;
+      case "Dịch vụ quạt máy":
+        return quatmay;
+      case "Dịch vụ tủ lạnh":
+        return tulanh;
+      case "Dịch vụ sửa chữa điện – nước":
+        return dienuoc;
+      case "Dịch vụ lắp đặt thiết bị gia dụng":
+        return giadung;
+      case "Dịch vụ máy tính - máy in":
+        return maytinh;
+      default:
+    }
+  }
+
+  priceReserve(price) {
+    return basic.StringUtils.addCharAtPosition(
+        basic.StringUtils.reverse(price.toString()), ".", 3,
+        repeat: true);
+  }
+
+  prePriceReserve(index) {
+    var price =
+        int.parse(jobItemsSelected[index].price) * jobItemsSelected[index].qt;
+    return basic.StringUtils.addCharAtPosition(
+        basic.StringUtils.reverse(price.toString()), ".", 3,
+        repeat: true);
+  }
+
   void _modalBottomSheetMenu() async {
+    // image = await chooseListImage(widget.nameService);
     await getJobItem.getJobItem(widget.codeService);
     showMaterialModalBottomSheet(
         context: Get.context!,
         builder: (context) {
           return Scaffold(
             appBar: AppBar(
-              leading: Container(),
+              flexibleSpace: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Color.fromRGBO(39, 166, 82, 1),
+                      Color.fromRGBO(1, 142, 33, 1),
+                      Color.fromRGBO(23, 162, 73, 1),
+                      Color.fromRGBO(84, 181, 111, 1),
+                    ],
+                  ),
+                ),
+              ),
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.white,
+                ),
+              ),
               title: Text(
                 jobServiceList
                     .firstWhere((element) => element.code == widget.codeService)
                     .name,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      fontFamily: GoogleFonts.montserrat().fontFamily,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      color: Colors.white,
+                      fontSize: 18,
                     ),
               ),
             ),
@@ -395,8 +632,10 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                       avatar: GFAvatar(
                         shape: GFAvatarShape.circle,
                         backgroundColor:
-                            const Color.fromARGB(128, 105, 240, 175),
-                        child: Image.asset('image/automobile-with-wrench.png'),
+                            const Color.fromARGB(255, 192, 244, 210),
+                        child: Image.asset(
+                          image[index],
+                        ),
                       ),
                       // titleText: vouchersValid[index].name,
                       title: Text(jobItemList[index].name,
@@ -410,7 +649,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                               .textTheme
                               .bodyMedium!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w900,
                               )),
                       description: Text(jobItemList[index].description,
@@ -418,7 +657,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                               .textTheme
                               .bodyMedium!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                               )),
                       // icon: Icon(Icons.home, color: Colors.red),
                       padding: EdgeInsets.zero,
@@ -433,8 +672,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                   element.name == jobItemList[index].name)
                               .toList();
                           int indexJobItemList = jobItemList.indexWhere(
-                              (element) =>
-                                  element.name == jobItemList[index].name);
+                              (element) => element.id == jobItemList[index].id);
 
                           jobItemsSelected.add(jobItemList[indexJobItemList]);
                           selectedItemsId.add(id[0].id);
@@ -443,8 +681,10 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                   element.code ==
                                   jobItemList[index].jobserviceId)
                               .name;
-                          Navigator.pop(context);
+                          tempTotalPrice +=
+                              int.parse(jobItemList[indexJobItemList].price);
                         });
+                        Navigator.pop(context);
                       }
                       // title: Text('$dateTo-$dateFrom'),
                       );
@@ -457,12 +697,23 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
 
   @override
   void initState() {
+    // print(image);
     hourConvertToString =
         ' ${time.hour < 10 ? 0 : ''}${time.hour.toString()}:${time.minute < 10 ? 0 : ''}${time.minute.toString()}:${time.second < 10 ? 0 : ''}${time.second.toString()}';
     if (widget.codeService != '') {
+      image = chooseListImage(widget.nameService);
       _modalBottomSheetMenu();
     }
+    selectedItems.clear();
+    jobItemsSelected.clear();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    selectedItems.clear();
+    jobItemsSelected.clear();
+    super.dispose();
   }
 
   @override
@@ -501,13 +752,37 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+                  Color.fromRGBO(39, 166, 82, 1),
+                  Color.fromRGBO(1, 142, 33, 1),
+                  Color.fromRGBO(23, 162, 73, 1),
+                  Color.fromRGBO(84, 181, 111, 1),
+                ],
+              ),
+            ),
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.white,
+            ),
+          ),
           title: Text(
             'Đặt thợ thông minh',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
-                .copyWith(fontFamily: GoogleFonts.montserrat().fontFamily),
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  color: Colors.white,
+                ),
           ),
         ),
         body: Padding(
@@ -521,7 +796,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                   Text(
                     'Tên chủ đơn hàng: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -530,7 +805,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                           width: 1,
-                          color: const Color.fromARGB(255, 185, 184, 184)),
+                          color: const Color.fromARGB(255, 192, 244, 210)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Padding(
@@ -564,13 +839,14 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                   Text(
                     'Địa chỉ của bạn: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(
@@ -579,12 +855,12 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                           bottom: 10.0,
                         ),
                         child: Container(
-                          width: MediaQuery.of(context).size.width * 0.75,
+                          width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
                             border: Border.all(
                                 width: 1,
                                 color:
-                                    const Color.fromARGB(255, 185, 184, 184)),
+                                    const Color.fromARGB(255, 192, 244, 210)),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: TypeAheadField<AddressUpdate?>(
@@ -615,7 +891,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                       .bodyMedium!
                                       .copyWith(
                                         fontFamily:
-                                            GoogleFonts.montserrat().fontFamily,
+                                            GoogleFonts.poppins().fontFamily,
                                         fontSize: 18,
                                       ),
                                 ),
@@ -640,7 +916,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      IconButton(
+                      MaterialButton(
                         onPressed: () async {
                           final SharedPreferences prefs = await _prefs;
 
@@ -667,9 +943,17 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                           _convertCoordinatefromAddress(pickedLocation.latitude,
                               pickedLocation.longitude);
                         },
-                        icon: const FaIcon(FontAwesomeIcons.locationPin),
-                        style: IconButton.styleFrom(
-                            iconSize: 20, foregroundColor: Colors.red),
+                        shape: const CircleBorder(
+                            eccentricity: 0.0,
+                            side: BorderSide(
+                              color: Color.fromRGBO(38, 166, 83, 1),
+                              width: 2.0,
+                            )),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 10),
+                        elevation: 20.0,
+                        child: const FaIcon(FontAwesomeIcons.locationPin,
+                            size: 25, color: Color.fromRGBO(38, 166, 83, 1)),
                       ),
                     ],
                   ),
@@ -677,7 +961,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                   Text(
                     'Số điện thoại liên hệ:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -686,7 +970,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                           width: 1,
-                          color: const Color.fromARGB(255, 185, 184, 184)),
+                          color: const Color.fromARGB(255, 192, 244, 210)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Padding(
@@ -720,7 +1004,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                   Text(
                     'Chọn thời gian: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -733,7 +1017,8 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                         padding:
                             const EdgeInsets.only(top: 8, bottom: 8, right: 10),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 192, 244, 210)),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
@@ -761,7 +1046,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                   .bodyLarge!
                                   .copyWith(
                                     fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
+                                        GoogleFonts.poppins().fontFamily,
                                   ),
                             ),
                           ],
@@ -772,7 +1057,8 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                         padding:
                             const EdgeInsets.only(top: 8, bottom: 8, right: 10),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 192, 244, 210)),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
@@ -803,7 +1089,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                   .bodyLarge!
                                   .copyWith(
                                     fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
+                                        GoogleFonts.poppins().fontFamily,
                                   ),
                             ),
                           ],
@@ -821,7 +1107,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                       hint: Text(
                         'Thêm dịch vụ:',
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontFamily: GoogleFonts.montserrat().fontFamily),
+                            fontFamily: GoogleFonts.poppins().fontFamily),
                       ),
                       items: nameService
                           .map((String item) => DropdownMenuItem<String>(
@@ -842,8 +1128,8 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                         .textTheme
                                         .bodyLarge!
                                         .copyWith(
-                                          fontFamily: GoogleFonts.montserrat()
-                                              .fontFamily,
+                                          fontFamily:
+                                              GoogleFonts.poppins().fontFamily,
                                         ),
                                   ),
                                   // icon: Icon(Icons.home, color: Colors.red),
@@ -852,20 +1138,15 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                   onTap: () async {
                                     if (dateConvertToString == '' &&
                                         hourConvertToString == '') {
-                                      showDialog(
-                                          context: Get.context!,
-                                          builder: (context) {
-                                            return const SimpleDialog(
-                                              contentPadding:
-                                                  EdgeInsets.all(20),
-                                              children: [
-                                                Center(
-                                                  child: Text(
-                                                      'Vui lòng chọn thời gian đặt thợ'),
-                                                ),
-                                              ],
-                                            );
-                                          });
+                                      AwesomeDialog(
+                                        context: Get.context!,
+                                        dialogType: DialogType.warning,
+                                        animType: AnimType.rightSlide,
+                                        title:
+                                            'Vui lòng chọn thời gian đặt thợ',
+                                        titleTextStyle: GoogleFonts.poppins(),
+                                      ).show();
+
                                       return;
                                     }
                                     if (serviceSelected == '' ||
@@ -880,47 +1161,63 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
 
                                       var jobItemName =
                                           await showBarModalBottomSheet(
-                                        expand: true,
+                                        expand: false,
                                         context: Get.context!,
                                         builder: (context) => JobItemScreen(
                                           nameService: item,
                                         ),
                                       );
+
+                                      if (jobItemName != null) {
+                                        Get.back();
+                                      }
                                       setState(() {
                                         if (jobItemName != null) {
                                           selectedItems
-                                              .add('$item - $jobItemName');
+                                              .add('$item - ${jobItemName[1]}');
                                           List<JobItems> id = jobItemList
                                               .where((element) =>
-                                                  element.name == jobItemName)
+                                                  element.id == jobItemName[0])
                                               .toList();
                                           int index = jobItemList.indexWhere(
                                               (element) =>
-                                                  element.name == jobItemName);
+                                                  element.id == jobItemName[0]);
 
                                           jobItemsSelected
                                               .add(jobItemList[index]);
                                           selectedItemsId.add(id[0].id);
                                           serviceSelected = item;
+
+                                          tempTotalPrice = tempTotalPrice +
+                                              int.parse(
+                                                  jobItemList[index].price);
                                         }
                                       });
                                     } else {
-                                      showDialog(
-                                          context: Get.context!,
-                                          builder: (context) {
-                                            return SimpleDialog(
-                                              contentPadding:
-                                                  const EdgeInsets.all(20),
-                                              children: [
-                                                Text(
-                                                    'Quý khách đã chọn $serviceSelected. Vui lòng tạo đơn đặt mới để sử dụng thêm dịch vụ khác',
-                                                    textAlign:
-                                                        TextAlign.center),
-                                              ],
-                                            );
-                                          });
+                                      AwesomeDialog(
+                                        context: Get.context!,
+                                        dialogType: DialogType.info,
+                                        animType: AnimType.rightSlide,
+                                        title:
+                                            'Quý khách đã chọn $serviceSelected. Vui lòng tạo đơn đặt mới để sử dụng thêm dịch vụ khác',
+                                        titleTextStyle: GoogleFonts.poppins(),
+                                      ).show();
+                                      // showDialog(
+                                      //     context: Get.context!,
+                                      //     builder: (context) {
+                                      //       return SimpleDialog(
+                                      //         contentPadding:
+                                      //             const EdgeInsets.all(20),
+                                      //         children: [
+                                      //           Text(
+                                      //               'Quý khách đã chọn $serviceSelected. Vui lòng tạo đơn đặt mới để sử dụng thêm dịch vụ khác',
+                                      //               textAlign:
+                                      //                   TextAlign.center),
+                                      //         ],
+                                      //       );
+                                      //     });
                                     }
-                                    getPriceFunc();
+                                    // getPriceFunc();
                                   }
 
                                   // title: Text('$dateTo-$dateFrom'),
@@ -940,7 +1237,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: Colors.black26,
+                            color: const Color.fromARGB(255, 192, 244, 210),
                           ),
                           color: Colors.white,
                         ),
@@ -965,8 +1262,8 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                         offset: const Offset(20, 0),
                         scrollbarTheme: ScrollbarThemeData(
                           radius: const Radius.circular(40),
-                          thickness: MaterialStateProperty.all(6),
-                          thumbVisibility: MaterialStateProperty.all(true),
+                          thickness: WidgetStateProperty.all(6),
+                          thumbVisibility: WidgetStateProperty.all(true),
                         ),
                       ),
                       menuItemStyleData: const MenuItemStyleData(
@@ -985,8 +1282,8 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                               .textTheme
                               .bodyLarge!
                               .copyWith(
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily),
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                              ),
                           textAlign: TextAlign.center,
                         )
                       : Column(
@@ -994,20 +1291,23 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Danh sách dịch vụ đang đã chọn:',
+                              'Danh sách dịch vụ đang chọn:',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
                                       fontFamily:
-                                          GoogleFonts.montserrat().fontFamily),
+                                          GoogleFonts.poppins().fontFamily),
                             ),
                             const SizedBox(height: 10),
                             Container(
                               height: MediaQuery.of(context).size.height * 0.3,
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
+                                border: Border.all(
+                                  color:
+                                      const Color.fromARGB(255, 192, 244, 210),
+                                ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: ListView.builder(
@@ -1035,11 +1335,35 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                           subtitle: Row(children: [
                                             IconButton(
                                                 onPressed: () {
-                                                  setState(() {
-                                                    jobItemsSelected[index]
-                                                        .qt -= 1;
-                                                    getPriceFunc();
-                                                  });
+                                                  jobItemsSelected[index].qt -=
+                                                      1;
+                                                  setState(() {});
+
+                                                  if (jobItemsSelected[index]
+                                                          .qt >
+                                                      1) {
+                                                    setState(() {
+                                                      tempTotalPrice -=
+                                                          int.parse(
+                                                              jobItemsSelected[
+                                                                      index]
+                                                                  .price);
+                                                    });
+                                                  }
+                                                  // getPriceFunc();
+                                                  if (jobItemsSelected[index]
+                                                          .qt <=
+                                                      1) {
+                                                    jobItemsSelected[index].qt =
+                                                        1;
+                                                    setState(() {
+                                                      tempTotalPrice =
+                                                          int.parse(
+                                                              jobItemsSelected[
+                                                                      index]
+                                                                  .price);
+                                                    });
+                                                  }
                                                 },
                                                 icon: const Icon(
                                                     Icons.arrow_left_outlined,
@@ -1053,7 +1377,9 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                                   setState(() {
                                                     jobItemsSelected[index]
                                                         .qt += 1;
-                                                    getPriceFunc();
+                                                    tempTotalPrice += int.parse(
+                                                        jobItemsSelected[index]
+                                                            .price);
                                                   });
                                                 },
                                                 icon: const Icon(
@@ -1062,13 +1388,13 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                                     color: Colors.green)),
                                           ]),
                                           title: Text(
-                                            selectedItems[index],
+                                            '${selectedItems[index]} - ${basic.StringUtils.reverse(prePriceReserve(index))} VNĐ ',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge!
                                                 .copyWith(
                                                   fontFamily:
-                                                      GoogleFonts.montserrat()
+                                                      GoogleFonts.poppins()
                                                           .fontFamily,
                                                 ),
                                           ),
@@ -1082,6 +1408,12 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                                 setState(() {
                                                   selectedItems.remove(
                                                       selectedItems[index]);
+                                                  tempTotalPrice -= int.parse(
+                                                          jobItemsSelected[
+                                                                  index]
+                                                              .price) *
+                                                      jobItemsSelected[index]
+                                                          .qt;
                                                 });
                                                 serviceSelected = '';
 
@@ -1089,11 +1421,12 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                                     jobItemsSelected[index]);
                                                 selectedItemsId.remove(
                                                     selectedItemsId[index]);
-                                                await getPriceFunc();
+
+                                                // await getPriceFunc();
                                               },
                                               icon: const FaIcon(
-                                                FontAwesomeIcons.minus,
-                                                size: 15,
+                                                FontAwesomeIcons.trashCan,
+                                                size: 18,
                                                 color: Colors.redAccent,
                                               ),
                                             ),
@@ -1109,7 +1442,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                   Text(
                     'Mô tả:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -1118,7 +1451,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                           width: 1,
-                          color: const Color.fromARGB(255, 185, 184, 184)),
+                          color: const Color.fromARGB(255, 192, 244, 210)),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Padding(
@@ -1127,7 +1460,8 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                       child: TextFormField(
                         controller: bookJob.descriptionController,
                         decoration: const InputDecoration(
-                          hintText: 'Viết vài dòng mô tả ...',
+                          hintText:
+                              'Viết vài dòng mô tả chi tiết công việc ...',
                           border: InputBorder.none,
                         ),
                         keyboardType: TextInputType.multiline,
@@ -1155,19 +1489,16 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        OutlinedButton(
+                        ElevatedButton(
                           onPressed: () {
                             bookJob.imageFileList!.length < 3
                                 ? _showChoiceDialog(context)
                                 : null;
                           },
-                          style: OutlinedButton.styleFrom(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromRGBO(38, 166, 83, 1),
                             foregroundColor: Colors.white,
-                            side: const BorderSide(
-                              width: 1.0,
-                              style: BorderStyle.solid,
-                              color: Colors.greenAccent,
-                            ),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(2.0),
@@ -1177,9 +1508,10 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                   .textTheme
                                   .labelLarge!
                                   .copyWith(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
+                                        GoogleFonts.poppins(fontSize: 20)
+                                            .fontFamily,
                                   ),
                             ),
                           ),
@@ -1192,8 +1524,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                 .labelLarge!
                                 .copyWith(
                                   color: Colors.black,
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
                                 ),
                           ),
                           IconButton(
@@ -1210,9 +1541,9 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                                   .labelLarge!
                                                   .copyWith(
                                                     color: const Color.fromRGBO(
-                                                        5, 109, 101, 1),
+                                                        38, 166, 83, 1),
                                                     fontFamily:
-                                                        GoogleFonts.montserrat()
+                                                        GoogleFonts.poppins()
                                                             .fontFamily,
                                                   ),
                                             ),
@@ -1270,7 +1601,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                                       },
                                                       child: const FaIcon(
                                                           FontAwesomeIcons
-                                                              .minus,
+                                                              .trashCan,
                                                           size: 20,
                                                           color: Colors.red),
                                                     ),
@@ -1284,7 +1615,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                             icon: const FaIcon(
                               FontAwesomeIcons.image,
                               size: 20,
-                              color: Colors.black,
+                              color: Color.fromRGBO(38, 166, 83, 1),
                             ),
                           ),
                         ]),
@@ -1292,185 +1623,47 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        OutlinedButton(
-                          onPressed: () async {
-                            code = await showBarModalBottomSheet(
-                              expand: true,
-                              context: context,
-                              builder: (context) =>
-                                  const VoucherValidPageView(),
-                            );
-                            setState(() {});
-                            getPriceFunc();
-                            // var workDate =
-                            //     '$dateConvertToString$hourConvertToString' 'Z';
-                            // if (dateConvertToString != '' &&
-                            //     hourConvertToString != '') {
-                            //   var milisecondsConvert = DateTime.parse(workDate);
-                            //   var timeStamp =
-                            //       milisecondsConvert.millisecondsSinceEpoch;
 
-                            //   if (code.runtimeType != String) code = '';
-
-                            //   getPrice.getPrice(idSevice, timeStamp.toString(),
-                            //       jobItemsSelected, code);
-                            //   setState(() {});
-                            // } else {
-                            //   showDialog(
-                            //       context: Get.context!,
-                            //       builder: (context) {
-                            //         return const SimpleDialog(
-                            //           contentPadding: EdgeInsets.all(20),
-                            //           children: [
-                            //             Center(
-                            //               child: Text(
-                            //                   'Vui lòng chọn thời gian đặt thợ'),
-                            //             ),
-                            //           ],
-                            //         );
-                            //       });
-                            //   return;
-                            // }
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                              width: 1.0,
-                              color: Colors.greenAccent,
-                              style: BorderStyle.solid,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Text(
-                              'Mã giảm giá',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                    color: Colors.black,
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                  ),
-                            ),
-                          ),
-                        ),
-                        Row(children: [
-                          Text(
-                            code == '' ? 'Chưa áp dụng' : code,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge!
-                                .copyWith(
-                                  color: Colors.black,
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
-                                ),
-                          ),
-                        ]),
-                      ]),
                   const SizedBox(height: 30),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.only(top: 10),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          color: Color.fromARGB(91, 158, 158, 158),
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Phí di chuyển:',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                                fontWeight: FontWeight.w900,
+//
+                  getPrice.code == ''
+                      ? const SizedBox()
+                      : Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Giảm giá:',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium!
+                                    .copyWith(
+                                      fontFamily:
+                                          GoogleFonts.poppins().fontFamily,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                               ),
+                              const SizedBox(width: 10),
+                              // Text('${getPrice.dataPrice.sumPrice} VND',
+                              //     style: Theme.of(context)
+                              //         .textTheme
+                              //         .titleMedium!
+                              //         .copyWith(
+                              //           fontFamily: GoogleFonts.poppins().fontFamily,
+                              //         )),
+                              Text('${getPrice.dataPrice.discount} VND',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        fontFamily:
+                                            GoogleFonts.poppins().fontFamily,
+                                      )),
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 10),
-                        Text('${getPrice.dataPrice.movingFee} VND',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
-                                )),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Giảm giá:',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                              fontWeight: FontWeight.w900,
-                            ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text('${getPrice.dataPrice.discount} VND',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                              )),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Giá dịch vụ:',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                              fontWeight: FontWeight.w900,
-                            ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text('${getPrice.dataPrice.price} VND',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                              )),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Phụ thu ngày lễ:',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                              fontWeight: FontWeight.w900,
-                            ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text('${getPrice.dataPrice.holiday.sum} VND',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
-                              )),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.only(top: 10),
@@ -1485,51 +1678,94 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Tổng:',
+                          'Phí dịch vụ tạm tính:',
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w900,
                               ),
                         ),
                         const SizedBox(width: 10),
-                        Text('${getPrice.dataPrice.sumPrice} VND',
+                        // Text('${getPrice.dataPrice.sumPrice} VND',
+                        //     style: Theme.of(context)
+                        //         .textTheme
+                        //         .titleMedium!
+                        //         .copyWith(
+                        //           fontFamily: GoogleFonts.poppins().fontFamily,
+                        //         )),
+                        Text(
+                            '${basic.StringUtils.reverse(priceReserve(tempTotalPrice.toString()))} VND',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
                                 .copyWith(
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
                                 )),
                       ],
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.075),
+                  // Center(
+                  //   child: MaterialButton(
+                  //     onPressed: () {
+                  //       bookJobV3();
+                  //     },
+                  //     padding: const EdgeInsets.symmetric(
+                  //         horizontal: 24, vertical: 10),
+                  //     elevation: 10.0,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(10.0),
+                  //     ),
+                  //     height: 40.0,
+                  //     minWidth: 100.0,
+                  //     color: const Color.fromRGBO(38, 166, 83, 1),
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.symmetric(
+                  //           horizontal: 30, vertical: 8),
+                  //       child: Text(
+                  //         'Đặt thợ',
+                  //         style: Theme.of(context)
+                  //             .textTheme
+                  //             .bodyLarge!
+                  //             .copyWith(
+                  //               fontFamily: GoogleFonts.poppins().fontFamily,
+                  //               fontSize: 20,
+                  //               color: Colors.white,
+                  //             ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Center(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        bookJobV3();
+                    child: MaterialButton(
+                      onPressed: () async {
+                        // bookJobV3();
+                        getPrice.isNext = true;
+                        await getPriceFunc();
                       },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          width: 1.0,
-                          color: Colors.greenAccent,
-                          style: BorderStyle.solid,
-                        ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 10),
+                      elevation: 10.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
+                      height: 40.0,
+                      minWidth: 100.0,
+                      color: const Color.fromRGBO(38, 166, 83, 1),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 8),
                         child: Text(
-                          'Đặt thợ',
+                          'Tiếp theo',
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontSize: 20,
+                                color: Colors.white,
                               ),
                         ),
                       ),

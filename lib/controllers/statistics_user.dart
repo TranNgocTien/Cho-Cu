@@ -33,6 +33,7 @@ class StatisticsUser extends GetxController {
         'start_date': startDate,
         'end_date': endDate,
         'token': 'anhkhongdoiqua',
+        'version': 'publish'
       };
 
       http.Response response = await http.post(
@@ -60,25 +61,25 @@ class StatisticsUser extends GetxController {
         throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
       }
     } catch (error) {
-      error.printError();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text(
-                'Error',
-                textAlign: TextAlign.center,
-              ),
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text(
-                    error.toString(),
-                  ),
-                ),
-              ],
-            );
-          });
+      // error.printError();
+      // showDialog(
+      //     context: Get.context!,
+      //     builder: (context) {
+      //       return SimpleDialog(
+      //         title: const Text(
+      //           'Error',
+      //           textAlign: TextAlign.center,
+      //         ),
+      //         contentPadding: const EdgeInsets.all(20),
+      //         children: [
+      //           Center(
+      //             child: Text(
+      //               error.toString(),
+      //             ),
+      //           ),
+      //         ],
+      //       );
+      //     });
     } finally {
       isLoading = false;
     }

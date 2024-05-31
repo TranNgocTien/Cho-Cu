@@ -6,7 +6,6 @@ import 'package:chotot/screens/job_detail_market.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,7 +14,8 @@ class ViecLamGridItem extends StatelessWidget {
   final PostJob job;
   @override
   Widget build(BuildContext context) {
-    var createAt = DateTime.parse(job.job.createdAt);
+    final widthDevice = MediaQuery.of(context).size.width;
+    var createAt = DateTime.parse(job.job.createdAt).toLocal();
     List<String> imageWorker = [
       'image/worker-1.png',
       'image/worker-2.png',
@@ -28,7 +28,7 @@ class ViecLamGridItem extends StatelessWidget {
     jobStatus(String status) {
       switch (status) {
         case 'posting':
-          return 'công việc mới đăng';
+          return 'Công việc mới đăng';
         case 'apply':
           return 'Có thợ ứng tuyển';
         case 'accept':
@@ -52,7 +52,10 @@ class ViecLamGridItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.to(() => JobDetailMarketScreen(job: job));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) =>
+                JobDetailMarketScreen(job: job)));
+        // Get.to(() => JobDetailMarketScreen(job: job));
       },
       child: Card(
         elevation: 4,
@@ -86,10 +89,13 @@ class ViecLamGridItem extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.6,
                         child: Text(
                           job.job.name,
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    fontFamily: GoogleFonts.lato().fontFamily,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontSize: widthDevice * 0.04,
+                              ),
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
                           maxLines: 2,
@@ -104,10 +110,13 @@ class ViecLamGridItem extends StatelessWidget {
                         padding: const EdgeInsets.all(5),
                         child: Text(
                           jobStatus(job.job.status)!,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    fontFamily: GoogleFonts.lato().fontFamily,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontSize: widthDevice * 0.035,
+                              ),
                         ),
                       ),
                     ],
@@ -123,7 +132,8 @@ class ViecLamGridItem extends StatelessWidget {
                   Text(
                       '${dateTime.hour < 10 ? 0 : ''}${dateTime.hour}:${dateTime.minute < 10 ? 0 : ''}${dateTime.minute} - ${dateTime.day < 10 ? 0 : ''}${dateTime.day}/${dateTime.month < 10 ? 0 : ''}${dateTime.month}/${dateTime.year}',
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontFamily: GoogleFonts.lato().fontFamily,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontSize: widthDevice * 0.035,
                           )),
                 ],
               ),
@@ -136,15 +146,17 @@ class ViecLamGridItem extends StatelessWidget {
                       size: 15, color: Colors.grey),
                   const SizedBox(width: 5),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.85,
+                    width: MediaQuery.of(context).size.width * 0.8,
                     child: Text(
-                      job.job.address,
+                      job.job.address
+                          .substring(job.job.address.indexOf(',') + 1),
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontFamily: GoogleFonts.lato().fontFamily,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontSize: widthDevice * 0.035,
                           ),
                       overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                      maxLines: 2,
+                      softWrap: true,
+                      maxLines: 3,
                     ),
                   ),
                 ],
@@ -154,8 +166,9 @@ class ViecLamGridItem extends StatelessWidget {
                 Text(
                   'Thời gian tạo: ${createAt.hour < 10 ? 0 : ''}${createAt.hour}:${createAt.minute < 10 ? 0 : ''}${createAt.minute} - ${createAt.day < 10 ? 0 : ''}${createAt.day}/${createAt.month < 10 ? 0 : ''}${createAt.month}/${createAt.year}',
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        fontFamily: GoogleFonts.lato().fontFamily,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
                         color: const Color.fromARGB(101, 158, 158, 158),
+                        fontSize: widthDevice * 0.035,
                       ),
                 ),
               ]),

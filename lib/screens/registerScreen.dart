@@ -1,10 +1,15 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:chotot/controllers/registeration_controller.dart';
+import 'package:chotot/screens/PDF_View.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,20 +19,51 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final Uri _url =
-      Uri.parse('//https://www.thothongminh.com/chinh-sach-bao-mat');
+  // final Uri _url =
+  //     Uri.parse('//https://www.thothongminh.com/chinh-sach-bao-mat');
   final _form = GlobalKey<FormState>();
   var isAgree = false;
   final token = "anhkhongdoiqua";
-
-  Future<void> _launchUrl() async {
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
-    }
-  }
+  String pathPDF = "";
+  // Future<void> _launchUrl() async {
+  //   if (!await launchUrl(_url)) {
+  //     throw Exception('Could not launch $_url');
+  //   }
+  // }
 
   RegisterationController registerController =
       Get.put(RegisterationController());
+  Future<File> fromAsset(String asset, String filename) async {
+    // To open from assets, you can copy them to the app storage folder, and the access them "locally"
+    Completer<File> completer = Completer();
+
+    try {
+      var dir = await getApplicationDocumentsDirectory();
+      File file = File("${dir.path}/$filename");
+      var data = await rootBundle.load(asset);
+      var bytes = data.buffer.asUint8List();
+      await file.writeAsBytes(bytes, flush: true);
+      completer.complete(file);
+    } catch (e) {
+      throw Exception('Error parsing asset file!');
+    }
+
+    return completer.future;
+  }
+
+  @override
+  void initState() {
+    fromAsset(
+      'image/chinh_sach_bao_mat.pdf',
+      'chinh_sach_bao_mat.pdf',
+    ).then((f) {
+      setState(() {
+        pathPDF = f.path;
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 width: 300,
                 child: Image.asset(
-                  'image/logo/logo.png',
+                  'image/logo_tho_thong_minh.jpeg',
                 ),
               ),
               const SizedBox(height: 50),
@@ -82,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: <Widget>[
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 211, 210, 210),
+                            color: const Color.fromARGB(255, 192, 244, 210),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Padding(
@@ -102,9 +138,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily:
-                                                  GoogleFonts.montserrat()
-                                                      .fontFamily,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -130,7 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 30),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 211, 210, 210),
+                            color: const Color.fromARGB(255, 192, 244, 210),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Padding(
@@ -150,9 +185,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily:
-                                                  GoogleFonts.montserrat()
-                                                      .fontFamily,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -178,7 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 30),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 211, 210, 210),
+                            color: const Color.fromARGB(255, 192, 244, 210),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Padding(
@@ -198,9 +232,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily:
-                                                  GoogleFonts.montserrat()
-                                                      .fontFamily,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -227,7 +260,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 30),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 211, 210, 210),
+                            color: const Color.fromARGB(255, 192, 244, 210),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Padding(
@@ -248,9 +281,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily:
-                                                  GoogleFonts.montserrat()
-                                                      .fontFamily,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -279,8 +311,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           children: <Widget>[
                             //SizedBox
                             TextButton(
-                              onPressed: () {
-                                _launchUrl();
+                              onPressed: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            PDFScreen(path: pathPDF)));
                               },
                               child: Text(
                                 'Chính sách bảo mật',
@@ -289,13 +325,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     .labelLarge!
                                     .copyWith(
                                       color:
-                                          const Color.fromRGBO(5, 109, 101, 1),
+                                          const Color.fromRGBO(38, 166, 83, 1),
                                     ),
                               ),
                             ),
                             const SizedBox(width: 10), //SizedBox
                             /** Checkbox Widget **/
                             Checkbox(
+                              activeColor: const Color.fromRGBO(38, 166, 83, 1),
                               value: isAgree,
                               onChanged: (bool? value) {
                                 setState(() {
@@ -314,7 +351,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
-                                const Color.fromRGBO(5, 109, 101, 1),
+                                const Color.fromRGBO(38, 166, 83, 1),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -327,7 +364,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   .copyWith(
                                     color: Colors.white,
                                     fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
+                                        GoogleFonts.poppins().fontFamily,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 25,
                                   ),

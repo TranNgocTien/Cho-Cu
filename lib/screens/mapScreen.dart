@@ -9,6 +9,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hawk_fab_menu/hawk_fab_menu.dart';
+import 'package:location/location.dart' as local;
 
 class MapScreen extends StatefulWidget {
   const MapScreen({
@@ -75,18 +76,84 @@ class _MapScreenState extends State<MapScreen> {
     super.dispose();
   }
 
+  late LatLng currentLocationFromGet;
+  Future<void> _getCurrentLocation() async {
+    local.Location location = local.Location();
+
+    bool serviceEnabled;
+    local.PermissionStatus permissionGranted;
+    local.LocationData locationData;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      // await AwesomeDialog(
+      //   context: Get.context!,
+      //   dialogType: DialogType.warning,
+      //   animType: AnimType.rightSlide,
+      //   title: 'Vui lòng cho phép ứng dụng theo dõi để sử dụng tính năng này',
+      //   // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
+      //   autoHide: const Duration(milliseconds: 800),
+      //   titleTextStyle: GoogleFonts.poppins(),
+      // ).show();
+
+      // if (!serviceEnabled) {
+      //   return;
+      // }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == local.PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != local.PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    locationData = await location.getLocation();
+
+    final lat = locationData.latitude;
+    final lng = locationData.longitude;
+    if (lat == null || lng == null) {
+      return;
+    }
+
+    LatLng currentLocal = LatLng(lat, lng);
+    currentLocationFromGet = currentLocal;
+    var indexCurentMarker = _markers.indexWhere(
+        (marker) => marker.markerId == const MarkerId('Current position'));
+    _pickedLocation = currentLocationFromGet;
+    _markers.removeAt(indexCurentMarker);
+    _markers.add(
+      Marker(
+          markerId: const MarkerId('Current position'),
+          position: LatLng(
+            currentLocationFromGet.latitude,
+            currentLocationFromGet.longitude,
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(240)),
+    );
+  }
+
   void moveToCurrentLocation() async {
     GoogleMapController controller = await _controller.future;
+    await _getCurrentLocation();
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: LatLng(
-          widget.currentLocation.latitude, widget.currentLocation.longitude),
+      target: currentLocationFromGet == null
+          ? LatLng(
+              widget.currentLocation.latitude, widget.currentLocation.longitude)
+          : LatLng(currentLocationFromGet.latitude,
+              currentLocationFromGet.longitude),
       zoom: 18,
     )));
     setState(() {
-      _pickedLocation = LatLng(
-        widget.currentLocation.latitude,
-        widget.currentLocation.longitude,
-      );
+      _pickedLocation = currentLocationFromGet == null
+          ? LatLng(
+              widget.currentLocation.latitude,
+              widget.currentLocation.longitude,
+            )
+          : LatLng(currentLocationFromGet.latitude,
+              currentLocationFromGet.longitude);
     });
   }
 
@@ -191,10 +258,8 @@ class _MapScreenState extends State<MapScreen> {
             HawkFabMenuItem(
               label: 'Lưu vị trí đã chọn',
               ontap: () {
-                if (_pickedLocation == null) {
-                  _pickedLocation = LatLng(widget.currentLocation.latitude,
-                      widget.currentLocation.longitude);
-                }
+                _pickedLocation ??= LatLng(widget.currentLocation.latitude,
+                    widget.currentLocation.longitude);
                 Navigator.of(context).pop(_pickedLocation);
 
                 // ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -279,8 +344,7 @@ class _MapScreenState extends State<MapScreen> {
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontSize: 18,
                                 ),
                           ),

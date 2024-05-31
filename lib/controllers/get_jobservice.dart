@@ -10,18 +10,16 @@ class GetJobService extends GetxController {
   Future<void> getJobService() async {
     var url = Uri.parse(
         'https://vstserver.com/services/get_jobservice?version=test&token=anhkhongdoiqua');
-    // Map body = {
-    //   'version': 'test/ publish',
-    //   'token': 'anhkhongdoiqua',
-    // };
+    Map body = {
+      'version': 'publish',
+      'token': 'anhkhongdoiqua',
+    };
 
-    http.Response response = await http.post(
-      url,
-    );
+    http.Response response = await http.post(url, body: body);
+
+    final json = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-
       if (json['status'] == 'ok') {
         final data = json['data'];
 
@@ -43,8 +41,9 @@ class GetJobService extends GetxController {
           imgService.add(data[i]['img']);
         }
       }
-    } else {
-      throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
     }
+    // else {
+    //   throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
+    // }
   }
 }

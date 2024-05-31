@@ -14,6 +14,7 @@ import 'package:chotot/controllers/login_controller.dart';
 
 class GetJobTypeController extends GetxController {
   LoginController loginController = Get.put(LoginController());
+  bool isLoading = false;
   Future<void> getJobType() async {
     try {
       var headers = {
@@ -21,9 +22,7 @@ class GetJobTypeController extends GetxController {
       };
       var url = Uri.parse(
           ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getJobType);
-      Map body = {
-        'token': 'anhkhongdoiqua',
-      };
+      Map body = {'token': 'anhkhongdoiqua', 'version': 'publish'};
       http.Response response = await http.post(
         url,
         body: body,

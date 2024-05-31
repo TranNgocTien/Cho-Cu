@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chotot/controllers/get_ly_lich.dart';
@@ -11,12 +12,15 @@ import 'package:chotot/data/job_service_data.dart';
 
 import 'package:chotot/screens/login.dart';
 import 'package:chotot/screens/tim_tho_screen.dart';
+import 'package:chotot/screens/voucher_info_screen.dart';
 import 'package:chotot/widgets/news_grid_item.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/data/default_information.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -33,19 +37,20 @@ class TimThoScreen extends StatefulWidget {
 }
 
 class _TimThoScreenState extends State<TimThoScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   GlobalKey<ScaffoldState> btnKey = GlobalKey();
   late AnimationController _animationController;
   LyLichController lyLichController = Get.put(LyLichController());
   LoginController loginController = Get.put(LoginController());
   GetNews getNewsController = Get.put(GetNews());
   // final _storage = const FlutterSecureStorage();
+  final _storage = const FlutterSecureStorage();
   int index = 0;
   bool showWallet = false;
   int _current = 0;
   bool isLoading = false;
   // ignore: prefer_typing_uninitialized_variables
-
+  String tokenString = '';
   final CarouselController _controller = CarouselController();
   final List<String> imgLink = [
     'image/slider_example_1.jpeg',
@@ -59,6 +64,9 @@ class _TimThoScreenState extends State<TimThoScreen>
 
   void onDismiss() {
     // print('Menu is dismiss');
+  }
+  void isLogin() async {
+    tokenString = await _storage.read(key: "TOKEN") ?? '';
   }
 
   // void customBackground(context) {
@@ -121,12 +129,14 @@ class _TimThoScreenState extends State<TimThoScreen>
   //     widgetKey: btnKey,
   //   );
   // }
-
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     // if (loginController.tokenString != '') {
     //   lyLichController.getInfo();
     // }
+    isLogin();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -148,6 +158,8 @@ class _TimThoScreenState extends State<TimThoScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    final widthDevice = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -157,6 +169,7 @@ class _TimThoScreenState extends State<TimThoScreen>
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: MediaQuery.of(context).size.width * 0.2,
           leadingWidth: MediaQuery.of(context).size.width * 0.5,
@@ -169,23 +182,21 @@ class _TimThoScreenState extends State<TimThoScreen>
                 Text(
                   'Thợ 4.0 xin chào!',
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                        fontFamily: GoogleFonts.montserrat().fontFamily,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
                         color: Colors.white,
-                        fontSize: 17,
+                        fontSize: widthDevice * 0.04,
                       ),
                 ),
                 loginController.tokenString != ''
                     ? Text(
                         nameDefault,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white,
-                              fontSize: 17,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                  fontSize: widthDevice * 0.04,
+                                ),
                       )
                     : const SizedBox(),
               ],
@@ -196,7 +207,7 @@ class _TimThoScreenState extends State<TimThoScreen>
               padding: const EdgeInsets.only(right: 8.0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color.fromARGB(255, 192, 244, 210),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 padding: loginController.tokenString != ''
@@ -208,7 +219,7 @@ class _TimThoScreenState extends State<TimThoScreen>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                             IconButton(
-                              iconSize: 16,
+                              iconSize: widthDevice * 0.04,
                               padding: const EdgeInsets.all(0),
                               icon: FaIcon(
                                   showWallet
@@ -230,12 +241,13 @@ class _TimThoScreenState extends State<TimThoScreen>
                                         .textTheme
                                         .labelLarge!
                                         .copyWith(
-                                          fontFamily: GoogleFonts.montserrat()
-                                              .fontFamily,
+                                          fontFamily:
+                                              GoogleFonts.poppins().fontFamily,
                                           fontWeight: FontWeight.w900,
                                           color: showWallet
-                                              ? Colors.yellow
+                                              ? Colors.black54
                                               : Colors.grey,
+                                          fontSize: widthDevice * 0.04,
                                         ),
                                     textAlign: TextAlign.center,
                                   )
@@ -264,8 +276,9 @@ class _TimThoScreenState extends State<TimThoScreen>
                               .textTheme
                               .labelLarge!
                               .copyWith(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 color: const Color.fromRGBO(39, 166, 82, 1),
+                                fontSize: widthDevice * 0.04,
                               ),
                           textAlign: TextAlign.center,
                         ),
@@ -322,7 +335,8 @@ class _TimThoScreenState extends State<TimThoScreen>
                                       .labelLarge!
                                       .copyWith(
                                         fontFamily:
-                                            GoogleFonts.montserrat().fontFamily,
+                                            GoogleFonts.poppins().fontFamily,
+                                        fontSize: widthDevice * 0.04,
                                         color: Colors.grey,
                                       ),
                                 ),
@@ -348,7 +362,7 @@ class _TimThoScreenState extends State<TimThoScreen>
                 ),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.height * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.3,
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -366,27 +380,40 @@ class _TimThoScreenState extends State<TimThoScreen>
                       viewportFraction: 1,
                     ),
                     items: vouchersValid.map((photo) {
-                      return Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  VoucherInfoScreen(
+                                voucherInfo: photo,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: photo.img,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            fit: BoxFit.fill,
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            width: MediaQuery.of(context).size.width,
+                          ),
+                          // child: Image.network(
+                          //   photo.img,
+                          //   fit: BoxFit.cover,
+                          //   height: MediaQuery.of(context).size.height * 0.1,
+                          //   width: MediaQuery.of(context).size.width * 0.95,
+                          // ),
                         ),
-                        child: CachedNetworkImage(
-                          imageUrl: photo.img,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                          fit: BoxFit.cover,
-                          height: MediaQuery.of(context).size.height * 0.1,
-                          width: MediaQuery.of(context).size.width * 0.95,
-                        ),
-                        // child: Image.network(
-                        //   photo.img,
-                        //   fit: BoxFit.cover,
-                        //   height: MediaQuery.of(context).size.height * 0.1,
-                        //   width: MediaQuery.of(context).size.width * 0.95,
-                        // ),
                       );
                     }).toList(),
                   ),
@@ -427,6 +454,7 @@ class _TimThoScreenState extends State<TimThoScreen>
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: Colors.grey,
                           fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontSize: widthDevice * 0.04,
                         ),
                     textAlign: TextAlign.start,
                   ),
@@ -501,13 +529,31 @@ class _TimThoScreenState extends State<TimThoScreen>
                             ...jobServiceList.map((jobService) {
                               return GestureDetector(
                                 onTap: () {
-                                  Get.to(() => TimThoThongMinhScreen(
-                                      codeService: jobService.code));
+                                  if (tokenString != '') {
+                                    Get.to(() => TimThoThongMinhScreen(
+                                          codeService: jobService.code,
+                                          nameService: jobService.name,
+                                        ));
+                                  } else {
+                                    AwesomeDialog(
+                                      context: Get.context!,
+                                      dialogType: DialogType.infoReverse,
+                                      animType: AnimType.rightSlide,
+                                      title: 'Vui lòng đăng nhập',
+                                      titleTextStyle: GoogleFonts.poppins(),
+                                      btnOkText: 'Đăng nhập',
+                                      btnOkColor:
+                                          const Color.fromRGBO(38, 166, 83, 1),
+                                      btnOkOnPress: () {
+                                        Get.to(() => const LoginScreen());
+                                      },
+                                    ).show();
+                                  }
                                 },
                                 child: Container(
                                   margin: jobService.code == 'PC_SV'
                                       ? const EdgeInsets.only(left: 0, right: 0)
-                                      : const EdgeInsets.only(right: 30),
+                                      : const EdgeInsets.only(right: 15),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -538,9 +584,9 @@ class _TimThoScreenState extends State<TimThoScreen>
                                             .textTheme
                                             .labelMedium!
                                             .copyWith(
-                                              fontFamily:
-                                                  GoogleFonts.montserrat()
-                                                      .fontFamily,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily,
+                                              fontSize: widthDevice * 0.03,
                                               color: Colors.grey,
                                             ),
                                         maxLines: 2,
@@ -575,17 +621,18 @@ class _TimThoScreenState extends State<TimThoScreen>
                         'TIN TỨC',
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Colors.grey,
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontSize: widthDevice * 0.04,
                             ),
                         textAlign: TextAlign.start,
                       ),
                       TextButton(
                         onPressed: () async {
                           index += 1;
-                          newsList.clear();
+
                           isLoading = true;
                           setState(() {});
-                          Timer(const Duration(seconds: 5), () async {
+                          Timer(const Duration(seconds: 2), () async {
                             await getNewsController.getNewsData(index: index);
                             setState(() {
                               isLoading = false;
@@ -601,8 +648,9 @@ class _TimThoScreenState extends State<TimThoScreen>
                               .bodyMedium!
                               .copyWith(
                                 color: const Color.fromRGBO(39, 166, 82, 1),
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w800,
+                                fontSize: widthDevice * 0.04,
                               ),
                           textAlign: TextAlign.end,
                         ),
@@ -613,7 +661,12 @@ class _TimThoScreenState extends State<TimThoScreen>
               ),
               // const SizedBox(height: 15),
               isLoading
-                  ? const CircularProgressIndicator()
+                  ? Center(
+                      child: LoadingAnimationWidget.waveDots(
+                        color: const Color.fromRGBO(1, 142, 33, 1),
+                        size: 30,
+                      ),
+                    )
                   : AnimatedBuilder(
                       animation: _animationController,
                       builder: (context, child) => SlideTransition(

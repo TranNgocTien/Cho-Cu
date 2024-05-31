@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/data/docu_data.dart';
 
 import 'package:chotot/controllers/get_stuffs.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 // import 'package:chotot/screens/thongTinSanPham.dart';
 
 class OwnerOrder extends StatefulWidget {
@@ -20,8 +21,11 @@ class _OwnerOrderState extends State<OwnerOrder> {
   final GetStuffs _getStuffs = Get.put(GetStuffs());
   var currentIndex = 1;
 
-  Widget center = const Center(
-    child: CircularProgressIndicator(),
+  Widget center = Center(
+    child: LoadingAnimationWidget.waveDots(
+      color: const Color.fromRGBO(1, 142, 33, 1),
+      size: 30,
+    ),
   );
 
   getData() async {
@@ -47,7 +51,7 @@ class _OwnerOrderState extends State<OwnerOrder> {
           child: Text(
             'Bài đã đăng',
             style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontFamily: GoogleFonts.montserrat().fontFamily,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.bold,
                   color: const Color.fromRGBO(54, 92, 69, 1),
                 ),

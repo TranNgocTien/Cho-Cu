@@ -16,8 +16,10 @@ class LyLich {
     required this.workerAuthen,
     required this.lat,
     required this.lng,
+    required this.wf,
   });
 
+  final String wf;
   final String name;
   final String id;
   final String address;

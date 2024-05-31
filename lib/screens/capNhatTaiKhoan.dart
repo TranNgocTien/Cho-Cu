@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:chotot/models/addressUpdate.dart';
 import 'package:flutter/material.dart';
@@ -92,98 +93,166 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
   }
 
   Future<void> _showChoiceDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Container(
-              width: MediaQuery.of(context).size.width * 0.3,
-              height: MediaQuery.of(context).size.height * 0.2,
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    'Lựa chọn tải ảnh:',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          _openGallery();
-                        },
-                        child: Column(
-                          children: [
-                            const Icon(FontAwesomeIcons.image),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Thư viện',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          _openCamera();
-                        },
-                        child: Column(
-                          children: [
-                            const Icon(FontAwesomeIcons.camera),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Chụp ảnh',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.montserrat().fontFamily,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+    return AwesomeDialog(
+            width: double.infinity,
+            context: Get.context!,
+            animType: AnimType.scale,
+            dialogType: DialogType.info,
+            body: Center(
+              child: Text(
+                'Lựa chọn tải ảnh',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: GoogleFonts.poppins().fontFamily),
+                textAlign: TextAlign.center,
               ),
             ),
-          );
-        });
+            btnOk: ElevatedButton.icon(
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
+              onPressed: () {
+                _openGallery();
+              },
+              icon: const FaIcon(FontAwesomeIcons.image, color: Colors.white),
+              label: Text(
+                'Thư viện',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            btnCancel: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(5, 109, 101, 1),
+              ),
+              onPressed: () async {
+                _openCamera();
+              },
+              icon: const FaIcon(
+                FontAwesomeIcons.camera,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Máy ảnh',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            btnOkOnPress: () {},
+            btnCancelOnPress: () async {})
+        .show();
+
+    // return showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       return AlertDialog(
+    //         content: Container(
+    //           width: MediaQuery.of(context).size.width * 0.3,
+    //           height: MediaQuery.of(context).size.height * 0.2,
+    //           padding: const EdgeInsets.all(20),
+    //           child: Column(
+    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //             children: [
+    //               const SizedBox(
+    //                 height: 20,
+    //               ),
+    //               Text(
+    //                 'Lựa chọn tải ảnh:',
+    //                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
+    //                       fontFamily: GoogleFonts.poppins().fontFamily,
+    //                       color: Colors.black,
+    //                       fontWeight: FontWeight.w600,
+    //                     ),
+    //                 textAlign: TextAlign.center,
+    //               ),
+    //               const SizedBox(height: 20),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: [
+    //                   GestureDetector(
+    //                     onTap: () {
+    //                       _openGallery();
+    //                     },
+    //                     child: Column(
+    //                       children: [
+    //                         const Icon(FontAwesomeIcons.image),
+    //                         const SizedBox(height: 5),
+    //                         Text(
+    //                           'Thư viện',
+    //                           style: Theme.of(context)
+    //                               .textTheme
+    //                               .labelLarge!
+    //                               .copyWith(
+    //                                 fontFamily:
+    //                                     GoogleFonts.poppins().fontFamily,
+    //                                 color: Colors.black,
+    //                                 fontWeight: FontWeight.w600,
+    //                               ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                   GestureDetector(
+    //                     onTap: () {
+    //                       _openCamera();
+    //                     },
+    //                     child: Column(
+    //                       children: [
+    //                         const Icon(FontAwesomeIcons.camera),
+    //                         const SizedBox(height: 5),
+    //                         Text(
+    //                           'Chụp ảnh',
+    //                           style: Theme.of(context)
+    //                               .textTheme
+    //                               .labelLarge!
+    //                               .copyWith(
+    //                                 fontFamily:
+    //                                     GoogleFonts.poppins().fontFamily,
+    //                                 color: Colors.black,
+    //                                 fontWeight: FontWeight.w600,
+    //                               ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //       );
+    //     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Color.fromRGBO(39, 166, 82, 1),
+                Color.fromRGBO(1, 142, 33, 1),
+                Color.fromRGBO(23, 162, 73, 1),
+                Color.fromRGBO(84, 181, 111, 1),
+              ],
+            ),
+          ),
+        ),
         title: Text(
           'Cập nhật tài khoản',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontFamily: GoogleFonts.montserrat().fontFamily,
+                fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.bold,
-                color: const Color.fromRGBO(54, 92, 69, 1),
+                color: Colors.white,
               ),
           textAlign: TextAlign.center,
         ),
@@ -212,7 +281,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                       child: Text(
                         'Cập nhật ảnh đại diện',
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              fontFamily: GoogleFonts.montserrat().fontFamily,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
@@ -223,12 +292,13 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
               onPressed: () {
                 _showChoiceDialog(context);
               },
-              icon: const Icon(FontAwesomeIcons.camera),
+              icon: const Icon(FontAwesomeIcons.camera,
+                  color: Color.fromRGBO(38, 166, 83, 1)),
               label: Text(
                 'Tải ảnh',
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      fontFamily: GoogleFonts.montserrat().fontFamily,
-                      color: Colors.black,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      color: const Color.fromRGBO(38, 166, 83, 1),
                       fontWeight: FontWeight.w600,
                     ),
                 textAlign: TextAlign.center,
@@ -257,11 +327,12 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                           const SizedBox(width: 20),
                           Text(
                             'Tên',
-                            style:
-                                Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                      fontFamily:
-                                          GoogleFonts.montserrat().fontFamily,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                ),
                           ),
                         ],
                       ),
@@ -292,7 +363,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                     bottom: 10.0,
                   ),
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
+                    width: MediaQuery.of(context).size.width * 0.7,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 243, 241, 241),
                       borderRadius: BorderRadius.circular(10.0),
@@ -315,7 +386,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                     .bodyLarge!
                                     .copyWith(
                                       fontFamily:
-                                          GoogleFonts.montserrat().fontFamily,
+                                          GoogleFonts.poppins().fontFamily,
                                     ),
                               ),
                             ],
@@ -339,8 +410,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(
-                                  fontFamily:
-                                      GoogleFonts.montserrat().fontFamily,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontSize: 18,
                                 ),
                           ),
@@ -364,31 +434,34 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                     ),
                   ),
                 ),
-                IconButton(
+                MaterialButton(
                   onPressed: () {
                     if (updateInfoController.addressController.text.isEmpty) {
-                      showDialog(
-                          context: Get.context!,
-                          builder: (context) {
-                            return const SimpleDialog(
-                              contentPadding: EdgeInsets.all(20),
-                              children: [
-                                Center(
-                                  child: Text(
-                                    'Vui lòng nhập địa chỉ',
-                                  ),
-                                ),
-                              ],
-                            );
-                          });
+                      AwesomeDialog(
+                        context: Get.context!,
+                        dialogType: DialogType.warning,
+                        animType: AnimType.rightSlide,
+                        title: 'Vui lòng nhập địa chỉ',
+                        titleTextStyle: GoogleFonts.poppins(),
+                        autoHide: const Duration(milliseconds: 800),
+                      ).show();
+
                       return;
                     }
                     _convertAddressToCoordinate(
                         updateInfoController.addressController.text);
                   },
-                  icon: const FaIcon(FontAwesomeIcons.locationPin),
-                  style: IconButton.styleFrom(
-                      iconSize: 20, foregroundColor: Colors.red),
+                  shape: const CircleBorder(
+                      eccentricity: 0.0,
+                      side: BorderSide(
+                        color: Color.fromRGBO(38, 166, 83, 1),
+                        width: 2.0,
+                      )),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                  elevation: 20.0,
+                  child: const FaIcon(FontAwesomeIcons.locationPin,
+                      size: 25, color: Color.fromRGBO(38, 166, 83, 1)),
                 ),
               ],
             ),
@@ -404,20 +477,21 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
               height: 20,
             ),
             Center(
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color.fromARGB(255, 2, 219, 134),
-                  side: const BorderSide(
-                    color: Color.fromARGB(255, 2, 219, 134),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
+              child: MaterialButton(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                elevation: 10.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
+                height: 40.0,
+                minWidth: 100.0,
+                color: const Color.fromRGBO(38, 166, 83, 1),
                 child: Text(
                   'Cập nhật',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontFamily: GoogleFonts.montserrat().fontFamily,
-                        color: const Color.fromARGB(255, 2, 219, 134),
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        color: Colors.white,
                       ),
                 ), // B,
                 onPressed: () async {

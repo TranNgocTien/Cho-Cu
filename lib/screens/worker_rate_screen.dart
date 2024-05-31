@@ -7,7 +7,21 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WorkerRateScreen extends StatefulWidget {
-  const WorkerRateScreen({super.key});
+  const WorkerRateScreen({
+    super.key,
+    required this.hostname,
+    required this.profileImage,
+    required this.contractId,
+    required this.employeeId,
+    required this.hostId,
+    required this.jobId,
+  });
+  final String hostname;
+  final String profileImage;
+  final String contractId;
+  final String jobId;
+  final String employeeId;
+  final String hostId;
 
   @override
   State<WorkerRateScreen> createState() => _WorkerRateScreenState();
@@ -15,9 +29,13 @@ class WorkerRateScreen extends StatefulWidget {
 
 class _WorkerRateScreenState extends State<WorkerRateScreen> {
   WorkerRate workerRate = Get.put(WorkerRate());
+
   double rate = 0;
   @override
   Widget build(BuildContext context) {
+    dynamic imageProfile = widget.profileImage == ''
+        ? const AssetImage('image/61568.jpg')
+        : NetworkImage(widget.profileImage);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -34,19 +52,21 @@ class _WorkerRateScreenState extends State<WorkerRateScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 50.0,
                 backgroundColor: Colors.green,
                 child: CircleAvatar(
                   radius: 45.0,
                   backgroundColor: Colors.white,
-                  backgroundImage: AssetImage('image/61568.jpg'),
+                  backgroundImage: imageProfile,
                 ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              Text(acceptWorkerData[0].hostName),
+              Text(widget.hostname == ''
+                  ? acceptWorkerData[0].hostName
+                  : widget.hostname),
               const SizedBox(
                 height: 10,
               ),
@@ -105,7 +125,13 @@ class _WorkerRateScreenState extends State<WorkerRateScreen> {
               ),
               ElevatedButton(
                   onPressed: () async {
-                    await workerRate.workerRate(rate);
+                    await workerRate.workerRate(
+                      rate,
+                      widget.contractId,
+                      widget.jobId,
+                      widget.employeeId,
+                      widget.hostId,
+                    );
                     Get.to(const MainScreen());
                   },
                   style: ElevatedButton.styleFrom(
@@ -115,7 +141,7 @@ class _WorkerRateScreenState extends State<WorkerRateScreen> {
                   child: Text(
                     'Gửi đánh giá',
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
                         ),

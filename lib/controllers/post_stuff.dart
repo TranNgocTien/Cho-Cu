@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/get_stuffs.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/data/default_information.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:chotot/models/get_otherfee.dart';
@@ -75,102 +77,97 @@ class PostStuff extends GetxController {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
 
-    try {
-      var url = Uri.parse(
-          ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.postStuffs);
-      Map body = {
-        'version': 'test',
-        "description": descriptionController.text,
-        "sum_price": sumPriceController.text,
-        "host_fee_code": codeOtherFee,
-        "phone": phoneController.text,
-        "host_id": hostId,
-        "host_name": hostName,
-        "address": addressController.text,
-        "lat": lat.toString(),
-        "lng": lng.toString(),
-        "name": ' ${nameController.text} - $formattedDate',
-        "photos": json.encode(imageLink),
-        "province": province,
-        "district": district,
-        "ward": ward,
-        "token": "anhkhongdoiqua"
-      };
-      http.Response response = await http.post(
-        url,
-        body: body,
-        headers: {
-          "x-access-token": loginController.tokenString.toString(),
-        },
-      );
+    // try {
+    var url = Uri.parse(
+        ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.postStuffs);
+    Map body = {
+      'version': 'test',
+      "description": descriptionController.text,
+      "sum_price": sumPriceController.text,
+      "host_fee_code": codeOtherFee,
+      "phone": phoneController.text,
+      "host_id": hostId,
+      "host_name": hostName,
+      "address": addressController.text,
+      "lat": lat.toString(),
+      "lng": lng.toString(),
+      "name": ' ${nameController.text} - $formattedDate',
+      "photos": json.encode(imageLink),
+      "province": province,
+      "district": district,
+      "ward": ward,
+      "token": "anhkhongdoiqua"
+    };
+    http.Response response = await http.post(
+      url,
+      body: body,
+      headers: {
+        "x-access-token": loginController.tokenString.toString(),
+      },
+    );
 
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        // print(json);
-        if (json['status'] == 'ok') {
-          await _getStuffs.getStuffs(0);
-          descriptionController.clear();
-          sumPriceController.clear();
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      // print(json);
+      if (json['status'] == 'ok') {
+        await _getStuffs.getStuffs(0);
+        descriptionController.clear();
+        sumPriceController.clear();
 
-          imageLink.clear();
-          Get.back();
-        } else if (json['status'] == "error") {
-          imageLink.clear();
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  title: const Text('Error'),
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Text(
-                      json['error']['message'],
-                    ),
-                  ],
-                );
-              });
-        }
-      } else {
-        throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
+        imageLink.clear();
+        Get.back();
+      } else if (json['status'] == "error") {
+        imageLink.clear();
+        // showDialog(
+        //     context: Get.context!,
+        //     builder: (context) {
+        //       return SimpleDialog(
+        //         title: const Text('Error'),
+        //         contentPadding: const EdgeInsets.all(20),
+        //         children: [
+        //           Text(
+        //             json['error']['message'],
+        //           ),
+        //         ],
+        //       );
+        //     });
       }
-    } catch (error) {
-      Get.back();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Text(
-                  error.toString(),
-                ),
-              ],
-            );
-          });
+    } else {
+      throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
     }
+    // } catch (error) {
+    //   Get.back();
+    //   showDialog(
+    //       context: Get.context!,
+    //       builder: (context) {
+    //         return SimpleDialog(
+    //           contentPadding: const EdgeInsets.all(20),
+    //           children: [
+    //             Text(
+    //               error.toString(),
+    //             ),
+    //           ],
+    //         );
+    //       });
+    // }
   }
 
   Future<void> uploadJobPhoto() async {
     final SharedPreferences prefs = await _prefs;
     // Get device information
-    // if (imageFileList!.length > 3 ||
-    //     imageFileList!.isEmpty ||
-    //     imageFileList == null) {
-    //   showDialog(
-    //       context: Get.context!,
-    //       builder: (context) {
-    //         return const SimpleDialog(
-    //           contentPadding: EdgeInsets.all(20),
-    //           children: [
-    //             Text(
-    //               'Hình ảnh đã chọn nhiều hơn 3 hoặc chưa chọn ảnh. Xin chọn lại!',
-    //             ),
-    //           ],
-    //         );
-    //       });
-
-    //   return;
-    // }
+    if (imageFileList!.length > 3 ||
+        imageFileList!.isEmpty ||
+        imageFileList == null) {
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Hình ảnh đã chọn nhiều hơn 3 hoặc chưa chọn ảnh. Xin chọn lại!',
+        titleTextStyle: GoogleFonts.poppins(fontSize: 16),
+      ).show();
+      imageFileList!.clear();
+      return;
+    }
     final hostId = prefs.getString('host_id');
 
     try {
@@ -301,7 +298,6 @@ class PostStuff extends GetxController {
 
       if (response.statusCode == 200) {
         if (json['status'] == 'ok') {
-          // print(json);
           otherFee.clear();
           var data = json['data'];
 
@@ -318,19 +314,19 @@ class PostStuff extends GetxController {
             );
           }
         } else if (json['status'] == "error") {
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  title: const Text('Error'),
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Text(
-                      json['error']['message'],
-                    ),
-                  ],
-                );
-              });
+          // showDialog(
+          //     context: Get.context!,
+          //     builder: (context) {
+          //       return SimpleDialog(
+          //         title: const Text('Error'),
+          //         contentPadding: const EdgeInsets.all(20),
+          //         children: [
+          //           Text(
+          //             json['error']['message'],
+          //           ),
+          //         ],
+          //       );
+          //     });
         }
       } else {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';

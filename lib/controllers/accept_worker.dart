@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/acceptorker_data.dart';
 import 'package:chotot/models/acceptWorker_model.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -31,6 +33,7 @@ class AcceptWorker extends GetxController {
       'contract_id': contractId,
       'price_id': priceId,
       'token': 'anhkhongdoiqua',
+      'version': 'publish'
     };
 
     http.Response response = await http.post(
@@ -40,7 +43,7 @@ class AcceptWorker extends GetxController {
     );
 
     final json = jsonDecode(response.body);
-
+    print(json);
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         acceptWorkerData.clear();
@@ -60,6 +63,15 @@ class AcceptWorker extends GetxController {
             status: data['status'].toString(),
           ),
         );
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.success,
+          animType: AnimType.rightSlide,
+          title: 'Chọn thợ thành công',
+          titleTextStyle: GoogleFonts.poppins(),
+          dismissOnTouchOutside: true,
+        ).show();
+        Get.back();
       } else {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }

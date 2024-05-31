@@ -14,6 +14,7 @@ class HostJob {
   final List<dynamic> photos;
   final String status;
   final PriceHostJob priceHostJob;
+  final String jobServiceId;
   HostJob({
     required this.id,
     required this.jobId,
@@ -28,6 +29,7 @@ class HostJob {
     required this.status,
     required this.workHour,
     required this.priceHostJob,
+    required this.jobServiceId,
   });
 }
 

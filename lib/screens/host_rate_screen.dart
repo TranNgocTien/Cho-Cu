@@ -8,8 +8,21 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HostRateScreen extends StatefulWidget {
-  const HostRateScreen({super.key});
-
+  const HostRateScreen({
+    super.key,
+    required this.profileImage,
+    required this.workerName,
+    required this.contractId,
+    required this.jobId,
+    required this.employeeId,
+    required this.hostId,
+  });
+  final String workerName;
+  final String profileImage;
+  final String contractId;
+  final String jobId;
+  final String employeeId;
+  final String hostId;
   @override
   State<HostRateScreen> createState() => _HostRateScreenState();
 }
@@ -24,6 +37,9 @@ class _HostRateScreenState extends State<HostRateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    dynamic imageProfile = widget.profileImage == ''
+        ? const AssetImage('image/61568.jpg')
+        : NetworkImage(widget.profileImage);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -40,19 +56,21 @@ class _HostRateScreenState extends State<HostRateScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 50.0,
                 backgroundColor: Colors.green,
                 child: CircleAvatar(
                   radius: 45.0,
                   backgroundColor: Colors.white,
-                  backgroundImage: AssetImage('image/61568.jpg'),
+                  backgroundImage: imageProfile,
                 ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              Text(acceptWorkerData[0].employeeName),
+              Text(widget.workerName == ''
+                  ? acceptWorkerData[0].employeeName
+                  : widget.workerName),
               const SizedBox(
                 height: 10,
               ),
@@ -62,7 +80,7 @@ class _HostRateScreenState extends State<HostRateScreen> {
                   Text(
                     'Khả năng chuyên môn:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                         ),
                   ),
                   RatingBar.builder(
@@ -90,7 +108,7 @@ class _HostRateScreenState extends State<HostRateScreen> {
                   Text(
                     'Thái độ công việc:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                         ),
                   ),
                   RatingBar.builder(
@@ -118,7 +136,7 @@ class _HostRateScreenState extends State<HostRateScreen> {
                   Text(
                     'Đến đúng giờ:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                         ),
                   ),
                   RatingBar.builder(
@@ -146,7 +164,7 @@ class _HostRateScreenState extends State<HostRateScreen> {
                   Text(
                     'Kỹ thuật/ kỹ năng:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                         ),
                   ),
                   RatingBar.builder(
@@ -174,7 +192,7 @@ class _HostRateScreenState extends State<HostRateScreen> {
                   Text(
                     'Mức độ hài lòng:',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                         ),
                   ),
                   RatingBar.builder(
@@ -236,7 +254,16 @@ class _HostRateScreenState extends State<HostRateScreen> {
               ElevatedButton(
                   onPressed: () async {
                     await hostRate.hostRate(
-                        rateD1, rateD2, rateD3, rateD4, rateD5);
+                      rateD1,
+                      rateD2,
+                      rateD3,
+                      rateD4,
+                      rateD5,
+                      widget.contractId,
+                      widget.jobId,
+                      widget.employeeId,
+                      widget.hostId,
+                    );
                     Get.to(const MainScreen());
                   },
                   style: ElevatedButton.styleFrom(
@@ -246,7 +273,7 @@ class _HostRateScreenState extends State<HostRateScreen> {
                   child: Text(
                     'Gửi đánh giá',
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
                         ),

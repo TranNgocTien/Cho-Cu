@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:chotot/screens/forgotPasswordScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _storage = const FlutterSecureStorage();
   final _form = GlobalKey<FormState>();
   LyLichController lyLichController = Get.put(LyLichController());
-  bool _savePassword = false;
+  bool _savePassword = true;
   // LoginPost? _loginPost;
 
   // var _enteredEmail = '';
@@ -39,8 +40,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _onFormSubmit() async {
     loginController.isLogin = true;
-    if (_savePassword) {
-      // Write values
+
+    if (_savePassword == true) {
+      await _storage.write(
+          key: "Save_Password", value: _savePassword.toString());
       await _storage.write(
           key: "KEY_USERNAME",
           value: loginController.phoneNumberController.text);
@@ -84,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 width: 300,
                 child: Image.asset(
-                  'image/logo/logo.png',
+                  'image/logo_tho_thong_minh.jpeg',
                 ),
               ),
               const SizedBox(height: 50),
@@ -120,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: <Widget>[
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 211, 210, 210),
+                            color: const Color.fromARGB(255, 192, 244, 210),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Padding(
@@ -140,9 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                             .textTheme
                                             .bodyLarge!
                                             .copyWith(
-                                              fontFamily:
-                                                  GoogleFonts.montserrat()
-                                                      .fontFamily,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily,
                                             ),
                                       ),
                                     ],
@@ -172,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 10),
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 211, 210, 210),
+                            color: const Color.fromARGB(255, 192, 244, 210),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Padding(
@@ -195,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           .textTheme
                                           .bodyLarge!
                                           .copyWith(
-                                            fontFamily: GoogleFonts.montserrat()
+                                            fontFamily: GoogleFonts.poppins()
                                                 .fontFamily,
                                           ),
                                     ),
@@ -225,18 +227,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             if (loginController.tokenString != '') {
                               await lyLichController.getInfo();
-                              await getHostJobController.getHostJob(0);
+                              await getHostJobController.getHostJob(0, '');
                             }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
-                                const Color.fromRGBO(5, 109, 101, 1),
+                                const Color.fromRGBO(38, 166, 83, 1),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 16.0),
                             child: loginController.isLoading == true
-                                ? const CircularProgressIndicator()
+                                ? LoadingAnimationWidget.waveDots(
+                                    color: const Color.fromRGBO(1, 142, 33, 1),
+                                    size: 30,
+                                  )
                                 : Text(
                                     'Đăng nhập',
                                     style: Theme.of(context)
@@ -244,8 +249,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.white,
-                                          fontFamily: GoogleFonts.montserrat()
-                                              .fontFamily,
+                                          fontFamily:
+                                              GoogleFonts.poppins().fontFamily,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
                                         ),
@@ -268,10 +273,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             title: Text(
                               "Ghi nhớ đăng nhập",
                               style: TextStyle(
-                                fontFamily: GoogleFonts.montserrat().fontFamily,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
                               ),
                             ),
-                            activeColor: const Color.fromRGBO(5, 109, 101, 1),
+                            activeColor: const Color.fromRGBO(38, 166, 83, 1),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -290,9 +295,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     .labelLarge!
                                     .copyWith(
                                       color:
-                                          const Color.fromRGBO(5, 109, 101, 1),
+                                          const Color.fromRGBO(38, 166, 83, 1),
                                       fontFamily:
-                                          GoogleFonts.montserrat().fontFamily,
+                                          GoogleFonts.poppins().fontFamily,
                                     ),
                               ),
                             ),
@@ -308,9 +313,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     .labelLarge!
                                     .copyWith(
                                       color:
-                                          const Color.fromRGBO(5, 109, 101, 1),
+                                          const Color.fromRGBO(38, 166, 83, 1),
                                       fontFamily:
-                                          GoogleFonts.montserrat().fontFamily,
+                                          GoogleFonts.poppins().fontFamily,
                                     ),
                               ),
                             ),
