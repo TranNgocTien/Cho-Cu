@@ -78,14 +78,18 @@ dependencies:
   getwidget: ^4.0.0
   percent_indicator: ^4.2.3
   syncfusion_flutter_charts: ^24.2.8
-  # webview_flutter: ^4.7.0
+
   flutter_widget_from_html: ^0.14.11
   flutter_pdfview: ^1.2.7
   path_provider: ^2.1.2
   permission_handler: ^11.3.1
   loading_animation_widget: ^1.2.1
-  webview_flutter: ^4.7.0
+  file_picker: ^8.0.6
   shape_of_view_null_safe: ^3.0.0
+  webview_flutter: ^4.8.0
+  webview_flutter_android: ^3.16.3
+  webview_flutter_wkwebview: ^3.13.1
+  animated_toggle_switch: ^0.8.2
 
 dependency_overrides:
   modal_bottom_sheet: ^3.0.0-pre
@@ -205,7 +209,9 @@ flutter:
     - image/cancel-order.png
     - image/choosing.png
     - image/new-employee.png
-
+    - image/star-rate.png
+    - image/pin.png
+    - image/worker_marker.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chotot/data/version_app.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:chotot/data/docu_data.dart';
 import 'package:chotot/models/cho_do_cu.dart';
@@ -36,9 +37,10 @@ class GetStuffs extends GetxController {
       var url = Uri.parse(
           ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getStuffs);
       Map body = {
-        'version': 'test',
+        'version': version,
         'index': '$index',
-        // 'index': '1',
+        'status': 'posting',
+        // 'index': '0',
         'token': 'anhkhongdoiqua',
       };
 
@@ -93,6 +95,7 @@ class GetStuffs extends GetxController {
                   photos: photos,
                   hostId: data[i]['host_id'],
                   status: data[i]['status'],
+                  createdAt: data[i]['created_at'],
                 ),
               );
             }
@@ -100,19 +103,19 @@ class GetStuffs extends GetxController {
                 data[i]['status'] == 'posting') {
               items.add(
                 DoCu(
-                  name: data[i]['name'].toString(),
-                  price: data[i]["sum_price"].toString(),
-                  description: data[i]["description"].toString(),
-                  id: data[i]['stuff_id'].toString(),
-                  address: data[i]['address'].toString(),
-                  province: data[i]['province'].toString(),
-                  district: data[i]['district'].toString(),
-                  ward: data[i]['ward'].toString(),
-                  phone: data[i]['phone'].toString(),
-                  photos: photos,
-                  hostId: data[i]['host_id'],
-                  status: data[i]['status'],
-                ),
+                    name: data[i]['name'].toString(),
+                    price: data[i]["sum_price"].toString(),
+                    description: data[i]["description"].toString(),
+                    id: data[i]['stuff_id'].toString(),
+                    address: data[i]['address'].toString(),
+                    province: data[i]['province'].toString(),
+                    district: data[i]['district'].toString(),
+                    ward: data[i]['ward'].toString(),
+                    phone: data[i]['phone'].toString(),
+                    photos: photos,
+                    hostId: data[i]['host_id'],
+                    status: data[i]['status'],
+                    createdAt: data[i]['created_at']),
               );
             }
           }

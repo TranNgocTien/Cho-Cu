@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chotot/data/get_job_item_data.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/job_item.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -14,13 +15,13 @@ class GetJobItem extends GetxController {
     Map body = {
       'jobservice_id': jobServiceId,
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      // 'version': version,
     };
     http.Response response = await http.post(
       url,
       body: body,
     );
-
+    print(jobServiceId);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       // print(json);
@@ -31,6 +32,7 @@ class GetJobItem extends GetxController {
         for (int i = 0; i < data.length; i++) {
           jobItemList.add(
             JobItems(
+              img: data[i]['img'].toString(),
               id: data[i]['_id'].toString(),
               jobItemId: data[i]['jobitem_id'].toString(),
               description: data[i]['description'].toString(),

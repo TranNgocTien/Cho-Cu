@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chotot/data/get_vouchers_valid_data.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/get_vouchers_valid_models.dart';
 // import 'package:flutter/material.dart';
 
@@ -22,7 +23,10 @@ class GetVouchersValid extends GetxController {
     // };
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getVouchersValid);
-    Map body = {'token': 'anhkhongdoiqua', 'version': 'publish'};
+    Map body = {
+      'token': 'anhkhongdoiqua',
+      'version': version,
+    };
     http.Response response = await http.post(
       url,
       body: body,

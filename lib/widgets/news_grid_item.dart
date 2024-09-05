@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chotot/models/get_news_models.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 // import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class NewsGridItem extends StatefulWidget {
   const NewsGridItem({super.key, required this.newItems});
@@ -78,7 +81,7 @@ class _NewsGridItemState extends State<NewsGridItem> {
                     // placeholder: (context, url) =>
                     //     const CircularProgressIndicator(strokeWidth: 5.0),
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                        Image.asset('image/logo_tho_thong_minh.jpeg'),
                     imageBuilder: (context, imageProvider) => Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
@@ -88,6 +91,15 @@ class _NewsGridItemState extends State<NewsGridItem> {
                               filterQuality: FilterQuality.high,
                               image: imageProvider,
                               fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                    placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: Center(
+                            child: LoadingAnimationWidget.waveDots(
+                              color: const Color.fromRGBO(1, 142, 33, 1),
+                              size: 30,
                             ),
                           ),
                         ),
@@ -129,7 +141,7 @@ class _NewsGridItemState extends State<NewsGridItem> {
   }
 }
 
-class HtmlPageNew extends StatelessWidget {
+class HtmlPageNew extends StatefulWidget {
   const HtmlPageNew({
     super.key,
     required this.contextHtmlPage,
@@ -145,9 +157,32 @@ class HtmlPageNew extends StatelessWidget {
   final String title;
   final String date;
   final String author;
+
+  @override
+  State<HtmlPageNew> createState() => _HtmlPageNewState();
+}
+
+class _HtmlPageNewState extends State<HtmlPageNew> {
+  bool isLoading = true;
+  Widget centerLoading = Center(
+    child: LoadingAnimationWidget.waveDots(
+      color: const Color.fromRGBO(1, 142, 33, 1),
+      size: 30,
+    ),
+  );
+  @override
+  void initState() {
+    Timer(const Duration(milliseconds: 2000), () async {
+      setState(() {
+        isLoading = false;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var dateCreateAt = DateTime.parse(date).toLocal();
+    var dateCreateAt = DateTime.parse(widget.date).toLocal();
     return Scaffold(
       backgroundColor: Colors.white,
       body: NestedScrollView(
@@ -170,7 +205,7 @@ class HtmlPageNew extends StatelessWidget {
                 ),
               ),
               flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(imageLink, fit: BoxFit.cover),
+                background: Image.network(widget.imageLink, fit: BoxFit.cover),
                 title: Container(
                   width: MediaQuery.of(context).size.width * 0.7,
                   decoration: BoxDecoration(
@@ -184,7 +219,7 @@ class HtmlPageNew extends StatelessWidget {
                     vertical: 2.0,
                   ),
                   child: Text(
-                    title,
+                    widget.title,
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       color: Colors.black87,
@@ -196,48 +231,50 @@ class HtmlPageNew extends StatelessWidget {
             ),
           ];
         },
-        body: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: isLoading
+            ? centerLoading
+            : ListView(
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    child: Text(
-                      author,
-                      style: GoogleFonts.poppins(
-                        color: Colors.grey,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            widget.author,
+                            style: GoogleFonts.poppins(
+                              color: Colors.grey,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(
+                          '${dateCreateAt.day < 10 ? 0 : ''}${dateCreateAt.day}-${dateCreateAt.month < 10 ? 0 : ''}${dateCreateAt.month}-${dateCreateAt.year}',
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0, vertical: 20.0),
+                    child: Center(
+                      child: HtmlWidget(
+                        textStyle: GoogleFonts.poppins(),
+                        widget.contextHtmlPage,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Text(
-                    '${dateCreateAt.day < 10 ? 0 : ''}${dateCreateAt.day}-${dateCreateAt.month < 10 ? 0 : ''}${dateCreateAt.month}-${dateCreateAt.year}',
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  )
                 ],
               ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-              child: Center(
-                child: HtmlWidget(
-                  textStyle: GoogleFonts.poppins(),
-                  contextHtmlPage,
-                ),
-              ),
-            )
-          ],
-        ),
       ),
     );
   }

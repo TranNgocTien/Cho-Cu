@@ -132,7 +132,7 @@ class _WorkerRateScreenState extends State<WorkerRateScreen> {
                       widget.employeeId,
                       widget.hostId,
                     );
-                    Get.to(const MainScreen());
+                    Get.to(() => const MainScreen());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,

@@ -8,7 +8,8 @@ import 'package:chotot/controllers/get_worker_job.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/get_worker_job_data.dart';
 import 'package:chotot/data/job_service_data.dart';
-import 'package:chotot/data/ly_lich.dart';
+import 'package:chotot/data/login_data.dart';
+import 'package:chotot/screens/host_rate_worker_screen.dart';
 
 import 'package:chotot/screens/login.dart';
 import 'package:chotot/screens/thong_tin_job_screen.dart';
@@ -157,7 +158,7 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                     ),
                     title: Center(
                       child: Text(
-                        'Thợ - ${lyLichInfo[0].name}',
+                        'Thợ - ${loginData[0].name}',
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                               fontFamily: GoogleFonts.poppins().fontFamily,
                               fontWeight: FontWeight.bold,
@@ -217,6 +218,7 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       } else {
                                         Get.to(const WorkerJobStatus(
                                           workerJobStatus: 'apply',
+                                          isHostRate: false,
                                         ));
                                       }
                                     }),
@@ -262,6 +264,7 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       } else {
                                         Get.to(const WorkerJobStatus(
                                           workerJobStatus: 'accept',
+                                          isHostRate: false,
                                         ));
                                       }
                                     }),
@@ -309,6 +312,7 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       } else {
                                         Get.to(const WorkerJobStatus(
                                           workerJobStatus: 'cancel',
+                                          isHostRate: false,
                                         ));
                                       }
                                     }),
@@ -355,6 +359,7 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       } else {
                                         Get.to(const WorkerJobStatus(
                                           workerJobStatus: 'worker_done',
+                                          isHostRate: false,
                                         ));
                                       }
                                     }),
@@ -402,6 +407,55 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       } else {
                                         Get.to(const WorkerJobStatus(
                                           workerJobStatus: 'finish',
+                                          isHostRate: false,
+                                        ));
+                                      }
+                                    }),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            AnimatedBuilder(
+                              animation: _animationController,
+                              builder: (context, child) => Opacity(
+                                opacity: _animationController.value,
+                                child: child,
+                              ),
+                              child: Card(
+                                color: const Color.fromARGB(255, 192, 244, 210),
+                                child: GFListTile(
+                                    avatar: GFAvatar(
+                                      shape: GFAvatarShape.circle,
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 192, 244, 210),
+                                      child: Image.asset(
+                                        'image/star-rate.png',
+                                      ),
+                                    ),
+                                    title: Text('Đánh giá từ chủ nhà',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith()),
+                                    padding: EdgeInsets.zero,
+                                    radius: 50,
+                                    onTap: () async {
+                                      await getWorkerJob.getWorkerJob(
+                                          0, 'finish', true);
+                                      if (workerJobData.isEmpty) {
+                                        await AwesomeDialog(
+                                          context: Get.context!,
+                                          dialogType: DialogType.info,
+                                          animType: AnimType.rightSlide,
+                                          title:
+                                              'Hiện tại không có công việc trạng thái này',
+                                          titleTextStyle: GoogleFonts.poppins(),
+                                          autoHide:
+                                              const Duration(milliseconds: 800),
+                                        ).show();
+                                      } else {
+                                        Get.to(const WorkerJobStatus(
+                                          workerJobStatus: 'finish',
+                                          isHostRate: true,
                                         ));
                                       }
                                     }),
@@ -422,8 +476,10 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
 }
 
 class WorkerJobStatus extends StatefulWidget {
-  const WorkerJobStatus({super.key, required this.workerJobStatus});
+  const WorkerJobStatus(
+      {super.key, required this.workerJobStatus, required this.isHostRate});
   final String workerJobStatus;
+  final bool isHostRate;
   @override
   State<WorkerJobStatus> createState() => _WorkerJobStatusState();
 }
@@ -638,11 +694,15 @@ class _WorkerJobStatusState extends State<WorkerJobStatus>
                         return GestureDetector(
                           onTap: () async {
                             await getAJob.getAJob(item.jobId);
-
-                            Get.to(() => ThongTinJobScreen(
-                                jobInfo: getAJob.jobInfo,
-                                date: date,
-                                time: time));
+                            widget.isHostRate == true
+                                ? Get.to(() => HostRateWorkerScreen(
+                                    jobInfo: getAJob.jobInfo,
+                                    date: date,
+                                    time: time))
+                                : Get.to(() => ThongTinJobScreen(
+                                    jobInfo: getAJob.jobInfo,
+                                    date: date,
+                                    time: time));
                           },
                           child: Card(
                             color: Colors.white,
@@ -861,3 +921,5 @@ class _WorkerJobStatusState extends State<WorkerJobStatus>
 // Image.asset(
 //                                                       'image/no_image.png',
 //                                                       color: Colors.grey)
+
+

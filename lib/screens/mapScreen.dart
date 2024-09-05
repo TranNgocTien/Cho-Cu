@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chotot/models/addressUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/models/place.dart';
+import 'package:flutter/widgets.dart';
 // import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:geocoding/geocoding.dart';
@@ -124,18 +125,31 @@ class _MapScreenState extends State<MapScreen> {
         (marker) => marker.markerId == const MarkerId('Current position'));
     _pickedLocation = currentLocationFromGet;
     _markers.removeAt(indexCurentMarker);
+    var address = '';
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        _pickedLocation!.latitude, _pickedLocation!.longitude);
+
+    address =
+        '${placemarks.reversed.last.street!}, ${placemarks.reversed.last.subLocality}, ${placemarks.reversed.last.subAdministrativeArea!}, ${placemarks.reversed.last.subAdministrativeArea!}';
     _markers.add(
       Marker(
-          markerId: const MarkerId('Current position'),
-          position: LatLng(
-            currentLocationFromGet.latitude,
-            currentLocationFromGet.longitude,
-          ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(240)),
+        markerId: const MarkerId('Current position'),
+        position: LatLng(
+          currentLocationFromGet.latitude,
+          currentLocationFromGet.longitude,
+        ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(240),
+        infoWindow: InfoWindow(
+            title: 'Nhấn để lưu vị trí này',
+            snippet: address,
+            onTap: () {
+              Navigator.of(context).pop(address);
+            }),
+      ),
     );
   }
 
-  void moveToCurrentLocation() async {
+  Future<void> moveToCurrentLocation() async {
     GoogleMapController controller = await _controller.future;
     await _getCurrentLocation();
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -154,6 +168,13 @@ class _MapScreenState extends State<MapScreen> {
             )
           : LatLng(currentLocationFromGet.latitude,
               currentLocationFromGet.longitude);
+    });
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        _pickedLocation!.latitude, _pickedLocation!.longitude);
+
+    setState(() {
+      addressMap.text =
+          '${placemarks.reversed.last.street!}, ${placemarks.reversed.last.subLocality}, ${placemarks.reversed.last.subAdministrativeArea!}, ${placemarks.reversed.last.subAdministrativeArea!}';
     });
   }
 
@@ -193,6 +214,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final widthDevice = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -206,11 +228,12 @@ class _MapScreenState extends State<MapScreen> {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {
-                if (_pickedLocation == null) {
-                  _pickedLocation = LatLng(widget.currentLocation.latitude,
-                      widget.currentLocation.longitude);
-                }
-                Navigator.of(context).pop(_pickedLocation);
+                // if (_pickedLocation == null) {
+                //   _pickedLocation = LatLng(widget.currentLocation.latitude,
+                //       widget.currentLocation.longitude);
+                // }
+                // Navigator.of(context).pop(_pickedLocation);
+                Navigator.of(context).pop();
               },
               icon: const Icon(Icons.arrow_back)),
           backgroundColor: Colors.transparent,
@@ -235,144 +258,142 @@ class _MapScreenState extends State<MapScreen> {
           //     ),
           // ],
         ),
-        body: HawkFabMenu(
-          icon: AnimatedIcons.menu_arrow,
-          fabColor: Colors.white,
-          iconColor: Colors.black,
-          hawkFabMenuController: hawkFabMenuController,
-          items: [
-            HawkFabMenuItem(
-              label: 'Vị trí hiện tại',
-              ontap: () {
-                moveToCurrentLocation();
-                setState(() {});
-                // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(content: Text('Menu 1 selected')),
-                // );
-              },
-              icon: const Icon(Icons.location_city),
-              color: Colors.red,
-              labelColor: Colors.blue,
-            ),
-            HawkFabMenuItem(
-              label: 'Lưu vị trí đã chọn',
-              ontap: () {
-                _pickedLocation ??= LatLng(widget.currentLocation.latitude,
-                    widget.currentLocation.longitude);
-                Navigator.of(context).pop(_pickedLocation);
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: GoogleMap(
+                  onTap: (position) async {
+                    var address = '';
+                    List<Placemark> placemarks = await placemarkFromCoordinates(
+                        position.latitude, position.longitude);
 
-                // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(content: Text('Menu 2 selected')),
-                // );
-              },
-              icon: const Icon(Icons.location_on),
-              labelColor: Colors.white,
-              labelBackgroundColor: Colors.blue,
+                    address =
+                        '${placemarks.reversed.last.street!}, ${placemarks.reversed.last.subLocality}, ${placemarks.reversed.last.subAdministrativeArea!}, ${placemarks.reversed.last.subAdministrativeArea!}';
+
+                    setState(() {
+                      _pickedLocation = position;
+
+                      _markers.add(
+                        Marker(
+                          markerId: const MarkerId('m1'),
+                          position: _pickedLocation!,
+                          infoWindow: InfoWindow(
+                              title: 'Nhấn để lưu vị trí này',
+                              snippet: address,
+                              onTap: () {
+                                Navigator.of(context).pop(address);
+                              }),
+                        ),
+                      );
+                    });
+                  },
+                  zoomControlsEnabled: false,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                  myLocationButtonEnabled: false,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(widget.currentLocation.latitude,
+                        widget.currentLocation.longitude),
+                    zoom: 18,
+                  ),
+                  markers: Set.of(_markers),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 100,
+              left: 50,
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: TypeAheadField<AddressUpdate?>(
+                    hideOnError: true,
+                    debounceDuration: const Duration(milliseconds: 500),
+                    textFieldConfiguration: TextFieldConfiguration(
+                      controller: addressMap,
+                      decoration: const InputDecoration(
+                        focusColor: Colors.white,
+                        border: InputBorder.none,
+                        hintText: 'Tìm kiếm',
+                      ),
+                    ),
+                    suggestionsCallback: AddressUpdateApi.getAddressSuggestions,
+                    itemBuilder: (context, AddressUpdate? suggestion) {
+                      final address = suggestion!;
+                      return ListTile(
+                        title: Text(address.description),
+                      );
+                    },
+                    noItemsFoundBuilder: (context) => SizedBox(
+                      height: 100,
+                      child: Center(
+                        child: Text(
+                          'Không tìm thấy địa chỉ.',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontSize: 18,
+                              ),
+                        ),
+                      ),
+                    ),
+                    onSuggestionSelected: (AddressUpdate? suggestion) async {
+                      final address = suggestion!;
+                      addressMap.text = address.description;
+
+                      // await _convertAddressToCoordinate(address.description);
+                      // _pickedLocation ??= LatLng(
+                      //   widget.currentLocation.latitude,
+                      //   widget.currentLocation.longitude,
+                      // );
+                      Navigator.of(context).pop(addressMap.text);
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: widthDevice * 0.2,
+              right: widthDevice * 0.3,
+              child: MaterialButton(
+                color: const Color.fromRGBO(39, 166, 82, 1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                onPressed: () async {
+                  await moveToCurrentLocation();
+                  Navigator.of(context).pop(addressMap.text);
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Vị trí hiện tại',
+                      style: GoogleFonts.poppins(
+                        fontSize: widthDevice * 0.04,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    const Icon(Icons.location_pin, color: Colors.white),
+                  ],
+                ),
+              ),
             ),
           ],
-          body: Stack(
-            children: [
-              SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: GoogleMap(
-                    onTap: (position) {
-                      setState(() {
-                        _pickedLocation = position;
-
-                        _markers.add(
-                          Marker(
-                              markerId: const MarkerId('m1'),
-                              position: _pickedLocation!),
-                        );
-                      });
-                    },
-                    zoomControlsEnabled: false,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    myLocationButtonEnabled: false,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(widget.currentLocation.latitude,
-                          widget.currentLocation.longitude),
-                      zoom: 18,
-                    ),
-                    markers: Set.of(_markers),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 100,
-                left: 50,
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.white,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: TypeAheadField<AddressUpdate?>(
-                      hideOnError: true,
-                      debounceDuration: const Duration(milliseconds: 500),
-                      textFieldConfiguration: TextFieldConfiguration(
-                        controller: addressMap,
-                        decoration: const InputDecoration(
-                          focusColor: Colors.white,
-                          border: InputBorder.none,
-                          hintText: 'Tìm kiếm',
-                        ),
-                      ),
-                      suggestionsCallback:
-                          AddressUpdateApi.getAddressSuggestions,
-                      itemBuilder: (context, AddressUpdate? suggestion) {
-                        final address = suggestion!;
-                        return ListTile(
-                          title: Text(address.description),
-                        );
-                      },
-                      noItemsFoundBuilder: (context) => SizedBox(
-                        height: 100,
-                        child: Center(
-                          child: Text(
-                            'Không tìm thấy địa chỉ.',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                  fontFamily: GoogleFonts.poppins().fontFamily,
-                                  fontSize: 18,
-                                ),
-                          ),
-                        ),
-                      ),
-                      onSuggestionSelected: (AddressUpdate? suggestion) async {
-                        final address = suggestion!;
-                        addressMap.text = address.description;
-                        await _convertAddressToCoordinate(address.description);
-
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 5,
-                right: 5,
-                child: IconButton(
-                  onPressed: () {
-                    hawkFabMenuController.toggleMenu();
-                  },
-                  icon: const Icon(Icons.replay_outlined),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

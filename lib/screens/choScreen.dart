@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 import 'package:chotot/controllers/get_post_jobs.dart';
-import 'package:chotot/controllers/get_stuffs_suggestion.dart';
+// import 'package:chotot/controllers/get_stuffs_suggestion.dart';
+import 'package:chotot/data/data_listener.dart';
 import 'package:chotot/data/get_post_job_data.dart';
 
 import 'package:chotot/screens/login.dart';
@@ -11,8 +12,6 @@ import 'package:chotot/screens/login.dart';
 import 'package:chotot/screens/tim_tho_screen.dart';
 import 'package:chotot/widgets/vieclam_grid_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -363,19 +362,19 @@ class _ChoViecLamScreenState extends State<ChoViecLamScreen>
                 ),
                 child: RefreshLoadmore(
                   onRefresh: () async {
+                    jobListen.value = 0;
                     setState(() {
                       isLoading = true;
                     });
                     postJobData.clear();
                     currentIndexWorker = 1;
+                    await getDataJob();
                     timer = Timer(const Duration(seconds: 3), () {
                       setState(() {
                         isLoading = false;
                         _animationController.forward();
                       });
                     });
-
-                    getDataJob();
                   },
                   // onLoadmore: () async {
                   //   if (onLoading == false) {
@@ -392,7 +391,7 @@ class _ChoViecLamScreenState extends State<ChoViecLamScreen>
                   // },
                   onLoadmore: () async {
                     if (onLoading == false) {
-                      await Future.delayed(const Duration(seconds: 6),
+                      await Future.delayed(const Duration(seconds: 3),
                           () async {
                         // onLoading = true;
                         // Timer(const Duration(seconds: 5), () {
@@ -419,18 +418,69 @@ class _ChoViecLamScreenState extends State<ChoViecLamScreen>
                   // ),
                   isLastPage: _getPostJobs.isLastPage,
                   child: postJobData.isNotEmpty
-                      ? AlignedGridView.count(
-                          shrinkWrap: true,
-                          itemCount: postJobData.length,
-                          physics: const ScrollPhysics(),
-                          crossAxisCount: 1,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 10,
-                          itemBuilder: (context, index) {
-                            return ViecLamGridItem(
-                              job: postJobData[index],
-                            );
-                          },
+                      ? Column(
+                          children: [
+                            ValueListenableBuilder(
+                              valueListenable: jobListen,
+                              builder: (context, value, widget) {
+                                return value > 0
+                                    ? Card(
+                                        color: Colors.white,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Có tin mới kéo xuống để tải lại ',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge!
+                                                    .copyWith(
+                                                      fontFamily:
+                                                          GoogleFonts.poppins()
+                                                              .fontFamily,
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.03,
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                        38,
+                                                        166,
+                                                        83,
+                                                        1,
+                                                      ),
+                                                    ),
+                                              ),
+                                              const Icon(Icons.arrow_downward,
+                                                  color: Color.fromRGBO(
+                                                      38, 166, 83, 1))
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox();
+                              },
+                            ),
+                            AlignedGridView.count(
+                              shrinkWrap: true,
+                              itemCount: postJobData.length,
+                              physics: const ScrollPhysics(),
+                              crossAxisCount: 1,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 10,
+                              itemBuilder: (context, index) {
+                                return ViecLamGridItem(
+                                  job: postJobData[index],
+                                );
+                              },
+                            ),
+                          ],
                         )
                       : Stack(children: [
                           Positioned(
@@ -440,8 +490,8 @@ class _ChoViecLamScreenState extends State<ChoViecLamScreen>
                               opacity: _fadeInFadeOut,
                               child: ShapeOfView(
                                 elevation: 20,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.5,
+                                // height:
+                                //     MediaQuery.of(context).size.height * 0.5,
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 shape: BubbleShape(
                                     position: BubblePosition.Bottom,
@@ -478,7 +528,10 @@ class _ChoViecLamScreenState extends State<ChoViecLamScreen>
                                     ),
                                   ),
                                   padding: const EdgeInsets.only(
-                                      top: 15.0, left: 15.0, right: 15.0),
+                                      bottom: 15.0,
+                                      top: 15.0,
+                                      left: 15.0,
+                                      right: 15.0),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
@@ -524,7 +577,7 @@ class _ChoViecLamScreenState extends State<ChoViecLamScreen>
                     opacity: _fadeInFadeOut,
                     child: ShapeOfView(
                       elevation: 20,
-                      height: MediaQuery.of(context).size.height * 0.5,
+                      // height: MediaQuery.of(context).size.height * 0.5,
                       width: MediaQuery.of(context).size.width * 0.9,
                       shape: BubbleShape(
                           position: BubblePosition.Bottom,
@@ -534,7 +587,7 @@ class _ChoViecLamScreenState extends State<ChoViecLamScreen>
                           arrowWidth: 10),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: const Color.fromRGBO(230, 246, 235, 1),
                           borderRadius: BorderRadius.circular(20),
                           border: Border(
                             bottom: BorderSide(
@@ -556,7 +609,7 @@ class _ChoViecLamScreenState extends State<ChoViecLamScreen>
                           ),
                         ),
                         padding: const EdgeInsets.only(
-                            top: 15.0, left: 15.0, right: 15.0),
+                            bottom: 15.0, top: 15.0, left: 15.0, right: 15.0),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -564,21 +617,23 @@ class _ChoViecLamScreenState extends State<ChoViecLamScreen>
                           child: Column(
                             children: [
                               Text(
-                                'Thợ 4.0 hỗ trợ bạn có thể tìm kiếm những người thợ xung quanh thích hợp với nhu cầu mà bạn cần. Chúng tôi giúp bạn tiết kiệm thời gian, chi phí cho dịch vụ và đặc biệt giúp bạn tìm được 1 người thợ giỏi tay nghề.',
+                                'Thợ 4.0 - nền tảng công nghệ Internet of Things kết nối THỢ THÔNG MINH với CHỦ NHÀ - nhằm cung cấp các dịch vụ trong nhà nhanh nhất, an toàn nhất, tiết kiệm nhất.',
                                 style: GoogleFonts.poppins(
                                   color: Colors.black,
                                   fontSize:
                                       MediaQuery.of(context).size.width * 0.035,
                                 ),
+                                textAlign: TextAlign.justify,
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                'Bạn đừng do dự mà hãy sử dụng chức năng tìm thợ trên "Chợ việc làm". Chúng tôi sẽ giúp bạn tìm được thợ trong thời gian nhanh nhất.',
+                                'Bạn đang cần Thợ xử lý các việc trong nhà, hãy sử dụng chức năng “Đăng việc” trên trang “Chợ việc làm”. Chúng tôi sẽ giúp bạn tìm được Thợ giỏi trong thời gian nhanh nhất.',
                                 style: GoogleFonts.poppins(
                                   color: Colors.black,
                                   fontSize:
                                       MediaQuery.of(context).size.width * 0.035,
                                 ),
+                                textAlign: TextAlign.justify,
                               ),
                             ],
                           ),
@@ -602,8 +657,8 @@ class _ChoDoCuState extends State<ChoDoCu>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late AnimationController _animationController;
   final GetStuffs _getStuffs = Get.put(GetStuffs());
-  final GetStuffsSuggestion _getStuffsSuggestion =
-      Get.put(GetStuffsSuggestion());
+  // final GetStuffsSuggestion _getStuffsSuggestion =
+  //     Get.put(GetStuffsSuggestion());
   var currentIndexMarket = 1;
   late AnimationController animation;
   late Animation<double> _fadeInFadeOut;
@@ -647,7 +702,6 @@ class _ChoDoCuState extends State<ChoDoCu>
   bool get wantKeepAlive => true;
   @override
   void initState() {
-    _getStuffsSuggestion.getStuffs(0);
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 3800),
@@ -659,14 +713,13 @@ class _ChoDoCuState extends State<ChoDoCu>
     currentIndexMarket = 1;
 
     if (mounted) {
+      getData();
       timer = Timer(const Duration(seconds: 3), () {
         setState(() {
           isLoading = false;
         });
       });
     }
-
-    getData();
 
     _animationController.forward();
     super.initState();
@@ -698,6 +751,7 @@ class _ChoDoCuState extends State<ChoDoCu>
                 ),
                 child: RefreshLoadmore(
                   onRefresh: () async {
+                    marketListen.value = 0.0;
                     setState(() {
                       isLoading = true;
                     });
@@ -710,7 +764,7 @@ class _ChoDoCuState extends State<ChoDoCu>
                       });
                     });
 
-                    getData();
+                    await getData();
                   },
                   // onLoadmore: () async {
                   //   if (onLoading == false) {
@@ -727,7 +781,7 @@ class _ChoDoCuState extends State<ChoDoCu>
                   // },
                   onLoadmore: () async {
                     if (onLoading == false) {
-                      await Future.delayed(const Duration(seconds: 6),
+                      await Future.delayed(const Duration(seconds: 3),
                           () async {
                         // onLoading = true;
                         // Timer(const Duration(seconds: 5), () {
@@ -754,18 +808,69 @@ class _ChoDoCuState extends State<ChoDoCu>
                   // ),
                   isLastPage: _getStuffs.isLastPage,
                   child: items.isNotEmpty
-                      ? AlignedGridView.count(
-                          shrinkWrap: true,
-                          itemCount: items.length,
-                          physics: const ScrollPhysics(),
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 10,
-                          itemBuilder: (context, index) {
-                            return DoCuGridItem(
-                              docu: items[index],
-                            );
-                          },
+                      ? Column(
+                          children: [
+                            ValueListenableBuilder(
+                              valueListenable: marketListen,
+                              builder: (context, value, widget) {
+                                return value > 0
+                                    ? Card(
+                                        color: Colors.white,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Có tin mới kéo xuống để tải lại ',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge!
+                                                    .copyWith(
+                                                      fontFamily:
+                                                          GoogleFonts.poppins()
+                                                              .fontFamily,
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.03,
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                        38,
+                                                        166,
+                                                        83,
+                                                        1,
+                                                      ),
+                                                    ),
+                                              ),
+                                              const Icon(Icons.arrow_downward,
+                                                  color: Color.fromRGBO(
+                                                      38, 166, 83, 1))
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox();
+                              },
+                            ),
+                            AlignedGridView.count(
+                              shrinkWrap: true,
+                              itemCount: items.length,
+                              physics: const ScrollPhysics(),
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 10,
+                              itemBuilder: (context, index) {
+                                return DoCuGridItem(
+                                  docu: items[index],
+                                );
+                              },
+                            ),
+                          ],
                         )
                       : Stack(
                           children: [
@@ -776,8 +881,8 @@ class _ChoDoCuState extends State<ChoDoCu>
                                 opacity: _fadeInFadeOut,
                                 child: ShapeOfView(
                                   elevation: 20,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.5,
+                                  // height:
+                                  //     MediaQuery.of(context).size.height * 0.55,
                                   width:
                                       MediaQuery.of(context).size.width * 0.9,
                                   shape: BubbleShape(
@@ -786,11 +891,12 @@ class _ChoDoCuState extends State<ChoDoCu>
                                       borderRadius: 20,
                                       arrowHeight:
                                           MediaQuery.of(context).size.height *
-                                              0.2,
+                                              0.17,
                                       arrowWidth: 10),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: const Color.fromRGBO(
+                                          230, 246, 235, 1),
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border(
                                         bottom: BorderSide(
@@ -798,7 +904,7 @@ class _ChoDoCuState extends State<ChoDoCu>
                                               84, 181, 111, 1),
                                           width: MediaQuery.of(context)
                                                   .size
-                                                  .height *
+                                                  .width *
                                               0.205,
                                         ),
                                         top: const BorderSide(
@@ -819,7 +925,10 @@ class _ChoDoCuState extends State<ChoDoCu>
                                       ),
                                     ),
                                     padding: const EdgeInsets.only(
-                                        top: 15.0, left: 15.0, right: 15.0),
+                                        bottom: 15.0,
+                                        top: 15.0,
+                                        left: 15.0,
+                                        right: 15.0),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
@@ -827,26 +936,28 @@ class _ChoDoCuState extends State<ChoDoCu>
                                       child: Column(
                                         children: [
                                           Text(
-                                            'Mỗi người trong số chúng ta đều có những sản phẩm có thể bán được. Bên cạnh việc giữ sản phẩm không cần đến ở nhà, bất kỳ ai cũng có thể kiếm thêm tiền bằng cách bán nó cho người khác thông qua "Chợ đồ cũ" này.',
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.black,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.035,
-                                            ),
-                                          ),
+                                              'Thợ 4.0 - nền tảng công nghệ Internet of Things kết nối CHỦ NHÀ với CHỦ NHÀ hoặc CHỦ NHÀ với  THỢ - nhằm cung cấp các dịch vụ chia sẻ thiết bị ĐIỆN - ĐIỆN TỬ và sản phẩm CÔNG NGHỆ đã sử dụng trong nhà nhanh nhất, tiện ích nhất.',
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.black,
+                                                letterSpacing: 2.0,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.033,
+                                              ),
+                                              textAlign: TextAlign.justify),
                                           const SizedBox(height: 5),
                                           Text(
-                                            'Sản phẩm mà bạn không cần đến vẫn có thể trở thành vật quý giá với người khác. Đừng do dự mà hãy đăng thông tin về sản phẩm của bạn ngay bây giờ!',
-                                            style: GoogleFonts.poppins(
-                                              color: Colors.black,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.035,
-                                            ),
-                                          ),
+                                              'Bạn đang cần THANH LÝ các sản phẩm không dùng trong nhà, hãy sử dụng chức năng “Đăng tin chợ” trên trang “Chợ đồ cũ”. Chúng tôi sẽ giúp bạn bán/thanh lý sản phẩm trong thời gian nhanh nhất, tiện ích nhất.',
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.black,
+                                                letterSpacing: 2.0,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.033,
+                                              ),
+                                              textAlign: TextAlign.justify),
                                         ],
                                       ),
                                     ),
@@ -866,7 +977,7 @@ class _ChoDoCuState extends State<ChoDoCu>
                     opacity: _fadeInFadeOut,
                     child: ShapeOfView(
                       elevation: 20,
-                      height: MediaQuery.of(context).size.height * 0.5,
+                      // height: MediaQuery.of(context).size.height * 0.55,
                       width: MediaQuery.of(context).size.width * 0.9,
                       shape: BubbleShape(
                           position: BubblePosition.Bottom,
@@ -876,7 +987,7 @@ class _ChoDoCuState extends State<ChoDoCu>
                           arrowWidth: 10),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: const Color.fromRGBO(230, 246, 235, 1),
                           borderRadius: BorderRadius.circular(20),
                           border: Border(
                             bottom: BorderSide(
@@ -898,7 +1009,7 @@ class _ChoDoCuState extends State<ChoDoCu>
                           ),
                         ),
                         padding: const EdgeInsets.only(
-                            top: 15.0, left: 15.0, right: 15.0),
+                            bottom: 15.0, top: 15.0, left: 15.0, right: 15.0),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -906,22 +1017,24 @@ class _ChoDoCuState extends State<ChoDoCu>
                           child: Column(
                             children: [
                               Text(
-                                'Mỗi người trong số chúng ta đều có những sản phẩm có thể bán được. Bên cạnh việc giữ sản phẩm không cần đến ở nhà, bất kỳ ai cũng có thể kiếm thêm tiền bằng cách bán nó cho người khác thông qua "Chợ đồ cũ" này.',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.black,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.035,
-                                ),
-                              ),
+                                  'Thợ 4.0 - nền tảng công nghệ Internet of Things kết nối CHỦ NHÀ với CHỦ NHÀ hoặc CHỦ NHÀ với  THỢ - nhằm cung cấp các dịch vụ chia sẻ thiết bị ĐIỆN - ĐIỆN TỬ và sản phẩm CÔNG NGHỆ đã sử dụng trong nhà nhanh nhất, tiện ích nhất.',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.black,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.033,
+                                  ),
+                                  textAlign: TextAlign.justify),
                               const SizedBox(height: 5),
                               Text(
-                                'Sản phẩm mà bạn không cần đến vẫn có thể trở thành vật quý giá với người khác. Đừng do dự mà hãy đăng thông tin về sản phẩm của bạn ngay bây giờ!',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.black,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.035,
-                                ),
-                              ),
+                                  'Bạn đang cần THANH LÝ các sản phẩm không dùng trong nhà, hãy sử dụng chức năng “Đăng tin chợ” trên trang “Chợ đồ cũ”. Chúng tôi sẽ giúp bạn bán/thanh lý sản phẩm trong thời gian nhanh nhất, tiện ích nhất.',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.black,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.033,
+                                  ),
+                                  textAlign: TextAlign.justify),
                             ],
                           ),
                         ),

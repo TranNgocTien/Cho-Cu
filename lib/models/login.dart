@@ -1,15 +1,27 @@
 import 'package:device_info_plus/device_info_plus.dart';
 
 class LoginPost {
-  final double phoneNumber;
+  final String phoneNumber;
   final String password;
-
-  final BaseDeviceInfo deviceName;
-  LoginPost({
-    required this.phoneNumber,
-    required this.password,
-    required this.deviceName,
-  });
+  final String wallet;
+  // final BaseDeviceInfo deviceName;
+  final String workerAuthen;
+  final String profileImage;
+  final String type;
+  final String name;
+  final String status;
+  final String address;
+  LoginPost(
+      {required this.name,
+      required this.wallet,
+      required this.phoneNumber,
+      required this.password,
+      // required this.deviceName,
+      required this.profileImage,
+      required this.type,
+      required this.workerAuthen,
+      required this.status,
+      required this.address});
 }
 //   final Dio _dio = Dio();
 

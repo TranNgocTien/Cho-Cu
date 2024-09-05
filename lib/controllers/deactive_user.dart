@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/data/ly_lich.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class DeactiveUser extends GetxController {
       'password': password.text.toString(),
       'otp': otp.text.toString(),
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      'version': version,
     };
 
     http.Response response = await http.post(
@@ -76,6 +77,7 @@ class DeactiveUser extends GetxController {
     Map body = {
       'ID': phone.text,
       'type': 'phone',
+      'action': 'remove',
       'token': 'anhkhongdoiqua',
     };
     http.Response response = await http.post(
@@ -83,6 +85,7 @@ class DeactiveUser extends GetxController {
       body: body,
     );
     final json = jsonDecode(response.body);
+
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         // var data = json['data'];

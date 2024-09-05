@@ -44,4 +44,6 @@ class _AuthEndPoints {
   final String requestOtpAccount = 'request_otp';
   final String getOrdersUser = 'get_orders_user';
   final String getJobsByType2 = 'get_jobs_by_type_2';
+  final String getAStuff = 'get_stuff';
+  final String getWorkerByLocation = 'get_worker_by_location';
 }

@@ -1,13 +1,19 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/models/cho_do_cu.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/screens/thongTinSanPham.dart';
-import 'package:get/get.dart';
+// import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class DoCuGridItem extends StatefulWidget {
-  const DoCuGridItem({super.key, required this.docu});
+  const DoCuGridItem({
+    super.key,
+    required this.docu,
+  });
   final DoCu docu;
 
   @override
@@ -35,18 +41,24 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
     final priceReverse = StringUtils.addCharAtPosition(
         StringUtils.reverse(widget.docu.price), ".", 3,
         repeat: true);
+    DateTime dateTime = DateTime.parse(widget.docu.createdAt);
 
-    final name = widget.docu.name.contains('-')
+    // Create a DateFormat instance
+    DateFormat dateFormat = DateFormat("dd-MM-yyyy HH:mm:ss");
+
+    // Format the DateTime
+    String formattedDate = dateFormat.format(dateTime.toLocal());
+    var nameStuff = widget.docu.name.contains('-')
         ? widget.docu.name.substring(0, widget.docu.name.indexOf('-'))
         : widget.docu.name;
 
-    final dateTime = widget.docu.name.contains('-')
-        ? widget.docu.name.substring(widget.docu.name.indexOf('-'))
-        : widget.docu.name;
+    // final dateTime = widget.docu.name.contains('-')
+    //     ? widget.docu.name.substring(widget.docu.name.indexOf('-'))
+    //     : widget.docu.name;
 
-    final date = dateTime.contains(' ')
-        ? dateTime.substring(1, dateTime.lastIndexOf(' '))
-        : dateTime;
+    // final date = dateTime.contains(' ')
+    //     ? dateTime.substring(1, dateTime.lastIndexOf(' '))
+    //     : dateTime;
 
     return
         // isLoading
@@ -54,11 +66,19 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
         //     :
         GestureDetector(
       onTap: () {
-        Get.to(
-          ThongTinSanPhamScreen(
-            docu: widget.docu,
-          ),
-        );
+        // Get.to(
+        //   ThongTinSanPhamScreen(
+        //     docu: widget.docu,
+        //   ),
+        // );
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => ThongTinSanPhamScreen(
+                docu: widget.docu,
+              ),
+            ));
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.4,
@@ -107,6 +127,17 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
                           ),
                         ),
                       ),
+                  errorWidget: (context, url, error) =>
+                      Image.asset('image/logo_tho_thong_minh.jpeg'),
+                  placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: Center(
+                          child: LoadingAnimationWidget.waveDots(
+                            color: const Color.fromRGBO(1, 142, 33, 1),
+                            size: 30,
+                          ),
+                        ),
+                      ),
                   memCacheWidth: 200,
                   maxHeightDiskCache: 200,
                   maxWidthDiskCache: 200),
@@ -119,15 +150,14 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    name,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontSize: widthDevice * 0.05,
-                          fontWeight: FontWeight.bold,
-                        ),
-                    textAlign: TextAlign.start,
-                  ),
+                  Text(nameStuff,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontSize: widthDevice * 0.03,
+                            fontWeight: FontWeight.bold,
+                          ),
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.ellipsis),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -135,7 +165,7 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
                         'Giá bán:',
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontFamily: GoogleFonts.poppins().fontFamily,
-                              fontSize: widthDevice * 0.035,
+                              fontSize: widthDevice * 0.028,
                               color: Colors.black,
                             ),
                         textAlign: TextAlign.start,
@@ -154,7 +184,7 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 color: Colors.red,
                                 fontWeight: FontWeight.w900,
-                                fontSize: widthDevice * 0.03,
+                                fontSize: widthDevice * 0.028,
                               ),
                           textAlign: TextAlign.start,
                         ),
@@ -163,33 +193,45 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
                   ),
                   const SizedBox(height: 16),
                   Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          date,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: widthDevice * 0.03,
-                              ),
-                        ),
-                        Text(
-                          widget.docu.province,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: widthDevice * 0.03,
-                              ),
-                        )
-                      ]),
+                    children: [
+                      const FaIcon(
+                        FontAwesomeIcons.locationPin,
+                        size: 15,
+                        color: Color.fromRGBO(39, 166, 82, 1),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        widget.docu.province,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: widthDevice * 0.03,
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      const FaIcon(
+                        FontAwesomeIcons.clock,
+                        size: 15,
+                        color: Color.fromRGBO(39, 166, 82, 1),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        formattedDate,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: widthDevice * 0.03,
+                            ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chotot/controllers/get_a_user.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/screens/capNhatTaiKhoan.dart';
 
 import 'package:chotot/data/ly_lich.dart';
-import 'package:chotot/controllers/get_ly_lich.dart';
+
 // import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LyLichScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class LyLichScreen extends StatefulWidget {
 }
 
 class _LyLichScreenState extends State<LyLichScreen> {
-  LyLichController lyLichController = Get.put(LyLichController());
+  // LyLichController lyLichController = Get.put(LyLichController());
   GetAUserController getAUserController = Get.put(GetAUserController());
 
   Image img = Image.network(lyLichInfo[0].profileImage);
@@ -64,7 +65,6 @@ class _LyLichScreenState extends State<LyLichScreen> {
 
   @override
   void initState() {
-    lyLichController.getInfo();
     setState(() {});
     super.initState();
   }
@@ -72,6 +72,9 @@ class _LyLichScreenState extends State<LyLichScreen> {
   @override
   Widget build(BuildContext context) {
     final widthDevice = MediaQuery.of(context).size.width;
+    final priceReverse = StringUtils.addCharAtPosition(
+        StringUtils.reverse(lyLichInfo[0].wallet), ".", 3,
+        repeat: true);
     return lyLichInfo[0].workerAuthen == 'false'
         ? Stack(
             alignment: AlignmentDirectional.center,
@@ -177,6 +180,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                                         .copyWith(
                                             fontFamily: GoogleFonts.poppins()
                                                 .fontFamily,
+                                            fontSize: widthDevice * 0.035,
                                             color: Colors.black),
                                     textAlign: TextAlign.start,
                                   ),
@@ -308,7 +312,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                                 width: 10,
                               ),
                               Text(
-                                '${lyLichInfo[0].wallet} VNĐ',
+                                '${StringUtils.reverse(priceReverse)} GP',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium!
@@ -387,13 +391,15 @@ class _LyLichScreenState extends State<LyLichScreen> {
                 decoration: const BoxDecoration(
                   color: Color(0xFFBFE299), // Background color
                   gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                    begin: Alignment.bottomRight,
+                    end: Alignment.topLeft,
                     colors: [
-                      Color(0xFFBFE299),
-                      Color(0xFF66B5F6),
+                      Color.fromRGBO(39, 166, 82, 1),
+                      Color.fromRGBO(1, 142, 33, 1),
+                      Color.fromRGBO(23, 162, 73, 1),
+                      Color.fromRGBO(84, 181, 111, 1),
                     ],
-                    stops: [0.0, 0.74], // 0% and 74%
+                    // stops: [0.0, 0.74], // 0% and 74%
                   ),
                 ),
               ),
@@ -440,9 +446,9 @@ class _LyLichScreenState extends State<LyLichScreen> {
                         height: 10,
                       ),
                       RatingBar.builder(
-                        initialRating: double.tryParse(
+                        initialRating: (double.tryParse(
                                 getAUserController.aUser[0].worker.ds)! /
-                            20,
+                            20),
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
@@ -477,7 +483,10 @@ class _LyLichScreenState extends State<LyLichScreen> {
                         ),
                         padding: const EdgeInsets.all(10),
                         child: Text(
-                          getAUserController.aUser[0].worker.ds.toString(),
+                          double.tryParse(
+                                  getAUserController.aUser[0].worker.ds)!
+                              .ceilToDouble()
+                              .toString(),
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge!
@@ -654,7 +663,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
                               width: 10,
                             ),
                             Text(
-                              '${lyLichInfo[0].wallet} VNĐ',
+                              '${StringUtils.reverse(priceReverse)} VNĐ',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!

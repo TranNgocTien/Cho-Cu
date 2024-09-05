@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chotot/controllers/login_controller.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/get_a_job_model.dart';
 
 import 'package:chotot/models/job_item.dart';
@@ -26,10 +27,11 @@ class GetAJob extends GetxController {
     // try {
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getAJob);
+
     Map body = {
       'job_id': jobId,
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      'version': version,
     };
 
     http.Response response = await http.post(
@@ -59,6 +61,7 @@ class GetAJob extends GetxController {
         }
         List<Contracts> contracts = [];
         List<WorkerAJob> workers = [];
+        List<Rate> rate = [];
         if (data['workers'] != null) {
           for (int i = 0; i < data['workers'].length; i++) {
             workers.add(
@@ -98,6 +101,7 @@ class GetAJob extends GetxController {
         for (int i = 0; i < data['job']['services'].length; i++) {
           serviceList.add(
             JobItems(
+              img: '',
               id: data['job']['services'][i]['_id'].toString(),
               jobItemId: data['job']['services'][i]['jobitem_id'].toString(),
               version: data['job']['services'][i]['version'].toString(),
@@ -115,9 +119,33 @@ class GetAJob extends GetxController {
           );
         }
 
+        for (int i = 0; i < json['data']['rate'].length; i++) {
+          if (json['data']['rate'][i]['type'] == 'worker') {
+            var data = json['data']['rate'][i];
+            rate.add(
+              Rate(
+                id: data['_id'],
+                contractId: data['contract_id'],
+                type: data['type'],
+                content: data['content'],
+                d1: data['d1'],
+                d2: data['d2'],
+                d3: data['d3'],
+                d4: data['d4'],
+                d5: data['d5'],
+                ds: data['ds'],
+                hostId: data['host_id'],
+                jobId: data['job_id'],
+                time: data['time'],
+                workerId: data['worker_id'],
+              ),
+            );
+          }
+        }
         jobInfo.add(
           GetAJobModel(
               workers: workers,
+              rate: rate,
               employee: Employee(
                 id: data['employee']['_id'].toString(),
                 name: data['employee']['name'].toString(),
@@ -168,6 +196,7 @@ class GetAJob extends GetxController {
               hostId: data['job']['host_id'].toString(),
               workerId: data['job']['worker_id'].toString(),
               status: data['job']['status'].toString(),
+              jobId: data['job']['job_id'].toString(),
               service: serviceList,
               workDate: data['job']['work_date'].toString(),
               host: Host(

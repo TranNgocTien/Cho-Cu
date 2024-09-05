@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/data/ly_lich.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/screens/homeScreen.dart';
 
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class ActiveUser extends GetxController {
       'password': password.text.toString(),
       'otp': otp.text.toString(),
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      'version': version,
     };
 
     http.Response response = await http.post(

@@ -2,9 +2,8 @@ import 'dart:convert';
 
 // import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/controllers/login_controller.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/statistics_user_model.dart';
-
-import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
@@ -33,7 +32,7 @@ class StatisticsUser extends GetxController {
         'start_date': startDate,
         'end_date': endDate,
         'token': 'anhkhongdoiqua',
-        'version': 'publish'
+        'version': version,
       };
 
       http.Response response = await http.post(

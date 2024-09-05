@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:chotot/controllers/login_controller.dart';
 
 import 'package:chotot/data/get_worker_job_data.dart';
+import 'package:chotot/data/version_app.dart';
 
 import 'package:chotot/models/get_worker_job_model.dart';
 
@@ -36,7 +37,7 @@ class GetWorkerJob extends GetxController {
       // 'from': '',
       // 'to': null,
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      'version': version,
     };
 
     http.Response response = await http.post(

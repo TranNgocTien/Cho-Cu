@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/get_price_model.dart';
 import 'package:chotot/screens/confirm_book_worker.dart';
 import 'package:chotot/utils/api_endpoints.dart';
@@ -19,7 +20,7 @@ class GetPrice extends GetxController {
   bool isNext = false;
   dynamic code = '';
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
+//  late Services services;
   Price dataPrice = Price();
   Future<void> getPrice(
     String priceId,
@@ -49,7 +50,7 @@ class GetPrice extends GetxController {
       'services': jobItem,
       'voucher': code,
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      'version': version,
     };
 
     http.Response response =
@@ -61,6 +62,17 @@ class GetPrice extends GetxController {
       if (json['status'] == 'ok') {
         final data = json['data'];
 
+        // for (int i = 0; i < data['services'].length; i++) {
+        //   services = Services(
+        //       id: data['services'][i]['_id'].toString(),
+        //       jobitemId: data['services'][i]['jobitem_id'].toString(),
+        //       description: data['services'][i]['description'].toString(),
+        //       fee: data['services'][i]['fee'].toString(),
+        //       jobserviceId: data['services'][i]['jobservice_id'].toString(),
+        //       name: data['services'][i]['name'].toString(),
+        //       price: data['services'][i]['price'].toString(),
+        //       unit: data['services'][i]['unit'].toString());
+        // }
         dataPrice = Price(
           id: data['_id'],
           priceId: data['id'],
@@ -76,6 +88,7 @@ class GetPrice extends GetxController {
           price: data['price'].toString(),
           sumPrice: data['sum_price'].toString(),
           workDate: data['work_date'].toString(),
+          // services: services
         );
         isSuccess = true;
         if (isNext == true) {

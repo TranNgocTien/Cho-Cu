@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chotot/data/job_type_data.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/job_type.dart';
 // import 'package:flutter/material.dart';
 
@@ -22,7 +23,10 @@ class GetJobTypeController extends GetxController {
       };
       var url = Uri.parse(
           ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getJobType);
-      Map body = {'token': 'anhkhongdoiqua', 'version': 'publish'};
+      Map body = {
+        'token': 'anhkhongdoiqua',
+        'version': version,
+      };
       http.Response response = await http.post(
         url,
         body: body,

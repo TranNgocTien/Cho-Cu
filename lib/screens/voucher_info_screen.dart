@@ -1,14 +1,39 @@
+import 'dart:async';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chotot/models/get_vouchers_valid_models.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class VoucherInfoScreen extends StatelessWidget {
+class VoucherInfoScreen extends StatefulWidget {
   const VoucherInfoScreen({super.key, required this.voucherInfo});
   final VouchersValid voucherInfo;
+
+  @override
+  State<VoucherInfoScreen> createState() => _VoucherInfoScreenState();
+}
+
+class _VoucherInfoScreenState extends State<VoucherInfoScreen> {
+  bool isLoading = true;
+  @override
+  void initState() {
+    Timer(const Duration(milliseconds: 2000), () async {
+      setState(() {
+        isLoading = false;
+      });
+    });
+    super.initState();
+  }
+
+  Widget centerLoading = Center(
+    child: LoadingAnimationWidget.waveDots(
+      color: const Color.fromRGBO(1, 142, 33, 1),
+      size: 30,
+    ),
+  );
   @override
   Widget build(BuildContext context) {
     getTimeVoucher(date) {
@@ -45,91 +70,115 @@ class VoucherInfoScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AspectRatio(
-                  aspectRatio: 487 / 451,
-                  child: CachedNetworkImage(
-                    imageUrl: voucherInfo.img,
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10)),
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.fill,
+        body: isLoading
+            ? centerLoading
+            : SingleChildScrollView(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 487 / 451,
+                        child: CachedNetworkImage(
+                          imageUrl: widget.voucherInfo.img,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              // borderRadius: const BorderRadius.only(
+                              //     topLeft: Radius.circular(10),
+                              //     topRight: Radius.circular(10)),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                          filterQuality: FilterQuality.high,
                         ),
                       ),
-                    ),
-                    filterQuality: FilterQuality.high,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Center(
-                  child: Text(
-                    voucherInfo.name,
-                    style: GoogleFonts.poppins(
-                      fontSize: widthDevice * 0.045,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Card(
-                  color: Colors.white,
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        Text(
-                          voucherInfo.description,
+                      const SizedBox(height: 15),
+                      Center(
+                        child: Text(
+                          widget.voucherInfo.name,
                           style: GoogleFonts.poppins(
-                            fontSize: widthDevice * 0.035,
+                            fontSize: widthDevice * 0.045,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Số lượng: ${voucherInfo.count}',
-                          style: GoogleFonts.poppins(
-                            fontSize: widthDevice * 0.035,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Tình trạng: ${voucherInfo.status == 'valid' ? 'Có thể sử dụng' : 'Hết hạn sử dụng'}',
-                          style: GoogleFonts.poppins(
-                            fontSize: widthDevice * 0.035,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(children: [
-                          Text(
-                            'Thời gian:',
-                            style: GoogleFonts.poppins(
-                              fontSize: widthDevice * 0.035,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            '${getTimeVoucher(voucherInfo.from).day < 10 ? 0 : ''}${getTimeVoucher(voucherInfo.from).day}/${getTimeVoucher(voucherInfo.from).month < 10 ? 0 : ''}${getTimeVoucher(voucherInfo.from).month}/${getTimeVoucher(voucherInfo.from).year} - ${getTimeVoucher(voucherInfo.to).day < 10 ? 0 : ''}${getTimeVoucher(voucherInfo.to).day}/${getTimeVoucher(voucherInfo.to).month < 10 ? 0 : ''}${getTimeVoucher(voucherInfo.to).month}/${getTimeVoucher(voucherInfo.to).year}',
-                            style: GoogleFonts.poppins(
-                              fontSize: widthDevice * 0.035,
-                            ),
-                          ),
-                        ]),
-                        const SizedBox(height: 10),
-                        voucherInfo.limit != '0'
-                            ? Row(
+                      ),
+                      Card(
+                        color: Colors.white,
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 10),
+                              Text(
+                                widget.voucherInfo.description,
+                                style: GoogleFonts.poppins(
+                                  fontSize: widthDevice * 0.035,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Số lượng: ${widget.voucherInfo.count}',
+                                style: GoogleFonts.poppins(
+                                  fontSize: widthDevice * 0.035,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Tình trạng: ${widget.voucherInfo.status == 'valid' ? 'Có thể sử dụng' : 'Hết hạn sử dụng'}',
+                                style: GoogleFonts.poppins(
+                                  fontSize: widthDevice * 0.035,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Row(children: [
+                                Text(
+                                  'Thời gian:',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: widthDevice * 0.035,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  '${getTimeVoucher(widget.voucherInfo.from).day < 10 ? 0 : ''}${getTimeVoucher(widget.voucherInfo.from).day}/${getTimeVoucher(widget.voucherInfo.from).month < 10 ? 0 : ''}${getTimeVoucher(widget.voucherInfo.from).month}/${getTimeVoucher(widget.voucherInfo.from).year} - ${getTimeVoucher(widget.voucherInfo.to).day < 10 ? 0 : ''}${getTimeVoucher(widget.voucherInfo.to).day}/${getTimeVoucher(widget.voucherInfo.to).month < 10 ? 0 : ''}${getTimeVoucher(widget.voucherInfo.to).month}/${getTimeVoucher(widget.voucherInfo.to).year}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: widthDevice * 0.035,
+                                  ),
+                                ),
+                              ]),
+                              const SizedBox(height: 10),
+                              widget.voucherInfo.limit != '0'
+                                  ? Row(
+                                      children: [
+                                        Text(
+                                          'Giảm giá tối đa:',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: widthDevice * 0.035,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          '${StringUtils.reverse(
+                                            priceReverse(
+                                                widget.voucherInfo.limit),
+                                          )} VNĐ',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: widthDevice * 0.035,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox(),
+                              const SizedBox(height: 10),
+                              Row(
                                 children: [
                                   Text(
-                                    'Giảm giá tối đa:',
+                                    'Giá trị tối thiểu của đơn hàng:',
                                     style: GoogleFonts.poppins(
                                       fontSize: widthDevice * 0.035,
                                     ),
@@ -137,72 +186,42 @@ class VoucherInfoScreen extends StatelessWidget {
                                   const SizedBox(width: 10),
                                   Text(
                                     '${StringUtils.reverse(
-                                      priceReverse(voucherInfo.limit),
+                                      priceReverse(widget.voucherInfo.sum),
                                     )} VNĐ',
                                     style: GoogleFonts.poppins(
                                       fontSize: widthDevice * 0.035,
                                     ),
                                   ),
                                 ],
-                              )
-                            : const SizedBox(),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Text(
-                              'Giá trị tối thiểu của đơn hàng:',
-                              style: GoogleFonts.poppins(
-                                fontSize: widthDevice * 0.035,
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              '${StringUtils.reverse(
-                                priceReverse(voucherInfo.sum),
-                              )} VNĐ',
-                              style: GoogleFonts.poppins(
-                                fontSize: widthDevice * 0.035,
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Giảm giá',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: widthDevice * 0.035,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    widget.voucherInfo.type == "discount_cash"
+                                        ? '${StringUtils.reverse(
+                                            priceReverse(
+                                                widget.voucherInfo.value),
+                                          )} VNĐ'
+                                        : '${widget.voucherInfo.value}% giá trị đơn hàng.',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: widthDevice * 0.035,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Text(
-                              'Giảm giá',
-                              style: GoogleFonts.poppins(
-                                fontSize: widthDevice * 0.035,
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              voucherInfo.type == "discount_cash"
-                                  ? '${StringUtils.reverse(
-                                      priceReverse(voucherInfo.value),
-                                    )} VNĐ'
-                                  : '${voucherInfo.value}% giá trị đơn hàng.',
-                              style: GoogleFonts.poppins(
-                                fontSize: widthDevice * 0.035,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          'Code giảm giá: ${voucherInfo.code}',
-                          style: GoogleFonts.poppins(
-                            fontSize: widthDevice * 0.035,
+                            ],
                           ),
-                          textAlign: TextAlign.start,
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ]),
-        ));
+                      ),
+                    ]),
+              ));
   }
 }

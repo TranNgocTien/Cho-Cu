@@ -100,18 +100,6 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
       return;
     }
 
-    if (postStuff.imageFileList!.isEmpty ||
-        postStuff.imageFileList!.length > 3) {
-      await AwesomeDialog(
-        context: Get.context!,
-        dialogType: DialogType.warning,
-        animType: AnimType.rightSlide,
-        title: 'Đăng tối thiểu 1 ảnh, tối đa 3 ảnh',
-        titleTextStyle: GoogleFonts.poppins(),
-      ).show();
-      return;
-    }
-    await postStuff.uploadJobPhoto();
     if (postStuff.addressController.text.isEmpty) {
       await AwesomeDialog(
         context: Get.context!,
@@ -148,11 +136,37 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
       ).show();
       return;
     }
-    await postStuff.postItem();
+    if (postStuff.imageFileList!.isEmpty ||
+        postStuff.imageFileList!.length > 3) {
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Đăng tối thiểu 1 ảnh, tối đa 3 ảnh',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
+    }
+    await postStuff.uploadJobPhoto();
+    await postStuff.postItem(triggerWhenPost);
     items.clear();
     postStuff.imageFileList!.clear();
     await _getStuffs.getStuffs(0);
     Get.to(const MainScreen());
+  }
+
+  triggerWhenPost() async {
+    setState(() {
+      postStuff.isLoading = true;
+    });
+    await _getStuffs.getStuffs(0);
+    postStuff.descriptionController.clear();
+    postStuff.sumPriceController.clear();
+
+    postStuff.imageLink.clear();
+    setState(() {
+      postStuff.isLoading = false;
+    });
   }
 
   _openGallery() async {
@@ -309,87 +323,6 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
             btnOkOnPress: () {},
             btnCancelOnPress: () async {})
         .show();
-
-    // showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return AlertDialog(
-    //         content: Container(
-    //           width: MediaQuery.of(context).size.width * 0.3,
-    //           height: MediaQuery.of(context).size.height * 0.2,
-    //           padding: const EdgeInsets.all(10),
-    //           child: Column(
-    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //             children: [
-    //               const SizedBox(
-    //                 height: 20,
-    //               ),
-    //               Text(
-    //                 'Lựa chọn tải ảnh:',
-    //                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-    //                       fontFamily: GoogleFonts.poppins().fontFamily,
-    //                       color: Colors.black,
-    //                       fontWeight: FontWeight.w600,
-    //                     ),
-    //                 textAlign: TextAlign.center,
-    //               ),
-    //               const SizedBox(height: 20),
-    //               Row(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                 children: [
-    //                   GestureDetector(
-    //                     onTap: () {
-    //                       _openGallery();
-    //                     },
-    //                     child: Column(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         const Icon(FontAwesomeIcons.image),
-    //                         Text(
-    //                           'Thư viện',
-    //                           style: Theme.of(context)
-    //                               .textTheme
-    //                               .labelLarge!
-    //                               .copyWith(
-    //                                 fontFamily:
-    //                                     GoogleFonts.poppins().fontFamily,
-    //                                 color: Colors.black,
-    //                                 fontWeight: FontWeight.w600,
-    //                               ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ),
-    //                   GestureDetector(
-    //                     onTap: () {
-    //                       _openCamera();
-    //                     },
-    //                     child: Column(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         const Icon(FontAwesomeIcons.camera),
-    //                         Text(
-    //                           'Chụp ảnh',
-    //                           style: Theme.of(context)
-    //                               .textTheme
-    //                               .labelLarge!
-    //                               .copyWith(
-    //                                 fontFamily:
-    //                                     GoogleFonts.poppins().fontFamily,
-    //                                 color: Colors.black,
-    //                                 fontWeight: FontWeight.w600,
-    //                               ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       );
-    //     });
   }
 
   priceReverse(price) {
@@ -451,6 +384,12 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
   }
 
   @override
+  void dispose() {
+    FocusScope.of(context).unfocus();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -463,6 +402,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          centerTitle: true,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -518,7 +458,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Tên chủ đơn hàng: ',
+                    'Tên đơn hàng: ',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           color: Colors.black,
@@ -538,7 +478,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                       child: TextFormField(
                         controller: postStuff.nameController,
                         decoration: const InputDecoration(
-                          hintText: 'Họ và tên chủ đơn hàng',
+                          hintText: 'Tên đơn hàng',
                           border: InputBorder.none,
                         ),
                         keyboardType: TextInputType.streetAddress,
@@ -574,8 +514,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(
-                          left: 5.0,
-                          right: 5.0,
+                          // left: 5.0,
+                          // right: 5.0,
                           bottom: 10.0,
                         ),
                         child: Container(
@@ -649,7 +589,7 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                           final lng = prefs.getDouble('lng')!;
 
                           final pickedLocation =
-                              await Navigator.of(context).push<LatLng>(
+                              await Navigator.of(context).push<String>(
                             MaterialPageRoute(
                               builder: (ctx) => MapScreen(
                                   currentLocation: PlaceLocation(
@@ -662,9 +602,9 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                           if (pickedLocation == null) {
                             return;
                           }
-
-                          _convertCoordinatefromAddress(pickedLocation.latitude,
-                              pickedLocation.longitude);
+                          postStuff.addressController.text = pickedLocation;
+                          // _convertCoordinatefromAddress(pickedLocation.latitude,
+                          //     pickedLocation.longitude);
                         },
 
                         shape: const CircleBorder(
@@ -1038,17 +978,20 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30, vertical: 8),
-                        child: Text(
-                          'Đăng tin',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelLarge!
-                              .copyWith(
-                                color: Colors.white,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontSize: 20,
+                        child: postStuff.isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : Text(
+                                'Đăng tin',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(
+                                      color: Colors.white,
+                                      fontFamily:
+                                          GoogleFonts.poppins().fontFamily,
+                                      fontSize: 20,
+                                    ),
                               ),
-                        ),
                       ),
                     ),
                   ),

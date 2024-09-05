@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:chotot/data/login_data.dart';
+import 'package:chotot/screens/homeScreen.dart';
+// import 'package:chotot/screens/homeScreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -17,8 +20,10 @@ import 'package:chotot/data/ly_lich.dart';
 
 class UpdateInfoController extends GetxController {
   LoginController loginController = Get.put(LoginController());
-  TextEditingController nameController = TextEditingController(text: '');
-  TextEditingController addressController = TextEditingController(text: '');
+  TextEditingController nameController =
+      TextEditingController(text: loginData[0].name);
+  TextEditingController addressController =
+      TextEditingController(text: loginData[0].address);
   late double lat;
   late double lng;
 
@@ -35,7 +40,7 @@ class UpdateInfoController extends GetxController {
         animType: AnimType.rightSlide,
         title: 'Tọa độ không lấy được',
         titleTextStyle: GoogleFonts.poppins(),
-        autoHide: const Duration(milliseconds: 100),
+        autoHide: const Duration(milliseconds: 800),
       ).show();
 
       return;
@@ -47,7 +52,7 @@ class UpdateInfoController extends GetxController {
         animType: AnimType.rightSlide,
         title: 'Nhập tên chủ tài khoản',
         titleTextStyle: GoogleFonts.poppins(),
-        autoHide: const Duration(milliseconds: 100),
+        autoHide: const Duration(milliseconds: 800),
       ).show();
 
       return;
@@ -93,13 +98,13 @@ class UpdateInfoController extends GetxController {
           email: data['email'].toString(),
           workerAuthen: data['worker_authen'].toString(),
         ));
-        AwesomeDialog(
+        await AwesomeDialog(
           context: Get.context!,
           dialogType: DialogType.success,
           animType: AnimType.rightSlide,
           title: 'Cập nhật tài khoản thành công',
           titleTextStyle: GoogleFonts.poppins(),
-          autoHide: const Duration(milliseconds: 100),
+          autoHide: const Duration(milliseconds: 800),
         ).show();
         // showDialog(
         //     context: Get.context!,
@@ -115,10 +120,11 @@ class UpdateInfoController extends GetxController {
         //         ],
         //       );
         //     });
-        nameController.clear();
-        addressController.clear();
+        // nameController.clear();
+        // addressController.clear();
         lat = 0;
         lng = 0;
+        Get.offAll(() => const MainScreen());
       } else if (json['status'] == "error") {
         AwesomeDialog(
           context: Get.context!,
@@ -126,7 +132,7 @@ class UpdateInfoController extends GetxController {
           animType: AnimType.rightSlide,
           title: json['error']['message'],
           titleTextStyle: GoogleFonts.poppins(),
-          autoHide: const Duration(milliseconds: 100),
+          autoHide: const Duration(milliseconds: 800),
         ).show();
 
         throw jsonDecode(response.body)['error']['message'] ??

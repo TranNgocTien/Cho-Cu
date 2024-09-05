@@ -44,7 +44,7 @@ class GetOrdersUser extends GetxController {
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         final data = json['data'];
-        ordersUser.clear();
+
         for (var i = 0; i < data.length; i++) {
           ordersUser.add(
             GetOrdersUserModel(

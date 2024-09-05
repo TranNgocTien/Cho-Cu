@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:chotot/data/get_post_job_data.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/get_post_job_model.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -38,7 +39,7 @@ class GetPostJobs extends GetxController {
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getPostJobs);
     Map body = {
-      'version': 'test',
+      'version': version,
       'index': '$index',
       'token': 'anhkhongdoiqua',
     };

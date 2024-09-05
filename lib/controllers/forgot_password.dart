@@ -2,6 +2,7 @@ import 'dart:convert';
 // import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'package:chotot/screens/login.dart';
@@ -41,8 +42,8 @@ class ForgotPasswordController extends GetxController {
       Map body = {
         'ID': phoneNumberController.text,
         'type': 'phone',
+        'action': 'forgot',
         'token': 'anhkhongdoiqua',
-        'version': 'publish'
       };
       http.Response response =
           await http.post(url, body: jsonEncode(body), headers: headers);
@@ -68,20 +69,13 @@ class ForgotPasswordController extends GetxController {
       }
     } catch (error) {
       Get.back();
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text(
-                    error.toString(),
-                  ),
-                ),
-              ],
-            );
-          });
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: error.toString(),
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
     }
   }
 
@@ -134,7 +128,7 @@ class ForgotPasswordController extends GetxController {
       'code': int.parse(otpCodeController.text),
       'new_password': newPasswordController.text,
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      'version': version,
     };
     http.Response response =
         await http.post(url, body: jsonEncode(body), headers: headers);

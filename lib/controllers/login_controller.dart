@@ -2,9 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+// import 'package:chotot/controllers/get_ly_lich.dart';
 
 import 'package:chotot/controllers/register_notification.dart';
-import 'package:chotot/models/place.dart';
+import 'package:chotot/data/version_app.dart';
+import 'package:chotot/models/login.dart';
+// import 'package:chotot/models/place.dart';
+import 'package:chotot/screens/map_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +20,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:location/location.dart';
+// import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart' as permission;
 // import 'package:permission_handler/permission_handler.dart';
 
@@ -25,12 +29,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:chotot/utils/api_endpoints.dart';
 import 'package:chotot/screens/screen_04.dart';
+import 'package:chotot/data/login_data.dart';
 
 class LoginController extends GetxController {
-  // LyLichController lyLichController = Get.put(LyLichController());
   TextEditingController phoneNumberController = TextEditingController(text: '');
   TextEditingController passwordController = TextEditingController(text: '');
   // NotiController notiController = Get.put(NotiController());
+
   final _storage = const FlutterSecureStorage();
   double latitude = 16.0;
   double longitude = 106.0;
@@ -128,11 +133,12 @@ class LoginController extends GetxController {
         'password': passwordController.text,
         'device': deviceName,
         'token': 'anhkhongdoiqua',
-        'version': 'publish',
+        'version': version,
       };
 
       http.Response response =
           await http.post(url, body: jsonEncode(body), headers: headers);
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
@@ -140,14 +146,23 @@ class LoginController extends GetxController {
           if (currentHostID != json['data']['_id']) {
             addressDefault = '';
           }
-          await AwesomeDialog(
-            context: Get.context!,
-            dialogType: DialogType.success,
-            animType: AnimType.rightSlide,
-            title: json['error']['message'],
-            titleTextStyle: GoogleFonts.poppins(),
-            autoHide: const Duration(milliseconds: 800),
-          ).show();
+
+          loginData.clear();
+          loginData.add(
+            LoginPost(
+              wallet: json['data']['wallet'].toString(),
+              phoneNumber: json['data']['phone'].toString(),
+              password: json['data']['password'].toString(),
+              // deviceName: json['data']['wallet'],
+              type: json['data']['type'].toString(),
+              profileImage: json['data']['profileImage'].toString(),
+              workerAuthen: json['data']['worker_authen'].toString(),
+              name: json['data']['name'].toString(),
+              status: json['data']['status'].toString(),
+              address: json['data']['address'].toString(),
+            ),
+          );
+
           // showDialog(
           //     context: Get.context!,
           //     builder: (context) {
@@ -163,12 +178,12 @@ class LoginController extends GetxController {
           //       );
           //     });
           tokenString = json?['data']['token'];
+
           hostId = json['data']['_id'];
 
           // isLogin = false;
           final SharedPreferences prefs = await _prefs;
           // RegisterNotiController().registerNoti();
-          // lyLichController.getInfo();
           // notiController.getNoti(0);
           // await prefs.setString('token', token.toString());
 
@@ -182,7 +197,7 @@ class LoginController extends GetxController {
           numberPhoneDefault = json['data']['phone'];
 
           // addressDefault = json['data']['address'];
-          isLoading = false;
+
           final addressFromPref =
               await _storage.read(key: "ADDRESS_DEFAULT") ?? '';
           final nameFromPref = await _storage.read(key: "NAME_DEFAULT") ?? '';
@@ -196,132 +211,149 @@ class LoginController extends GetxController {
 
           phoneNumberController.clear();
           passwordController.clear();
-          await RegisterNotiController().registerNoti();
+          // LyLichController.getInfo();
+          await RegisterNotification().registerNoti();
+          isLoading = false;
           if (addressFromPref == '') {
-            AwesomeDialog(
-                // autoDismiss: false,
-                context: Get.context!,
-                animType: AnimType.scale,
-                dialogType: DialogType.info,
-                body: Center(
-                  child: Text(
-                    'Vui lòng cho chúng tôi biết địa điểm của bạn để tối ưu các dịch vụ.',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: GoogleFonts.poppins().fontFamily),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                btnOk: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(39, 166, 82, 1),
-                  ),
-                  onPressed: () {
-                    Get.offAll(
-                      const OnboardingScreenFour(isMap: true),
-                    );
-                  },
-                  child: Text(
-                    'Bản đồ',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                btnCancel: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(39, 166, 82, 1)),
-                  onPressed: () async {
-                    // await _storage.write(
-                    //     key: "ADDRESS_DEFAULT", value: currentAddress);
-                    // addressDefault = currentAddress;
-                    // _convertCoordinatefromAddress(addressDefault);
-                    // Get.offAll(const MainScreen());
-                    await _getCurrentLocation();
-                    if (isEnableTracking) {
-                      Get.offAll(
-                        OnboardingScreenFour(
-                          isMap: false,
-                          currentLocation: PlaceLocation(
-                              latitude: latitude,
-                              longitude: longitude,
-                              address: currentAddress),
-                        ),
-                      );
-                    }
-                    // else {
-                    //   await AwesomeDialog(
-                    //     context: Get.context!,
-                    //     dialogType: DialogType.info,
-                    //     animType: AnimType.rightSlide,
-                    //     title: 'Vui lòng cho phép ứng dụng theo dõi',
-                    //     // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
-                    //     autoHide: const Duration(milliseconds: 600),
-                    //     titleTextStyle: GoogleFonts.poppins(),
-                    //   ).show();
-                    //   Get.back();
-                    // }
-                  },
-                  child: Text(
-                    'Vị trí hiện tại',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                btnOkOnPress: () async {
-                  Get.offAll(OnboardingScreenFour(
-                    isMap: true,
-                    currentLocation: PlaceLocation(
-                        latitude: latitude,
-                        longitude: longitude,
-                        address: currentAddress),
-                  ));
-                },
-                btnCancelOnPress: () async {
-                  await _getCurrentLocation();
-                  if (isEnableTracking) {
-                    Get.offAll(OnboardingScreenFour(
-                      isMap: false,
-                      currentLocation: PlaceLocation(
-                          latitude: latitude,
-                          longitude: longitude,
-                          address: currentAddress),
-                    ));
-                  }
-                  // else {
-                  //   await AwesomeDialog(
-                  //     context: Get.context!,
-                  //     dialogType: DialogType.info,
-                  //     animType: AnimType.rightSlide,
-                  //     title: 'Vui lòng cho phép ứng dụng theo dõi',
-                  //     // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
-                  //     autoHide: const Duration(milliseconds: 600),
-                  //     titleTextStyle: GoogleFonts.poppins(),
-                  //   ).show();
-                  //   Get.back();
-                  // }
-                }).show();
+            // AwesomeDialog(
+            //     // autoDismiss: false,
+            //     dismissOnTouchOutside: false,
+            //     barrierColor: Colors.white,
+            //     dialogBackgroundColor: Colors.white,
+            //     context: Get.context!,
+            //     animType: AnimType.scale,
+            //     dialogType: DialogType.info,
+            //     body: Center(
+            //       child: Text(
+            //         'Vui lòng cho chúng tôi biết địa điểm của bạn để tối ưu các dịch vụ.',
+            //         style: TextStyle(
+            //             color: Colors.black,
+            //             fontFamily: GoogleFonts.poppins().fontFamily),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //     btnOk: ElevatedButton(
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: const Color.fromRGBO(39, 166, 82, 1),
+            //       ),
+            //       onPressed: () {
+            //         Get.offAll(
+            //           const OnboardingScreenFour(isMap: true),
+            //         );
+            //       },
+            //       child: Text(
+            //         'Bản đồ',
+            //         style: TextStyle(
+            //           color: Colors.white,
+            //           fontFamily: GoogleFonts.poppins().fontFamily,
+            //         ),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //     btnCancel: ElevatedButton(
+            //       style: ElevatedButton.styleFrom(
+            //           backgroundColor: const Color.fromRGBO(39, 166, 82, 1)),
+            //       onPressed: () async {
+            //         // await _storage.write(
+            //         //     key: "ADDRESS_DEFAULT", value: currentAddress);
+            //         // addressDefault = currentAddress;
+            //         // _convertCoordinatefromAddress(addressDefault);
+            //         // Get.offAll(const MainScreen());
+            //         await _getCurrentLocation();
+            //         if (isEnableTracking) {
+            //           Get.offAll(
+            //             OnboardingScreenFour(
+            //               isMap: false,
+            //               currentLocation: PlaceLocation(
+            //                   latitude: latitude,
+            //                   longitude: longitude,
+            //                   address: currentAddress),
+            //             ),
+            //           );
+            //         }
+            //         // else {
+            //         //   await AwesomeDialog(
+            //         //     context: Get.context!,
+            //         //     dialogType: DialogType.info,
+            //         //     animType: AnimType.rightSlide,
+            //         //     title: 'Vui lòng cho phép ứng dụng theo dõi',
+            //         //     // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
+            //         //     autoHide: const Duration(milliseconds: 600),
+            //         //     titleTextStyle: GoogleFonts.poppins(),
+            //         //   ).show();
+            //         //   Get.back();
+            //         // }
+            //       },
+            //       child: Text(
+            //         'Vị trí hiện tại',
+            //         style: TextStyle(
+            //           color: Colors.white,
+            //           fontFamily: GoogleFonts.poppins().fontFamily,
+            //         ),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //     btnOkOnPress: () async {
+            //       Get.offAll(OnboardingScreenFour(
+            //         isMap: true,
+            //         currentLocation: PlaceLocation(
+            //             latitude: latitude,
+            //             longitude: longitude,
+            //             address: currentAddress),
+            //       ));
+            //     },
+            //     btnCancelOnPress: () async {
+            //       await _getCurrentLocation();
+            //       if (isEnableTracking) {
+            //         Get.offAll(OnboardingScreenFour(
+            //           isMap: false,
+            //           currentLocation: PlaceLocation(
+            //               latitude: latitude,
+            //               longitude: longitude,
+            //               address: currentAddress),
+            //         ));
+            //       }
+            //       // else {
+            //       //   await AwesomeDialog(
+            //       //     context: Get.context!,
+            //       //     dialogType: DialogType.info,
+            //       //     animType: AnimType.rightSlide,
+            //       //     title: 'Vui lòng cho phép ứng dụng theo dõi',
+            //       //     // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
+            //       //     autoHide: const Duration(milliseconds: 600),
+            //       //     titleTextStyle: GoogleFonts.poppins(),
+            //       //   ).show();
+            //       //   Get.back();
+            //       // }
+            //     }).show();
+
+            Get.offAll(() => const MapBackgroundScreen());
           } else {
             addressDefault = addressFromPref;
             _convertCoordinatefromAddress(addressDefault);
             Get.offAll(const MainScreen());
           }
         } else if (json['status'] == "error") {
-          isLoading = false;
-
-          AwesomeDialog(
-            context: Get.context!,
-            dialogType: DialogType.warning,
-            animType: AnimType.rightSlide,
-            title: json['error']['message'],
-            titleTextStyle: GoogleFonts.poppins(),
-            autoHide: const Duration(milliseconds: 800),
-          ).show();
+          if (json['error']['code'] == 'LOGIN02') {
+            AwesomeDialog(
+              context: Get.context!,
+              dialogType: DialogType.warning,
+              animType: AnimType.rightSlide,
+              title: 'Sai ID đăng nhập hoặc mật khẩu',
+              titleTextStyle: GoogleFonts.poppins(),
+              autoHide: const Duration(milliseconds: 800),
+            ).show();
+          }
+          if (json['error']['code'] == 'LOGIN03') {
+            AwesomeDialog(
+              context: Get.context!,
+              dialogType: DialogType.warning,
+              animType: AnimType.rightSlide,
+              title: 'Tài khoản không tồn tại',
+              titleTextStyle: GoogleFonts.poppins(),
+              autoHide: const Duration(milliseconds: 800),
+            ).show();
+          }
           // showDialog(
           //     context: Get.context!,
           //     builder: (context) {
@@ -347,15 +379,17 @@ class LoginController extends GetxController {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }
     } catch (error) {
+      isLoading = false;
+
       Get.back();
-      // AwesomeDialog(
-      //   context: Get.context!,
-      //   dialogType: DialogType.warning,
-      //   animType: AnimType.rightSlide,
-      //   title: error.toString(),
-      //   // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
-      //   titleTextStyle: GoogleFonts.poppins(),
-      // ).show();
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: error.toString(),
+        // barrierColor: const Color.fromRGBO(38, 166, 83, 1),
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
       // showDialog(
       //     context: Get.context!,
       //     builder: (context) {
@@ -378,18 +412,18 @@ class LoginController extends GetxController {
     }
   }
 
-  Future<void> _convertCoordinateToAddress(double lat, double lng) async {
-    final url = Uri.parse(
-        'https://rsapi.goong.io/Geocode?latlng=$lat,$lng&api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB');
-    final response = await http.get(url);
-    final resData = json.decode(response.body);
-    final address = resData['results'][0]['formatted_address'];
-    currentAddress = address;
+  // Future<void> _convertCoordinateToAddress(double lat, double lng) async {
+  //   final url = Uri.parse(
+  //       'https://rsapi.goong.io/Geocode?latlng=$lat,$lng&api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB');
+  //   final response = await http.get(url);
+  //   final resData = json.decode(response.body);
+  //   final address = resData['results'][0]['formatted_address'];
+  //   currentAddress = address;
 
-    final SharedPreferences prefs = await _prefs;
+  //   final SharedPreferences prefs = await _prefs;
 
-    await prefs.setString('currentAddress', address);
-  }
+  //   await prefs.setString('currentAddress', address);
+  // }
 
   showAlertDialog(context) => AwesomeDialog(
       // autoDismiss: false,
@@ -438,48 +472,48 @@ class LoginController extends GetxController {
       btnCancelOnPress: () {
         Get.back();
       }).show();
-  Future<void> _getCurrentLocation() async {
-    Location location = Location();
+  // Future<void> _getCurrentLocation() async {
+  //   Location location = Location();
 
-    bool serviceEnabled;
-    PermissionStatus permissionGranted;
-    LocationData locationData;
+  //   bool serviceEnabled;
+  //   PermissionStatus permissionGranted;
+  //   LocationData locationData;
 
-    serviceEnabled = await location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
+  //   serviceEnabled = await location.serviceEnabled();
+  //   if (!serviceEnabled) {
+  //     serviceEnabled = await location.requestService();
 
-      isEnableTracking = false;
-    }
+  //     isEnableTracking = false;
+  //   }
 
-    permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        showAlertDialog(Get.context!);
+  //   permissionGranted = await location.hasPermission();
+  //   if (permissionGranted == PermissionStatus.denied) {
+  //     permissionGranted = await location.requestPermission();
+  //     if (permissionGranted != PermissionStatus.granted) {
+  //       showAlertDialog(Get.context!);
 
-        return;
-      }
-    }
+  //       return;
+  //     }
+  //   }
 
-    locationData = await location.getLocation();
+  //   locationData = await location.getLocation();
 
-    final lat = locationData.latitude;
-    final lng = locationData.longitude;
-    if (lat == null || lng == null) {
-      return;
-    }
+  //   final lat = locationData.latitude;
+  //   final lng = locationData.longitude;
+  //   if (lat == null || lng == null) {
+  //     return;
+  //   }
 
-    final SharedPreferences prefs = await _prefs;
+  //   final SharedPreferences prefs = await _prefs;
 
-    // await prefs.setString('token', token.toString());
-    await _convertCoordinateToAddress(lat, lng);
-    latitude = lat;
-    longitude = lng;
-    await prefs.setDouble('lat', lat);
-    await prefs.setDouble('lng', lng);
-    isEnableTracking = true;
-  }
+  //   // await prefs.setString('token', token.toString());
+  //   await _convertCoordinateToAddress(lat, lng);
+  //   latitude = lat;
+  //   longitude = lng;
+  //   await prefs.setDouble('lat', lat);
+  //   await prefs.setDouble('lng', lng);
+  //   isEnableTracking = true;
+  // }
 
   Future<void> _convertCoordinatefromAddress(String address) async {
     final url = Uri.parse(

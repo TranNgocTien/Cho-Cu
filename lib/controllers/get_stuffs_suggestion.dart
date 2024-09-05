@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:chotot/data/docu_suggestion.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:chotot/models/cho_do_cu.dart';
@@ -22,11 +23,12 @@ class GetStuffsSuggestion extends GetxController {
   // final headers = {
   //   'Content-Type': 'application/json',
   // };
+  var index = 0;
   final _storage = const FlutterSecureStorage();
   bool isLoading = true;
   bool isLastPage = false;
   LoginController loginController = Get.put(LoginController());
-  Future<void> getStuffs(int index) async {
+  Future<void> getStuffs() async {
     // final SharedPreferences prefs = await _prefs;
 
     // String token = prefs.getString('token')!;
@@ -36,9 +38,10 @@ class GetStuffsSuggestion extends GetxController {
       var url = Uri.parse(
           ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getStuffs);
       Map body = {
-        'version': 'publish',
+        'version': version,
         'index': '$index',
         'token': 'anhkhongdoiqua',
+        'status': 'posting',
       };
 
       http.Response response = await http.post(
@@ -53,8 +56,10 @@ class GetStuffsSuggestion extends GetxController {
       final json = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        itemsSuggestion.clear();
         if (json['status'] == 'ok') {
+          if (index == 0) {
+            itemsSuggestion.clear();
+          }
           var data = json['data'];
 
           var photos = [];
@@ -94,6 +99,7 @@ class GetStuffsSuggestion extends GetxController {
                   photos: photos,
                   hostId: data[i]['host_id'],
                   status: data[i]['status'],
+                  createdAt: data[i]['created_at'],
                 ),
               );
             }

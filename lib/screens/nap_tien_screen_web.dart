@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class DangKyThoWebView extends StatefulWidget {
-  const DangKyThoWebView({super.key, required this.link});
+class NapTIenWebView extends StatefulWidget {
+  const NapTIenWebView({super.key, required this.link});
   final String link;
   @override
-  State<DangKyThoWebView> createState() => _DangKyThoWebViewState();
+  State<NapTIenWebView> createState() => _NapTIenWebViewState();
 }
 
-class _DangKyThoWebViewState extends State<DangKyThoWebView> {
+class _NapTIenWebViewState extends State<NapTIenWebView> {
   final WebViewController _controller = WebViewController();
   String pageTitle = '-';
   double progress = 0;
@@ -55,7 +55,7 @@ class _DangKyThoWebViewState extends State<DangKyThoWebView> {
         ),
         centerTitle: true,
         title: Text(
-          'Đăng ký thợ',
+          'Nạp tiền',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
               fontFamily: GoogleFonts.poppins().fontFamily,
               color: Colors.white,

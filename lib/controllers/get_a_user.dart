@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/get_a_user_model.dart';
 
 import 'package:get/get.dart';
@@ -28,7 +29,10 @@ class GetAUserController extends GetxController {
     };
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.getAUser);
-    Map body = {'token': 'anhkhongdoiqua', 'version': 'publish'};
+    Map body = {
+      'token': 'anhkhongdoiqua',
+      'version': version,
+    };
     http.Response response =
         await http.post(url, body: jsonEncode(body), headers: headers);
     if (response.statusCode == 200) {
@@ -77,7 +81,7 @@ class GetAUserController extends GetxController {
             documentStatus: userJson['document_status'],
             salt: userJson['salt'],
             checksum: userJson['checksum'],
-            createdAt: userJson['checksum'],
+            createdAt: userJson['created_at'],
             password: userJson['password'],
             wallet: userJson['wallet'].toString(),
           ),

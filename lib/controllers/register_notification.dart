@@ -2,204 +2,160 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chotot/controllers/get_a_job.dart';
-// import 'package:chotot/main.dart';
-// import 'package:chotot/screens/choScreen.dart';
+import 'package:chotot/controllers/get_a_stuff.dart';
+import 'package:chotot/controllers/get_ly_lich.dart';
+import 'package:chotot/controllers/get_notis.dart';
+import 'package:chotot/controllers/get_stuffs.dart';
 import 'package:chotot/screens/thong_tin_job_screen.dart';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-
+import 'package:chotot/data/data_listener.dart';
 import 'package:http/http.dart' as http;
-import 'package:chotot/data/notification_count.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:chotot/screens/thongTinSanPham.dart';
+import 'package:chotot/data/a_stuff_data.dart';
 
-class RegisterNotiController {
+class RegisterNotification {
+  static final _firebaseMessaging = FirebaseMessaging.instance;
+  static final FlutterLocalNotificationsPlugin
+      _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final _firebaseMessaging = FirebaseMessaging.instance;
+  NotiController notiController = Get.put(NotiController());
+  GetStuffs getStuffs = Get.put(GetStuffs());
+  GetAStuff getAStuff = Get.put(GetAStuff());
   GetAJob getAJob = Get.put(GetAJob());
-  String? fCMToken;
+  LyLichController lyLichController = Get.put(LyLichController());
+  //YÊU CẦU CẤP QUYÊN NOTIFICATION
 
-  final _androidChannel = const AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Important Notifications',
-    description: 'channel',
-    importance: Importance.defaultImportance,
-  );
-  final _localNotifications = FlutterLocalNotificationsPlugin();
-  Future<void> handleBackgroundMessage(RemoteMessage message) async {
-    // print('Title : ${message.notification?.title}');
-    // print('Body : ${message.notification?.body}');
-    // print('Payload : ${message.data}');
-
-    var json = jsonEncode(message.data);
-    var jobId = jsonDecode(json)['action'];
-    await getAJob.getAJob(jobId);
-    final dateTime = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(getAJob.jobInfo[0].workDate),
-        isUtc: true);
-    var date = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
-    var time = '${dateTime.hour}:${dateTime.minute}';
-    Get.to(
-      () => ThongTinJobScreen(
-        jobInfo: getAJob.jobInfo,
-        date: date,
-        time: time,
-      ),
-    );
-  }
-
-  void handleMessage(RemoteMessage? message) async {
-    if (message == null) return;
-    // await getAJob.getAJob(item.jobId);
-    // Get.to(ThongTinJobScreen(
-    //   jobInfo: [],
-    // ));
-    // print(message);
-    // navigatorKey.currentState?.pushNamed(
-    //   ChoScreen.route,
-    //   arguments: message,
-    // );\
-
-    var json = jsonEncode(message.data);
-    var jobId = jsonDecode(json)['action'];
-    await getAJob.getAJob(jobId);
-    final dateTime = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(getAJob.jobInfo[0].workDate),
-        isUtc: true);
-    var date = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
-    var time = '${dateTime.hour}:${dateTime.minute}';
-    Get.to(
-      () => ThongTinJobScreen(
-        jobInfo: getAJob.jobInfo,
-        date: date,
-        time: time,
-      ),
-    );
-  }
-
-  Future<NotificationDetails> _notificationDetails() async {
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-      'high_importance_channel',
-      'High Important Notifications',
-      channelDescription: 'description',
-      importance: Importance.max,
-      priority: Priority.max,
-      playSound: true,
-    );
-    const DarwinNotificationDetails iosNotificationDetails =
-        DarwinNotificationDetails();
-
-    return const NotificationDetails(
-      android: androidNotificationDetails,
-      iOS: iosNotificationDetails,
-    );
-  }
-
-  Future<void> showNotification({
-    required int id,
-    String? title,
-    String? body,
-  }) async {
-    count.value += 1;
-    // print('* $count');
-    final details = await _notificationDetails();
-
-    await _localNotifications.show(id, title, body, details);
-  }
-
-  Future<void> showNotificationPayload({
-    required int id,
-    String? title,
-    String? body,
-    required payload,
-  }) async {
-    // count += 1;
-    // print('*** $count');
-    final details = await _notificationDetails();
-
-    await _localNotifications.show(id, title, body, details, payload: payload);
-  }
-
-  Future initLocalNotifications() async {
-    const iOS = DarwinInitializationSettings();
-    const android = AndroidInitializationSettings('ic_launcher');
-    const settings = InitializationSettings(android: android, iOS: iOS);
-
-    await _localNotifications.initialize(settings,
-        onDidReceiveNotificationResponse: (payload) async {
-      final message = RemoteMessage.fromMap(jsonDecode(payload.toString()));
-      await showNotificationPayload(
-          id: message.hashCode,
-          title: message.notification?.title,
-          body: message.notification?.body,
-          payload: payload);
-
-      handleMessage(message);
-    });
-    final platform = _localNotifications.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
-    await platform?.createNotificationChannel(_androidChannel);
-  }
-
-  Future initPushNotifications() async {
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
+  Future init() async {
+    await _firebaseMessaging.requestPermission(
       alert: true,
+      announcement: true,
       badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
       sound: true,
     );
 
-    FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
-    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
-    FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
-    FirebaseMessaging.onMessage.listen((message) async {
-      final notification = message.notification;
-      if (notification == null) return;
-
-      _localNotifications.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            _androidChannel.id,
-            _androidChannel.name,
-            channelDescription: _androidChannel.description,
-            icon: 'ic_launcher',
-          ),
-        ),
-        payload: jsonEncode(message.toMap()),
-      );
-
-      await showNotification(
-          id: message.notification.hashCode,
-          title: message.notification!.title,
-          body: message.notification!.body);
-    });
+    //Lấy device FCM token
+    final token = await _firebaseMessaging.getToken();
   }
 
-  Future<void> initNotifications() async {
-    await _firebaseMessaging.requestPermission();
-    fCMToken = await _firebaseMessaging.getToken();
-    // print(fCMToken);
-    initPushNotifications();
-    // initLocalNotifications();
+  // initalize local notifications
+  Future localNotiInit() async {
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings();
+    // final LinuxInitializationSettings initializationSettingsLinux =
+    //     LinuxInitializationSettings(defaultActionName: 'Open notification');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
+    );
+    _flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onNotificationTap,
+    );
+  }
+
+  //on tap local notification in foreground
+
+  void onNotificationTap(NotificationResponse notificationResponse) async {
+    Map payload = {};
+
+    payload = jsonDecode(notificationResponse.payload!);
+
+    await notiController.getNoti(0);
+
+    var actionType = payload['action_type'];
+
+    switch (actionType) {
+      case 'post_stuff':
+        var stuffId = payload['action'];
+        await getAStuff.getAStuff(stuffId);
+
+        await getStuffs.getStuffs(0);
+        marketListen.value++;
+        Get.to(() => ThongTinSanPhamScreen(docu: aStuff[0]));
+        break;
+      case 'post_job':
+      case 'book_job':
+      case 'worker_accept_job':
+      case 'worker_cancel_job':
+      case 'worker_done':
+      case 'finish_job':
+      case 'apply_job':
+      case 'accept_worker':
+      case 'cancel_worker':
+      case 'job_time_expired':
+      case 'job_time_next':
+        jobListen.value = 1.0;
+        var jobId = payload['action'];
+        await getAJob.getAJob(jobId);
+        // await getPostJobs.getPostJobs(0);
+
+        final dateTime = DateTime.fromMillisecondsSinceEpoch(
+            int.parse(getAJob.jobInfo[0].workDate),
+            isUtc: true);
+        var date = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+        var time = '${dateTime.hour}:${dateTime.minute}';
+        Get.to(
+          () => ThongTinJobScreen(
+            jobInfo: getAJob.jobInfo,
+            date: date,
+            time: time,
+          ),
+        );
+        break;
+      case 'host_fee':
+      case 'worker_fee':
+      case 'charge_money':
+        await lyLichController.getInfo();
+      case 'worker_active':
+      case 'cancel_register_worker':
+      case 'worker_update':
+      case 'host_bonus':
+        // await lyLichController.getInfo();
+        notiListen.value++;
+        break;
+      default:
+        break;
+    }
+  }
+
+  static Future showSimpleNotification({
+    required String title,
+    required String body,
+    required String payload,
+  }) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const DarwinNotificationDetails iosNotificationDetails =
+        DarwinNotificationDetails(
+            interruptionLevel: InterruptionLevel.timeSensitive);
+    const NotificationDetails notificationDetails = NotificationDetails(
+        android: androidNotificationDetails, iOS: iosNotificationDetails);
+    await _flutterLocalNotificationsPlugin
+        .show(0, title, body, notificationDetails, payload: payload);
   }
 
   Future<void> registerNoti() async {
-    // print(fcmToken);
-
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     String deviceName = "";
     String deviceID = '';
     final SharedPreferences prefs = await _prefs;
-    await initNotifications();
-    // print('registerNoti');
+    final fCMToken = await _firebaseMessaging.getToken();
 
     try {
       if (Platform.isAndroid) {

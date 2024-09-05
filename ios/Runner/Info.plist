@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSAppTransportSecurity</key>
-<dict>
-    <key>NSAllowsArbitraryLoads</key>
-    <true/>
-</dict>
-
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>workmanager.background.task</string>
@@ -29,11 +23,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>3.1.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>sms</string>
@@ -41,23 +37,31 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Needed to access the camera</string>
+	<string>We need access to your camera to allow you to upload pictures of items you want to sell and to show repair workers the items that need fixing or update your profile photo. Tap ‘OK’ to authorize Tho4.0.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Always and when in use!</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need access to your location at all times to help you identify your address for selling used items and to find local workers to repair appliances, even when you are not actively using the app. Tap ‘OK’ to authorize Tho4.0.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>We need access to your location to help you identify your address for selling used items and finding local workers to repair your appliances. Tap ‘OK’ to authorize Tho4.0.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>The location of user.</string>
-	 <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Always and when in use!</string>
-    <key>NSLocationUsageDescription</key>
-    <string>Older devices need location.</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Can I haz location always?</string>
+	<string>We need access to your location to help you identify your address for selling used items and finding local workers to repair your appliances. Tap ‘OK’ to authorize Tho4.0.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Allow to use your microphone to get voice record. Tap ‘OK’ to authorize Tho4.0.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Pick image</string>
+	<string>We need access to your photo library to allow you to upload pictures of items you want to sell and to show repair workers the items that need fixing or update your profile photo. Tap ‘OK’ to authorize Tho4.0.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

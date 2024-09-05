@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -45,15 +47,17 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
   var currentIndex = 0;
   String registed = '';
   bool isLoading = true;
-
+  // bool showModalLoading = true;
   isRegisterJob(String jobId) async {
     await getAJob.getAJob(jobId);
 
     registed = getAJob.jobInfo[0].contracts
         .any((element) => element.employeeId == loginController.hostId)
         .toString();
-    setState(() {
-      isLoading = false;
+    Timer(const Duration(milliseconds: 2000), () async {
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
@@ -136,15 +140,17 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                 (currentIndex).toString(),
                               );
                             });
-
-                            mystate(() {});
+                            if (mounted) {
+                              mystate(() {});
+                            }
                           },
                           isLastPage: getJobByType2.isLastPage,
                           child: Column(
                             children: [
                               CircleAvatar(
                                 radius: 100.0,
-                                backgroundColor: Colors.black,
+                                backgroundColor:
+                                    const Color.fromRGBO(84, 181, 111, 1),
                                 child: CircleAvatar(
                                   radius: 90.0,
                                   backgroundImage:
@@ -231,7 +237,9 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                                   fontSize:
                                                       widthDevice * 0.04)),
                                           const SizedBox(width: 20),
-                                          Text(worker.wf,
+                                          Text(
+                                              (double.tryParse(worker.ds)! / 20)
+                                                  .toStringAsFixed(1),
                                               style: GoogleFonts.poppins(
                                                   fontSize:
                                                       widthDevice * 0.04)),
@@ -240,7 +248,8 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                             height: 20,
                                             width: 20,
                                           ),
-                                          Text('(${worker.ds})',
+                                          Text(
+                                              '(${double.parse(worker.ds).toStringAsFixed(1)})',
                                               style: GoogleFonts.poppins(
                                                   fontSize:
                                                       widthDevice * 0.04)),
@@ -689,7 +698,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                                     const SizedBox(width: 5),
                                                     Flexible(
                                                       child: Text(
-                                                        'Thợ này được hệ thống Thợ Thông Minh đánh giá ${worker.ds}/100 điểm',
+                                                        'Thợ này được hệ thống Thợ Thông Minh đánh giá ${double.parse(worker.ds).toStringAsFixed(1)}/100 điểm',
                                                         softWrap: true,
                                                         maxLines: 3,
                                                         style:
@@ -707,6 +716,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                           ),
                                         ));
                               }),
+                              SizedBox(height: widthDevice * 0.3),
                             ],
                           ),
 
@@ -719,6 +729,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                           // ),
                         ),
                       ),
+                      SizedBox(height: widthDevice * 0.3),
                     ],
                   ),
                 ),
@@ -819,75 +830,6 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
       ),
       titleTextStyle: GoogleFonts.poppins(),
     ).show();
-    // showGeneralDialog(
-    //     context: context,
-    //     barrierLabel: 'Barrier',
-    //     barrierDismissible: true,
-    //     barrierColor: Colors.black.withOpacity(0.5),
-    //     transitionDuration: const Duration(milliseconds: 300),
-    //     pageBuilder: (_, __, ___) {
-    //       return Scaffold(
-    //         body: Center(
-    //           child: Container(
-    //               height: MediaQuery.of(context).size.height * 0.4,
-    //               margin: const EdgeInsets.symmetric(horizontal: 20),
-    //               decoration: BoxDecoration(
-    //                   color: Colors.white,
-    //                   borderRadius: BorderRadius.circular(40)),
-    //               child: Form(
-    //                 key: _formKey,
-    //                 child: SingleChildScrollView(
-    //                   child: Column(
-    //                     children: [
-    //                       const Text(
-    //                         'Nhắn cho chủ nhà để ứng tuyển công việc',
-    //                       ),
-    //                       TextFormField(
-    //                         controller: applyJob.description,
-    //                       ),
-    //                       const SizedBox(height: 10),
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //                         children: [
-    //                           ElevatedButton(
-    //                             onPressed: () {
-    //                               Get.back();
-    //                             },
-    //                             child: const Text('Hủy bỏ'),
-    //                           ),
-    //                           ElevatedButton(
-    //                             onPressed: () async {
-    //                               await applyJob.applyJob(widget.job.job.jobId,
-    //                                   widget.job.job.workerId);
-    //                               Get.back();
-    //                             },
-    //                             child: const Text('Xác nhận'),
-    //                           ),
-    //                         ],
-    //                       ),
-    //                     ],
-    //                   ),
-    //                 ),
-    //               )),
-    //         ),
-    //       );
-    //     },
-    //     transitionBuilder: (_, anim, __, child) {
-    //       Tween<Offset> tween;
-    //       if (anim.status == AnimationStatus.reverse) {
-    //         tween = Tween(begin: const Offset(0, -1), end: Offset.zero);
-    //       } else {
-    //         tween = Tween(begin: const Offset(0, 1), end: Offset.zero);
-    //       }
-
-    //       return SlideTransition(
-    //         position: tween.animate(anim),
-    //         child: FadeTransition(
-    //           opacity: anim,
-    //           child: child,
-    //         ),
-    //       );
-    //     });
   }
 
   @override
@@ -907,39 +849,39 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
         StringUtils.reverse(widget.job.job.sumPrice), ".", 3,
         repeat: true);
     final widthDevice = MediaQuery.of(context).size.width;
-    return isLoading
-        ? Center(
-            child: LoadingAnimationWidget.waveDots(
-              color: const Color.fromRGBO(1, 142, 33, 1),
-              size: 30,
-            ),
-          )
-        : Scaffold(
-            // extendBodyBehindAppBar: true,
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-              elevation: 0,
-              // backgroundColor: Colors.transparent,
-              backgroundColor: const Color.fromRGBO(38, 166, 83, 1),
-              title: Text(
-                'Thợ thông minh',
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: widthDevice * 0.06,
-                ),
+    return Scaffold(
+      // extendBodyBehindAppBar: true,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        // backgroundColor: Colors.transparent,
+        backgroundColor: const Color.fromRGBO(38, 166, 83, 1),
+        title: Text(
+          'Thợ thông minh',
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: widthDevice * 0.06,
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      body: isLoading
+          ? Center(
+              child: LoadingAnimationWidget.waveDots(
+                color: const Color.fromRGBO(1, 142, 33, 1),
+                size: 30,
               ),
-              centerTitle: true,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            body: SingleChildScrollView(
+            )
+          : SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -968,6 +910,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                     builder: (BuildContext context) {
                                       return Stack(children: [
                                         Container(
+                                          padding: EdgeInsets.all(10.0),
                                           width: double.infinity,
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -990,7 +933,12 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                                           widget.job.job.name
                                                               .trim())
                                                       .img,
-                                                  fit: BoxFit.cover,
+                                                  fit: BoxFit.contain,
+                                                  height: double.infinity,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.9,
                                                 )
                                               : Image.asset(
                                                   'image/logo_tho_thong_minh.jpeg',
@@ -1383,9 +1331,16 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                             ? loginController.hostId == widget.job.job.hostId
                                 ? GestureDetector(
                                     onTap: () async {
+                                      getJobByType2.rateList.clear();
+                                      getJobByType2.contractList.clear();
                                       await getJobByType2.getJobByType2(
-                                          contract.employeeId,
-                                          currentIndex.toString());
+                                          contract.employeeId, '0');
+                                      // Future.delayed(const Duration(seconds: 1),
+                                      //     () {
+                                      //   setState(() {
+                                      //     showModalLoading = false;
+                                      //   });
+                                      // });
                                       _modalBottomSheetMenu(
                                           contract.employeeId);
                                       // acceptWorker.acceptWorker(
@@ -1834,7 +1789,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                   if (loginController.hostId ==
                                       widget.job.job.hostId) {
                                     await hostDone.hostDone();
-                                    Get.to(
+                                    Get.offAll(
                                       const HostRateScreen(
                                         workerName: '',
                                         profileImage: '',
@@ -1848,7 +1803,7 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                   if (hostId ==
                                       acceptWorkerData[0].employeeId) {
                                     await workerdone.workerDone();
-                                    Get.to(const WorkerRateScreen(
+                                    Get.offAll(const WorkerRateScreen(
                                       hostname: '',
                                       profileImage: '',
                                       contractId: '',
@@ -1883,6 +1838,6 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                 ],
               ),
             ),
-          );
+    );
   }
 }

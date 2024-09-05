@@ -1,5 +1,8 @@
-import 'package:chotot/controllers/get_host_job.dart';
-import 'package:chotot/controllers/get_ly_lich.dart';
+import 'dart:async';
+
+// import 'package:chotot/controllers/get_host_job.dart';
+// import 'package:chotot/controllers/get_ly_lich.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/login_controller.dart';
 // import 'package:chotot/controllers/register_notification.dart';
 import 'package:chotot/screens/requestOtp.dart';
@@ -23,13 +26,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _storage = const FlutterSecureStorage();
   final _form = GlobalKey<FormState>();
-  LyLichController lyLichController = Get.put(LyLichController());
+
   bool _savePassword = true;
   // LoginPost? _loginPost;
 
   // var _enteredEmail = '';
   // var _enteredPassword = '';
-  GetHostJob getHostJobController = Get.put(GetHostJob());
+
   LoginController loginController = Get.put(LoginController());
   Future<void> _readFromStorage() async {
     loginController.phoneNumberController.text =
@@ -149,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ],
                                   )),
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.phone,
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
                               validator: (value) {
@@ -223,12 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             await _onFormSubmit();
                             loginController.isLoading == true
                                 ? null
-                                : loginController.loginWithEmail();
-
-                            if (loginController.tokenString != '') {
-                              await lyLichController.getInfo();
-                              await getHostJobController.getHostJob(0, '');
-                            }
+                                : await loginController.loginWithEmail();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:

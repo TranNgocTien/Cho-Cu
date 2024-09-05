@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/get_price_v2.dart';
 import 'package:chotot/controllers/login_controller.dart';
+import 'package:chotot/data/version_app.dart';
+import 'package:chotot/screens/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/data/default_information.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -76,88 +78,89 @@ class BookJob extends GetxController {
     // DateTime now = DateTime.now();
     // String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
 
-    try {
-      var url = Uri.parse(
-          ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.bookJobV3);
+    // try {
+    var url = Uri.parse(
+        ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.bookJobV3);
 
-      Map body = {
-        'name': name.toString(),
-        'price_id': priceId.toString(),
-        'host_id': hostId,
-        'host_name': hostName,
-        'address': addressController.text,
-        'province': province,
-        'district': district,
-        'ward': ward,
-        'phone': phoneController.text,
-        'lat': lat.toString(),
-        'lng': lng.toString(),
-        'work_date': workDate.toString(),
-        'work_hour': workHour.toString(),
-        'description': descriptionController.text,
-        'photos': json.encode(imageLink),
-        'version': 'test',
-        "token": "anhkhongdoiqua",
-      };
-      http.Response response = await http.post(
-        url,
-        body: body,
-        headers: {
-          "x-access-token": loginController.tokenString.toString(),
-        },
-      );
+    Map body = {
+      'name': name.toString(),
+      'price_id': priceId.toString(),
+      'host_id': hostId,
+      'host_name': hostName,
+      'address': addressController.text,
+      'province': province,
+      'district': district,
+      'ward': ward,
+      'phone': phoneController.text,
+      'lat': lat.toString(),
+      'lng': lng.toString(),
+      'work_date': workDate.toString(),
+      'work_hour': workHour.toString(),
+      'description': descriptionController.text,
+      'photos': json.encode(imageLink),
+      // 'version': version,
+      'version': 'test',
+      "token": "anhkhongdoiqua",
+    };
+    http.Response response = await http.post(
+      url,
+      body: body,
+      headers: {
+        "x-access-token": loginController.tokenString.toString(),
+      },
+    );
 
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
 
-        if (json['status'] == 'ok') {
-          descriptionController.clear();
+      if (json['status'] == 'ok') {
+        descriptionController.clear();
 
-          imageLink.clear();
-          await AwesomeDialog(
-            context: Get.context!,
-            dialogType: DialogType.success,
-            animType: AnimType.rightSlide,
-            title: 'Đặt việc thành công',
-            titleTextStyle: GoogleFonts.poppins(),
-            autoHide: const Duration(milliseconds: 600),
-          ).show();
-          getPrice.code = '';
-          Get.back();
-        } else if (json['status'] == "error") {
-          imageLink.clear();
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  title: const Text('Error'),
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Text(
-                      json['error']['message'],
-                    ),
-                  ],
-                );
-              });
-        }
-      } else {
-        throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
-      }
-    } catch (error) {
-      Get.back();
-      showDialog(
+        imageLink.clear();
+        await AwesomeDialog(
           context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              contentPadding: const EdgeInsets.all(20),
-              children: [
-                Text(
-                  error.toString(),
-                ),
-              ],
-            );
-          });
+          dialogType: DialogType.success,
+          animType: AnimType.rightSlide,
+          title: 'Đặt việc thành công',
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 600),
+        ).show();
+        getPrice.code = '';
+        Get.offAll(() => const MainScreen());
+      } else if (json['status'] == "error") {
+        imageLink.clear();
+        showDialog(
+            context: Get.context!,
+            builder: (context) {
+              return SimpleDialog(
+                title: const Text('Error'),
+                contentPadding: const EdgeInsets.all(20),
+                children: [
+                  Text(
+                    json['error']['message'],
+                  ),
+                ],
+              );
+            });
+      }
+    } else {
+      throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';
     }
+    // } catch (error) {
+    //   Get.back();
+    //   showDialog(
+    //       context: Get.context!,
+    //       builder: (context) {
+    //         return SimpleDialog(
+    //           contentPadding: const EdgeInsets.all(20),
+    //           children: [
+    //             Text(
+    //               error.toString(),
+    //             ),
+    //           ],
+    //         );
+    //       });
+    // }
   }
 
   Future<void> uploadJobPhoto() async {

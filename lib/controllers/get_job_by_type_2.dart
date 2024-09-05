@@ -40,8 +40,6 @@ class GetJobByType2 extends GetxController {
 
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
-        // rateList.clear();
-        // contractList.clear();
         var data = json['data'];
 
         isLastPage = false;

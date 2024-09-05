@@ -28,15 +28,14 @@ class NotiController extends GetxController {
       Map body = {
         'index': '$index',
         'token': 'anhkhongdoiqua',
-        'version': 'publish'
       };
       http.Response response =
           await http.post(url, body: jsonEncode(body), headers: headers);
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        // print(json);
+
         if (json['status'] == 'ok') {
-          notification.clear();
+          // notification.clear();
           var data = json['data'];
           for (int i = 0; i < data.length; i++) {
             notification.add(

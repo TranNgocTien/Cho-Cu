@@ -325,6 +325,7 @@ class DeactiveUserTabOTP extends StatelessWidget {
                           ).show();
                           return;
                         }
+
                         deactiveUser.getOtp();
                       }),
                 ],

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/acceptorker_data.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/acceptWorker_model.dart';
 
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class AcceptWorker extends GetxController {
       'contract_id': contractId,
       'price_id': priceId,
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      'version': version,
     };
 
     http.Response response = await http.post(
@@ -43,7 +44,7 @@ class AcceptWorker extends GetxController {
     );
 
     final json = jsonDecode(response.body);
-    print(json);
+
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         acceptWorkerData.clear();

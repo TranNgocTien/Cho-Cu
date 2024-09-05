@@ -72,7 +72,7 @@ class ViecLamGridItem extends StatelessWidget {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
-                      color: const Color.fromARGB(72, 158, 158, 158),
+                      color: const Color.fromRGBO(230, 246, 235, 1),
                     ),
                     child: Image.asset(
                       imageWorker[randomNumber],
@@ -105,7 +105,7 @@ class ViecLamGridItem extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: const Color.fromARGB(114, 158, 158, 158),
+                          color: const Color.fromRGBO(230, 246, 235, 1),
                         ),
                         padding: const EdgeInsets.all(5),
                         child: Text(
@@ -126,8 +126,11 @@ class ViecLamGridItem extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  const FaIcon(FontAwesomeIcons.clock,
-                      size: 15, color: Colors.grey),
+                  const FaIcon(
+                    FontAwesomeIcons.clock,
+                    size: 15,
+                    color: Color.fromRGBO(39, 166, 82, 1),
+                  ),
                   const SizedBox(width: 5),
                   Text(
                       '${dateTime.hour < 10 ? 0 : ''}${dateTime.hour}:${dateTime.minute < 10 ? 0 : ''}${dateTime.minute} - ${dateTime.day < 10 ? 0 : ''}${dateTime.day}/${dateTime.month < 10 ? 0 : ''}${dateTime.month}/${dateTime.year}',
@@ -142,8 +145,11 @@ class ViecLamGridItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const FaIcon(FontAwesomeIcons.locationPin,
-                      size: 15, color: Colors.grey),
+                  const FaIcon(
+                    FontAwesomeIcons.locationPin,
+                    size: 15,
+                    color: Color.fromRGBO(39, 166, 82, 1),
+                  ),
                   const SizedBox(width: 5),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,

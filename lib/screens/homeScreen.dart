@@ -1,18 +1,30 @@
 import 'dart:async';
+import 'dart:convert';
 
-import 'package:awesome_dialog/awesome_dialog.dart';
+// import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:chotot/controllers/get_a_job.dart';
+import 'package:chotot/controllers/get_a_stuff.dart';
 import 'package:chotot/controllers/get_a_user.dart';
-import 'package:chotot/controllers/get_host_job.dart';
+// import 'package:chotot/controllers/get_host_job.dart';
 import 'package:chotot/controllers/get_notis.dart';
 import 'package:chotot/controllers/get_orders_user.dart';
-import 'package:chotot/controllers/get_worker_job.dart';
+import 'package:chotot/controllers/get_stuffs.dart';
+import 'package:chotot/controllers/get_stuffs_suggestion.dart';
+// import 'package:chotot/controllers/get_worker_job.dart';
 
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/controllers/register_notification.dart';
+import 'package:chotot/data/a_stuff_data.dart';
+import 'package:chotot/data/data_listener.dart';
+import 'package:chotot/data/ly_lich.dart';
+// import 'package:chotot/controllers/register_notification.dart';
 // import 'package:chotot/controllers/statistics_user.dart';
-import 'package:chotot/screens/login.dart';
+// import 'package:chotot/screens/login.dart';
 import 'package:chotot/screens/thongBaoScreen.dart';
+import 'package:chotot/screens/thongTinSanPham.dart';
+import 'package:chotot/screens/thong_tin_job_screen.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:chotot/screens/timThoScreen.dart';
@@ -26,12 +38,12 @@ import 'package:chotot/data/notification_count.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:get/get.dart';
-import 'package:chotot/controllers/get_news.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:chotot/controllers/get_news.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
-
+  const MainScreen({super.key, this.tabIndex = 0});
+  final int tabIndex;
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -39,16 +51,16 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  LyLichController lyLichController = Get.put(LyLichController());
+  GetAStuff getAStuff = Get.put(GetAStuff());
+  GetStuffs getStuffs = Get.put(GetStuffs());
+  GetAJob getAJob = Get.put(GetAJob());
   LoginController loginController = Get.put(LoginController());
-  // GetVouchersValid getVouchersValid = Get.put(GetVouchersValid());
-  // GetNews getNewsController = Get.put(GetNews());
-  GetHostJob getHostJobController = Get.put(GetHostJob());
-  GetWorkerJob getWorkerJobController = Get.put(GetWorkerJob());
+
   GetAUserController getAUserController = Get.put(GetAUserController());
   GetOrdersUser getOrdersUser = Get.put(GetOrdersUser());
-
+  GetStuffsSuggestion getStuffsSuggestion = Get.put(GetStuffsSuggestion());
   // final _storage = const FlutterSecureStorage();
+  LyLichController lyLichController = Get.put(LyLichController());
   int selectedIndex = 0;
   String tokenLogin = '';
   bool isNotiClick = false;
@@ -59,7 +71,7 @@ class _MainScreenState extends State<MainScreen>
     if (index == 4 && loginController.tokenString != '') {
       getAUserController.isLoading = true;
       getOrdersUser.isLoading = true;
-      Timer(const Duration(seconds: 3), () async {
+      Timer(const Duration(milliseconds: 1000), () async {
         await getAUserController.getAUser();
         await getOrdersUser.getOrdersUser(0);
         setState(() {
@@ -69,49 +81,19 @@ class _MainScreenState extends State<MainScreen>
       });
     }
 
-    if (index == 3) {
-      // Timer(const Duration(seconds: 2), () async {
-      await notiController.getNoti(0);
-      setState(() {
-        isActive = true;
-        count.value = 0;
-      });
-      // });
-    }
     if (index != 3) {
       setState(() {
         isActive = false;
       });
     }
-    if (index == 1) {
-      if (loginController.tokenString == '') {
-        AwesomeDialog(
-          context: Get.context!,
-          dialogType: DialogType.info,
-          animType: AnimType.rightSlide,
-          title: 'Vui lòng đăng nhập',
-          titleTextStyle: GoogleFonts.poppins(),
-          btnOkText: 'Đăng nhập',
-          btnOkOnPress: () {
-            Get.to(() => const LoginScreen());
-          },
-        ).show();
-      }
-    }
+
     if (index == 3) {
-      if (loginController.tokenString == '') {
-        AwesomeDialog(
-          context: Get.context!,
-          dialogType: DialogType.info,
-          animType: AnimType.rightSlide,
-          title: 'Vui lòng đăng nhập',
-          titleTextStyle: GoogleFonts.poppins(),
-          btnOkText: 'Đăng nhập',
-          btnOkOnPress: () {
-            Get.to(() => const LoginScreen());
-          },
-        ).show();
-      }
+      // await notiController.getNoti(0);
+      //nguyên nhân việc tương tác trễ
+      setState(() {
+        isActive = true;
+        count.value = 0;
+      });
     } else {
       setState(() {
         isNotiClick = false;
@@ -127,36 +109,115 @@ class _MainScreenState extends State<MainScreen>
   //   tokenLogin = await _storage.read(key: "TOKEN") ?? '';
   // }
 
+  Future _firebaseBackgroundMessage(RemoteMessage message) async {
+    Map payload = {};
+
+    payload = message.data;
+
+    await notiController.getNoti(0);
+
+    var actionType = payload['action_type'];
+
+    switch (actionType) {
+      case 'post_stuff':
+        // print('stuff noti');
+
+        var stuffId = payload['action'];
+        await getAStuff.getAStuff(stuffId);
+
+        await getStuffs.getStuffs(0);
+        marketListen.value++;
+        Get.to(() => ThongTinSanPhamScreen(docu: aStuff[0]));
+        break;
+      case 'post_job':
+      case 'book_job':
+      case 'worker_accept_job':
+      case 'worker_cancel_job':
+      case 'worker_done':
+      case 'finish_job':
+      case 'apply_job':
+      case 'accept_worker':
+      case 'cancel_worker':
+      case 'job_time_expired':
+      case 'job_time_next':
+        // print('job noti');
+        jobListen.value = 1.0;
+        var jobId = payload['action'];
+        await getAJob.getAJob(jobId);
+        // await getPostJobs.getPostJobs(0);
+
+        final dateTime = DateTime.fromMillisecondsSinceEpoch(
+            int.parse(getAJob.jobInfo[0].workDate),
+            isUtc: true);
+        var date = '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+        var time = '${dateTime.hour}:${dateTime.minute}';
+        Get.to(
+          () => ThongTinJobScreen(
+            jobInfo: getAJob.jobInfo,
+            date: date,
+            time: time,
+          ),
+        );
+        break;
+      case 'host_fee':
+      case 'worker_fee':
+      case 'charge_money':
+        await lyLichController.getInfo();
+      case 'worker_active':
+      case 'cancel_register_worker':
+      case 'worker_update':
+      case 'host_bonus':
+        // await lyLichController.getInfo();
+        notiListen.value++;
+        break;
+      default:
+        break;
+    }
+  }
+
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _firebaseBackgroundMessage(initialMessage);
+    }
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   String payloadData = jsonEncode(message.data);
+
+    //   if (message.notification != null) {
+    //     RegisterNotification.showSimpleNotification(
+    //         title: message.notification!.title!,
+    //         body: message.notification!.body!,
+    //         payload: payloadData);
+    //   }
+    // });
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    // FirebaseMessaging.onMessageOpenedApp.listen(_firebaseBackgroundMessage);
+  }
+
   @override
   void initState() {
+    getStuffsSuggestion.getStuffs();
+
     setState(() {
+      selectedIndex = widget.tabIndex;
       count.value = 0;
       isActive = false;
     });
     super.initState();
     if (loginController.tokenString != '') {
-      RegisterNotiController().registerNoti();
-      lyLichController.isLoading = true;
-      // getNewsController.getNewsData();
-      Timer(const Duration(seconds: 2), () async {
-        await lyLichController.getInfo();
-        if (mounted) {
-          setState(() {
-            lyLichController.isLoading = false;
-          });
-        }
-      });
-
-      // getHostJobController.getHostJob(0, '');
-      // Timer(const Duration(seconds: 3), () {
-      //   getWorkerJobController.getWorkerJob(0, '', true);
-      // });
-      // getHostJobController.getHostJob(0, '');
-      // getWorkerJobController.getWorkerJob(0, '');
-      // getAUserController.getAUser();
+      lyLichController.getInfo();
     }
     _tabController = TabController(length: 5, vsync: this);
     //scroll
+
+    setupInteractedMessage();
   }
 
   @override
@@ -197,24 +258,10 @@ class _MainScreenState extends State<MainScreen>
                 if (value == 0) {
                   return const SizedBox();
                 }
-                return Container(
-                  padding: const EdgeInsets.all(1),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(60),
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 15,
-                    minHeight: 15,
-                  ),
-                  child: Text(
-                    value.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                return const Icon(
+                  Icons.circle,
+                  color: Colors.red,
+                  size: 15,
                 );
               },
               valueListenable: count,

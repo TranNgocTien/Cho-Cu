@@ -34,7 +34,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -481,18 +481,13 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
       setState(() {});
       countGetPrice++;
     } else {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Center(
-                  child: Text('Vui lòng chọn thời gian đặt thợ'),
-                ),
-              ],
-            );
-          });
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng chọn thời gian đặt thợ',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
       return;
     }
   }
@@ -542,7 +537,9 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
     'image/DV MAY TINH-IN/2 BAO TRI MAY TINH.png',
     'image/DV MAY TINH-IN/3 BAO TRI MAY IN.png',
   ];
-
+  List defaultList = [
+    'image/automobile-with-wrench.png',
+  ];
   chooseListImage(nameService) {
     switch (nameService) {
       case "Dịch vụ máy lạnh":
@@ -560,6 +557,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
       case "Dịch vụ máy tính - máy in":
         return maytinh;
       default:
+        return defaultList;
     }
   }
 
@@ -584,7 +582,9 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
         context: Get.context!,
         builder: (context) {
           return Scaffold(
+            backgroundColor: Colors.white,
             appBar: AppBar(
+              centerTitle: true,
               flexibleSpace: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
@@ -633,9 +633,13 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                         shape: GFAvatarShape.circle,
                         backgroundColor:
                             const Color.fromARGB(255, 192, 244, 210),
-                        child: Image.asset(
-                          image[index],
-                        ),
+                        child: jobItemList[index].img == '--'
+                            ? Image.asset(
+                                image[index],
+                              )
+                            : Image.network(
+                                jobItemList[index].img,
+                              ),
                       ),
                       // titleText: vouchersValid[index].name,
                       title: Text(jobItemList[index].name,
@@ -713,6 +717,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
   void dispose() {
     selectedItems.clear();
     jobItemsSelected.clear();
+    FocusScope.of(context).unfocus();
     super.dispose();
   }
 
@@ -850,8 +855,8 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(
-                          left: 5.0,
-                          right: 5.0,
+                          // left: 5.0,
+                          // right: 5.0,
                           bottom: 10.0,
                         ),
                         child: Container(
@@ -926,7 +931,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                           final lng = prefs.getDouble('lng')!;
 
                           final pickedLocation =
-                              await Navigator.of(context).push<LatLng>(
+                              await Navigator.of(context).push<String>(
                             MaterialPageRoute(
                               builder: (ctx) => MapScreen(
                                   currentLocation: PlaceLocation(
@@ -939,9 +944,9 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                           if (pickedLocation == null) {
                             return;
                           }
-
-                          _convertCoordinatefromAddress(pickedLocation.latitude,
-                              pickedLocation.longitude);
+                          bookJob.addressController.text = pickedLocation;
+                          // _convertCoordinatefromAddress(pickedLocation.latitude,
+                          //     pickedLocation.longitude);
                         },
                         shape: const CircleBorder(
                             eccentricity: 0.0,
@@ -1202,20 +1207,6 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                             'Quý khách đã chọn $serviceSelected. Vui lòng tạo đơn đặt mới để sử dụng thêm dịch vụ khác',
                                         titleTextStyle: GoogleFonts.poppins(),
                                       ).show();
-                                      // showDialog(
-                                      //     context: Get.context!,
-                                      //     builder: (context) {
-                                      //       return SimpleDialog(
-                                      //         contentPadding:
-                                      //             const EdgeInsets.all(20),
-                                      //         children: [
-                                      //           Text(
-                                      //               'Quý khách đã chọn $serviceSelected. Vui lòng tạo đơn đặt mới để sử dụng thêm dịch vụ khác',
-                                      //               textAlign:
-                                      //                   TextAlign.center),
-                                      //         ],
-                                      //       );
-                                      //     });
                                     }
                                     // getPriceFunc();
                                   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:chotot/controllers/get_ly_lich.dart';
+
+import 'package:chotot/data/ly_lich.dart';
 import 'package:chotot/models/addressUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
       Get.put(ChangeAvatarController());
   // TextEditingController addressToCoordinate = TextEditingController();
   UpdateInfoController updateInfoController = Get.put(UpdateInfoController());
-  LyLichController lyLichController = Get.put(LyLichController());
+
   void _convertAddressToCoordinate(string) async {
     List<Location> location = await locationFromAddress(string);
 
@@ -108,8 +109,9 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
               ),
             ),
             btnOk: ElevatedButton.icon(
-              style:
-                  ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(39, 166, 82, 1),
+              ),
               onPressed: () {
                 _openGallery();
               },
@@ -125,7 +127,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
             ),
             btnCancel: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(5, 109, 101, 1),
+                backgroundColor: const Color.fromRGBO(39, 166, 82, 1),
               ),
               onPressed: () async {
                 _openCamera();
@@ -233,6 +235,7 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -277,16 +280,17 @@ class _CapNhatTaiKhoanScreenState extends State<CapNhatTaiKhoanScreen> {
                           color: const Color.fromARGB(37, 0, 0, 0),
                           width: 1.0,
                         )),
-                    child: Center(
-                      child: Text(
-                        'Cập nhật ảnh đại diện',
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              fontFamily: GoogleFonts.poppins().fontFamily,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                    ),
+                    child: Image.network(lyLichInfo[0].profileImage),
+                    // Center(
+                    //   child: Text(
+                    //     'Cập nhật ảnh đại diện',
+                    //     style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    //           fontFamily: GoogleFonts.poppins().fontFamily,
+                    //           color: Colors.black,
+                    //           fontWeight: FontWeight.w600,
+                    //         ),
+                    //   ),
+                    // ),
                   ),
             TextButton.icon(
               onPressed: () {

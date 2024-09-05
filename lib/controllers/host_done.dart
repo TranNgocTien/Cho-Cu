@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/acceptorker_data.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class HostDone extends GetxController {
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.hostDone);
     Map body = {
-      'version': 'publish',
+      'version': version,
       'contract_id':
           contractId == '' ? acceptWorkerData[0].contractId : contractId,
       'job_id': jobId == '' ? acceptWorkerData[0].jobId : jobId,

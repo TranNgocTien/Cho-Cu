@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/screens/login.dart';
 import 'package:chotot/screens/verifyOtp.dart';
 import 'package:chotot/utils/api_endpoints.dart';
@@ -23,55 +24,47 @@ class RegisterationController extends GetxController {
 
   Future<void> requestOtp() async {
     if (phoneNumberController.text.isEmpty) {
-      showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return const SimpleDialog(
-              title: Text('Lỗi đăng ký'),
-              contentPadding: EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Nhập số điện thoại',
-                ),
-              ],
-            );
-          });
+      AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng nhập số điện thoại',
+        titleTextStyle: GoogleFonts.poppins(),
+        autoHide: const Duration(milliseconds: 1000),
+      ).show();
+
       return;
     }
     try {
       var headers = {'Content-Type': 'application/json'};
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.requestOtp);
+
       Map body = {
         'ID': phoneNumberController.text,
+        'action': 'register',
         'type': 'phone',
         'token': 'anhkhongdoiqua',
-        'version': 'publish'
+        'version': version,
       };
       http.Response response =
           await http.post(url, body: jsonEncode(body), headers: headers);
+      final json = jsonDecode(response.body);
 
+     
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-
         if (json['status'] == 'ok') {
           Get.to(const VerifyOtpScreen());
         } else if (json['status'] == "error") {
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  title: const Text('Lỗi đăng ký'),
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Text(
-                      json['error']['message'],
-                    ),
-                  ],
-                );
-              });
-          throw jsonDecode(response.body)['error']['message'] ??
-              'Unknown Error Occured';
+          
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: json['error']['message'],
+            titleTextStyle: GoogleFonts.poppins(),
+            autoHide: const Duration(milliseconds: 3000),
+          ).show();
         }
 
         // phoneNumberController.clear();
@@ -124,31 +117,26 @@ class RegisterationController extends GetxController {
       Map body = {
         'ID': phoneNumberController.text.trim(),
         'type': 'phone',
+        'action': 'register',
         'token': 'anhkhongdoiqua',
       };
       http.Response response =
           await http.post(url, body: jsonEncode(body), headers: headers);
+      final json = jsonDecode(response.body);
 
+      print(json);
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-
         if (json['status'] == 'ok') {
           Get.to(const VerifyOtpScreen());
         } else if (json['status'] == "error") {
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  title: const Text('Lỗi đăng ký'),
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Text(
-                      json['error']['message'],
-                    ),
-                  ],
-                );
-              });
-          return;
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: json['error']['message'],
+            titleTextStyle: GoogleFonts.poppins(),
+            autoHide: const Duration(milliseconds: 3000),
+          ).show();
         }
       } else {
         throw jsonDecode(response.body)['message'] ?? 'Unknown Error occured';

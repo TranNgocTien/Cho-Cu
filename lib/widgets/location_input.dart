@@ -2,6 +2,7 @@ import 'dart:convert';
 // import 'package:geocoding/geocoding.dart';
 import 'package:chotot/screens/mapScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -63,6 +64,14 @@ class _LocationInputState extends State<LocationInput> {
     setState(() {});
   }
 
+  // Future<LatLng> _convertAddressToCoordinate(string) async {
+
+  //   if (lat != null || lng != null) {
+  //     return LatLng(lat, lng);
+  //   }
+  //   return LatLng(lat, lng);
+  // }
+
   Future<void> _convertCoordinatefromAddress(double lat, double lng) async {
     final url = Uri.parse(
         'https://rsapi.goong.io/Geocode?latlng=$lat,$lng&api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB');
@@ -119,21 +128,24 @@ class _LocationInputState extends State<LocationInput> {
   }
 
   void _selectOnMap(String? state, PlaceLocation currentLocation) async {
-    final pickedLocation = await Navigator.of(context).push<LatLng>(
-      MaterialPageRoute(
-        builder: (ctx) => MapScreen(currentLocation: currentLocation),
-      ),
-    );
+    final pickedLocation = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (ctx) => MapScreen(currentLocation: currentLocation),
+    ));
+    List<geocoding.Location> location =
+        await geocoding.locationFromAddress(pickedLocation);
 
+    final lat = location.last.latitude;
+
+    final lng = location.last.longitude;
     if (pickedLocation == null) {
       return;
     }
     if (state == 'capnhat') {
-      updateInfoController.lat = pickedLocation.latitude;
-      updateInfoController.lng = pickedLocation.longitude;
+      updateInfoController.lat = lat;
+      updateInfoController.lng = lng;
     }
 
-    _savePlace(pickedLocation.latitude, pickedLocation.longitude);
+    _savePlace(lat, lng);
   }
 
   @override
@@ -192,6 +204,7 @@ class _LocationInputState extends State<LocationInput> {
               onPressed: () async {
                 await _getCurrentLocation('');
                 _selectOnMap(widget.state, _currentLocation!);
+                setState(() {});
               },
               icon:
                   const Icon(Icons.map, color: Color.fromRGBO(38, 166, 83, 1)),

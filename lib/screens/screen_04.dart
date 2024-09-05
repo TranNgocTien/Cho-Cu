@@ -220,7 +220,7 @@ class _OnboardingScreenFourState extends State<OnboardingScreenFour> {
                 height: MediaQuery.of(context).size.height,
                 child: GoogleMap(
                   onTap: (position) {
-                    setState(() async {
+                    setState(() {
                       _pickedLocation = position;
 
                       _markers.add(
@@ -228,8 +228,7 @@ class _OnboardingScreenFourState extends State<OnboardingScreenFour> {
                             markerId: const MarkerId('m1'),
                             position: _pickedLocation!),
                       );
-                      await _convertCoordinatefromAddress(
-                          _pickedLocation!.latitude,
+                      _convertCoordinatefromAddress(_pickedLocation!.latitude,
                           _pickedLocation!.longitude);
                     });
                   },

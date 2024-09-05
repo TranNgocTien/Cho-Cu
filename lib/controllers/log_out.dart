@@ -1,6 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:chotot/data/login_data.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/screens/homeScreen.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/services.dart';
 // import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -20,10 +25,23 @@ class LogOutController extends GetxController {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<void> logOut() async {
     loginController.tokenString = await _storage.read(key: "TOKEN") ?? '';
-
+    String deviceID = '';
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     // Get device information
     final SharedPreferences prefs = await _prefs;
+    try {
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
+        deviceID = androidInfo.id;
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+
+        deviceID = iosInfo.identifierForVendor!;
+      }
+    } on PlatformException {
+      throw Exception('get device name failed');
+    }
     var headers = {
       'Content-Type': 'application/json',
       "x-access-token": loginController.tokenString,
@@ -31,7 +49,11 @@ class LogOutController extends GetxController {
     try {
       var url =
           Uri.parse(ApiEndPoints.baseUrl + ApiEndPoints.authEndPoints.logout);
-      Map body = {'token': 'anhkhongdoiqua', 'version': 'publish'};
+      Map body = {
+        'token': 'anhkhongdoiqua',
+        'version': version,
+        'device_id': deviceID,
+      };
       http.Response response =
           await http.post(url, body: jsonEncode(body), headers: headers);
       if (response.statusCode == 200) {
@@ -42,6 +64,7 @@ class LogOutController extends GetxController {
           // await prefs.setString('token', token.toString());
           loginController.tokenString = '';
           loginController.hostId = '';
+          loginData.clear();
           await _storage.delete(key: "KEY_USERNAME");
           await _storage.delete(key: "KEY_PASSWORD");
           await _storage.delete(key: "ADDRESS_DEFAULT");

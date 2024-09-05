@@ -2,11 +2,13 @@ import 'dart:async';
 
 // import 'package:basic_utils/basic_utils.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:basic_utils/basic_utils.dart';
 import 'package:chotot/controllers/get_orders_user.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/get_orders_user_data.dart';
 
 import 'package:chotot/data/ly_lich.dart';
+import 'package:chotot/screens/nap_tien_screen_web.dart';
 
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -21,7 +23,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:refresh_loadmore/refresh_loadmore.dart';
 
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 class NapTienScreen extends StatefulWidget {
   const NapTienScreen({super.key});
@@ -35,31 +37,32 @@ class _NapTienScreenState extends State<NapTienScreen>
   // NapTienController napTienController = Get.put(NapTienController());
   LoginController loginController = Get.put(LoginController());
   TextEditingController amountController = TextEditingController();
-  late AnimationController _animationController;
+
   TextEditingController orderInfoController = TextEditingController(text: '');
   GetOrdersUser getOrdersUser = Get.put(GetOrdersUser());
   bool onLoading = false;
   bool isLoading = true;
   var currentIndex = 0;
   var tempOrderInfo = '';
+  var tempOrderInfoPlus = '';
   var isAgree = false;
   String pathPDF = "";
 
-  Future<void> _launchUrl(url) async {
-    if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
-    }
-  }
+  // Future<void> _launchUrl(url) async {
+  //   if (!await launchUrl(url)) {
+  //     throw Exception('Could not launch $url');
+  //   }
+  // }
 
   getData() async {
     await getOrdersUser.getOrdersUser(
       currentIndex,
     );
-    if (ordersUser.isNotEmpty) {
+    Timer(const Duration(milliseconds: 2000), () async {
       setState(() {
         isLoading = false;
       });
-    }
+    });
   }
 
   Future<File> fromAsset(String asset, String filename) async {
@@ -84,20 +87,13 @@ class _NapTienScreenState extends State<NapTienScreen>
 
   @override
   void initState() {
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-      lowerBound: 0,
-      upperBound: 1,
-    );
-
     currentIndex = 0;
+
     if (mounted) {
       setState(() {
         isLoading = false;
       });
     }
-    _animationController.forward();
 
     fromAsset(
       'image/CSTT.pdf',
@@ -116,12 +112,10 @@ class _NapTienScreenState extends State<NapTienScreen>
       size: 30,
     ),
   );
-  @override
-  void dispose() {
-    _animationController.dispose();
-
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +212,12 @@ class _NapTienScreenState extends State<NapTienScreen>
                         // var comma = NumberFormat('###,###,###,###');
                         // TextController.text =
                         //     comma.format(price).replaceAll(' ', '');
+                        var priceReverse = StringUtils.addCharAtPosition(
+                            StringUtils.reverse(amountController.text), ".", 3,
+                            repeat: true);
                         setState(() {
+                          tempOrderInfoPlus =
+                              ', so tien nay mua duoc ${StringUtils.reverse(priceReverse)} GP';
                           tempOrderInfo =
                               'Nap tien cho tai khoan ${lyLichInfo[0].phone}. So tien: ${amountController.text} VND';
                           orderInfoController.text = tempOrderInfo;
@@ -251,8 +250,13 @@ class _NapTienScreenState extends State<NapTienScreen>
                       ...pricePaySuggestion.map((price) {
                         return GestureDetector(
                           onTap: () {
+                            // var priceReverse = StringUtils.addCharAtPosition(
+                            //     StringUtils.reverse(price), ".", 3,
+                            //     repeat: true);
                             amountController.text = price.replaceAll('.', '');
                             setState(() {
+                              tempOrderInfoPlus =
+                                  ', so tien nay mua duoc $price GP';
                               tempOrderInfo =
                                   'Nap tien cho tai khoan ${lyLichInfo[0].phone}. So tien: ${amountController.text} VND';
                               orderInfoController.text = tempOrderInfo;
@@ -293,8 +297,10 @@ class _NapTienScreenState extends State<NapTienScreen>
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
                     child: TextFormField(
-                      controller: orderInfoController,
+                      controller: TextEditingController(
+                          text: orderInfoController.text + tempOrderInfoPlus),
                       maxLines: 3,
+                      readOnly: true,
                       decoration: const InputDecoration(
                         hintText: '...',
                         border: InputBorder.none,
@@ -308,7 +314,7 @@ class _NapTienScreenState extends State<NapTienScreen>
                             value.trim().length <= 1) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('required!'),
+                              content: Text('Cần nhập nội dung nạp tiền!'),
                             ),
                           );
                         }
@@ -374,8 +380,15 @@ class _NapTienScreenState extends State<NapTienScreen>
                                   'Vui lòng xem và chấp nhận chính sách bảo mật trước khi nạp tiền',
                               titleTextStyle: GoogleFonts.poppins(),
                             ).show()
-                          : _launchUrl(Uri.parse(
-                              'https://vstserver.com/services/get_vnpay_payment/${loginController.hostId}?token=anhkhongdoiqua&amount=${amountController.text}&order_info=${orderInfoController.text}'));
+                          : Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NapTIenWebView(
+                                      link:
+                                          'https://vstserver.com/services/get_vnpay_payment/${loginController.hostId}?token=anhkhongdoiqua&amount=${amountController.text}&order_info=${orderInfoController.text}')));
+
+                      // _launchUrl(Uri.parse(
+                      //     'https://vstserver.com/services/get_vnpay_payment/${loginController.hostId}?token=anhkhongdoiqua&amount=${amountController.text}&order_info=${orderInfoController.text}'));
                     },
                     child: Text(
                       'Nạp tiền',
@@ -399,33 +412,21 @@ class _NapTienScreenState extends State<NapTienScreen>
                 const SizedBox(
                   height: 20.0,
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: isLoading
-                      ? centerLoading
-                      : ordersUser.isNotEmpty
-                          ? AnimatedBuilder(
-                              animation: _animationController,
-                              builder: (context, child) => SlideTransition(
-                                position: Tween(
-                                  begin: const Offset(0, 1),
-                                  end: const Offset(0, 0),
-                                ).animate(
-                                  CurvedAnimation(
-                                      parent: _animationController,
-                                      curve: Curves.easeInOut),
-                                ),
-                                child: child,
-                              ),
-                              child: RefreshLoadmore(
+                isLoading
+                    ? centerLoading
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child:
+                            // ordersUser.isNotEmpty
+                            //     ?
+                            RefreshLoadmore(
                                 onRefresh: () async {
+                                  ordersUser.clear();
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  ordersUser.clear();
-                                  currentIndex = 1;
-
-                                  _animationController.forward();
+                                  // ordersUser.clear();
+                                  currentIndex = 0;
 
                                   getData();
                                 },
@@ -449,212 +450,204 @@ class _NapTienScreenState extends State<NapTienScreen>
                                   }
                                 },
                                 isLastPage: getOrdersUser.isLastPage,
-                                child: ordersUser.isNotEmpty
-                                    ? SingleChildScrollView(
-                                        child: Column(
-                                          children: [
-                                            ...ordersUser.map(
-                                              (order) {
-                                                // final priceReverse =
-                                                //     StringUtils
-                                                //         .addCharAtPosition(
-                                                //             StringUtils.reverse(
-                                                //               order.amountOrder
-                                                //                           .length >
-                                                //                       2
-                                                //                   ? order
-                                                //                       .amountOrder
-                                                //                       .substring(
-                                                //                           0,
-                                                //                           order.amountOrder.length -
-                                                //                               2)
-                                                //                   : order
-                                                //                       .amountOrder,
-                                                //             ),
-                                                //             ".",
-                                                //             3,
-                                                //             repeat: true);
-                                                var dateTime = DateTime.parse(
-                                                        order.createAt)
-                                                    .toLocal();
+                                child:
+                                    // ordersUser.isNotEmpty
+                                    //     ?
+                                    SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      ...ordersUser.map(
+                                        (order) {
+                                          // final priceReverse =
+                                          //     StringUtils
+                                          //         .addCharAtPosition(
+                                          //             StringUtils.reverse(
+                                          //               order.amountOrder
+                                          //                           .length >
+                                          //                       2
+                                          //                   ? order
+                                          //                       .amountOrder
+                                          //                       .substring(
+                                          //                           0,
+                                          //                           order.amountOrder.length -
+                                          //                               2)
+                                          //                   : order
+                                          //                       .amountOrder,
+                                          //             ),
+                                          //             ".",
+                                          //             3,
+                                          //             repeat: true);
+                                          var dateTime =
+                                              DateTime.parse(order.createAt)
+                                                  .toLocal();
 
-                                                return order.status ==
-                                                        "Giao dịch thành công"
-                                                    ? Container(
+                                          return order.status ==
+                                                  "Giao dịch thành công"
+                                              ? Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.9,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.1,
+                                                  margin: const EdgeInsets.only(
+                                                      bottom: 10.0),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              38, 166, 83, 1),
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20.0),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      const SizedBox(
+                                                          width: 5.0),
+                                                      SizedBox(
                                                         width: MediaQuery.of(
                                                                     context)
                                                                 .size
                                                                 .width *
-                                                            0.9,
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height *
-                                                            0.1,
-                                                        margin: const EdgeInsets
-                                                            .only(bottom: 10.0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          border: Border.all(
-                                                            color: const Color
-                                                                .fromRGBO(
-                                                                38, 166, 83, 1),
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      20.0),
-                                                        ),
-                                                        child: Row(
+                                                            0.2,
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
                                                           children: [
-                                                            const SizedBox(
-                                                                width: 5.0),
-                                                            SizedBox(
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.2,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    '${dateTime.hour < 10 ? 0 : ''}${dateTime.hour}:${dateTime.minute < 10 ? 0 : ''}${dateTime.minute}',
-                                                                    style: GoogleFonts
-                                                                        .poppins(
-                                                                      fontSize:
-                                                                          11,
-                                                                    ),
-                                                                  ),
-                                                                  Text(
-                                                                    '${dateTime.day < 10 ? 0 : ''}${dateTime.day}/${dateTime.month < 10 ? 0 : ''}${dateTime.month}/${dateTime.year}',
-                                                                    style: GoogleFonts
-                                                                        .poppins(
-                                                                      fontSize:
-                                                                          11,
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                            Text(
+                                                              '${dateTime.hour < 10 ? 0 : ''}${dateTime.hour}:${dateTime.minute < 10 ? 0 : ''}${dateTime.minute}',
+                                                              style: GoogleFonts
+                                                                  .poppins(
+                                                                fontSize: 11,
                                                               ),
                                                             ),
-                                                            Container(
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height *
-                                                                  0.05,
-                                                              decoration:
-                                                                  const BoxDecoration(
-                                                                border: Border(
-                                                                  right:
-                                                                      BorderSide(
-                                                                    color: Color
-                                                                        .fromRGBO(
-                                                                      38,
-                                                                      166,
-                                                                      83,
-                                                                      1,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                                width: 10.0),
-                                                            SizedBox(
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.5,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    order
-                                                                        .orderInfo,
-                                                                    style: GoogleFonts.poppins(
-                                                                        fontSize:
-                                                                            11),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    height: 11,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Container(
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height *
-                                                                  0.05,
-                                                              decoration:
-                                                                  const BoxDecoration(
-                                                                border: Border(
-                                                                  right:
-                                                                      BorderSide(
-                                                                    color: Color
-                                                                        .fromRGBO(
-                                                                      38,
-                                                                      166,
-                                                                      83,
-                                                                      1,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                                width: 10.0),
-                                                            SizedBox(
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.1,
-                                                              child: Text(
-                                                                order.supplier,
-                                                                style:
-                                                                    GoogleFonts
-                                                                        .poppins(
-                                                                  fontSize: 11,
-                                                                ),
+                                                            Text(
+                                                              '${dateTime.day < 10 ? 0 : ''}${dateTime.day}/${dateTime.month < 10 ? 0 : ''}${dateTime.month}/${dateTime.year}',
+                                                              style: GoogleFonts
+                                                                  .poppins(
+                                                                fontSize: 11,
                                                               ),
                                                             ),
                                                           ],
                                                         ),
-                                                      )
-                                                    : const SizedBox();
-                                              },
-                                            ).toList(),
-                                          ],
-                                        ),
-                                      )
-                                    : Center(
-                                        child: Text(
-                                            'Không còn lịch sử giao dịch',
-                                            style: GoogleFonts.poppins()),
-                                      ),
-                              ),
-                            )
-                          : Center(
-                              child: Text(
-                                'không có lịch sử giao dịch',
-                                style: GoogleFonts.poppins(),
-                              ),
-                            ),
-                ),
+                                                      ),
+                                                      Container(
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.05,
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          border: Border(
+                                                            right: BorderSide(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                38,
+                                                                166,
+                                                                83,
+                                                                1,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                          width: 10.0),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.5,
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              order.orderInfo,
+                                                              style: GoogleFonts
+                                                                  .poppins(
+                                                                      fontSize:
+                                                                          11),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start,
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 11,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.05,
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          border: Border(
+                                                            right: BorderSide(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                38,
+                                                                166,
+                                                                83,
+                                                                1,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                          width: 10.0),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.1,
+                                                        child: Text(
+                                                          order.supplier,
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            fontSize: 11,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : const SizedBox();
+                                        },
+                                      ).toList(),
+                                    ],
+                                  ),
+                                )
+                                // : Center(
+                                //     child: Text(
+                                //         'Không còn lịch sử giao dịch',
+                                //         style: GoogleFonts.poppins()),
+                                //   ),
+                                )
+                        // : Center(
+                        //     child: Text(
+                        //       'không có lịch sử giao dịch',
+                        //       style: GoogleFonts.poppins(),
+                        //     ),
+                        //   ),
+                        ),
               ],
             ),
           ),

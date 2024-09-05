@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/get_host_job_data.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/get_host_job_model.dart';
 import 'package:chotot/models/job_item.dart';
 // import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class GetHostJob extends GetxController {
       'from': '',
       'to': '',
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      'version': version,
     };
 
     http.Response response = await http.post(
@@ -84,6 +85,7 @@ class GetHostJob extends GetxController {
               workDate: data[i]['work_date'].toString(),
               description: data[i]['description'].toString(),
               service: JobItems(
+                  img: '',
                   id: data[i]['services'][0]['_id'].toString(),
                   jobItemId: data[i]['services'][0]['jobitem_id'].toString(),
                   version: data[i]['services'][0]['version'].toString(),

@@ -3,6 +3,7 @@ import 'dart:convert';
 // import 'package:flutter/material.dart';
 
 import 'package:chotot/data/get_news_data.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/get_news_models.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +15,7 @@ import 'package:chotot/controllers/login_controller.dart';
 
 class GetNews extends GetxController {
   LoginController loginController = Get.put(LoginController());
+  bool isLastPage = false;
   Future<void> getNewsData({int index = 0}) async {
     // try {
     // var headers = {
@@ -25,21 +27,33 @@ class GetNews extends GetxController {
     Map body = {
       'token': 'anhkhongdoiqua',
       'index': '$index',
-      'version': 'test'
+      'version': version,
     };
     http.Response response = await http.post(
       url,
       body: body,
       // headers: headers,
     );
-    // print(response.statusCode);
+    // print(response.body);
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       final data = json['data'];
-      // print(json);
+
       if (json['status'] == 'ok') {
         for (int i = 0; i < data.length; i++) {
+          if (index == 0) {
+            newsListHome.add(
+              News(
+                id: data[i]['_id'],
+                tittle: data[i]['title'],
+                author: data[i]['author'],
+                link: data[i]['photo'],
+                date: data[i]['created_at'],
+                content: data[i]['content'],
+              ),
+            );
+          }
           newsList.add(
             News(
               id: data[i]['_id'],
@@ -51,6 +65,9 @@ class GetNews extends GetxController {
             ),
           );
         }
+      } else if (json['status'] == 'error' &&
+          json['error']['code'] == 'NO_NEWS') {
+        isLastPage = true;
       }
     }
     // else {

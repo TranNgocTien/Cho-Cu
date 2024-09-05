@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/data/acceptorker_data.dart';
+import 'package:chotot/data/version_app.dart';
+import 'package:chotot/screens/homeScreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -22,7 +25,7 @@ class HostRate extends GetxController {
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.hostRate);
     Map body = {
-      'version': 'publish',
+      'version': version,
       'contract_id':
           contractId == '' ? acceptWorkerData[0].contractId : contractId,
       'job_id': jobId == "" ? acceptWorkerData[0].jobId : jobId,
@@ -48,26 +51,26 @@ class HostRate extends GetxController {
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         // var data = json['data'];
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.success,
+          animType: AnimType.rightSlide,
+          title: 'Đã gửi đánh giá thành công',
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
+        Get.offAll(() => const MainScreen());
       } else if (json['status'] == 'error') {
         if (json['error']['message'] == 'Không có công việc') {
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Center(
-                      child: Text('Không còn công việc',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                              )),
-                    ),
-                  ],
-                );
-              });
+          await AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: 'Không có công việc',
+            titleTextStyle: GoogleFonts.poppins(),
+            autoHide: const Duration(milliseconds: 800),
+          ).show();
+
           return;
         }
       }

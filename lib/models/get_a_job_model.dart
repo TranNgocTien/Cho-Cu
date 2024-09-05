@@ -2,6 +2,7 @@ import 'package:chotot/models/job_item.dart';
 
 class GetAJobModel {
   GetAJobModel({
+    required this.jobId,
     required this.name,
     required this.sumPrice,
     required this.description,
@@ -27,6 +28,7 @@ class GetAJobModel {
     required this.movingFee,
     required this.holidayPrice,
     required this.price,
+    required this.rate,
   });
   final String workDate;
   final String workerId;
@@ -45,6 +47,7 @@ class GetAJobModel {
   final String phone;
   final String hostId;
   final String status;
+  final String jobId;
   final List<JobItems> service;
   final Employee employee;
   final List<Contracts> contracts;
@@ -53,6 +56,7 @@ class GetAJobModel {
   final Host host;
   final String priceId;
   final String holidayPrice;
+  final List<Rate> rate;
 }
 
 class Employee {
@@ -166,4 +170,38 @@ class Host {
   final String lng;
   final String phone;
   final String profileImage;
+}
+
+class Rate {
+  Rate({
+    required this.id,
+    required this.contractId,
+    required this.type,
+    required this.content,
+    required this.d1,
+    required this.d2,
+    required this.d3,
+    required this.d4,
+    required this.d5,
+    required this.ds,
+    required this.hostId,
+    required this.jobId,
+    required this.time,
+    required this.workerId,
+  });
+  final String id;
+  final String contractId;
+  final String type;
+
+  final String content;
+  final String d1;
+  final String d2;
+  final String d3;
+  final String d4;
+  final String d5;
+  final String ds;
+  final String hostId;
+  final String jobId;
+  final String time;
+  final String workerId;
 }

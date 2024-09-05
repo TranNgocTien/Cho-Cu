@@ -7,12 +7,10 @@ import 'package:chotot/controllers/get_host_job.dart';
 
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/job_service_data.dart';
-import 'package:chotot/data/ly_lich.dart';
-// import 'package:chotot/models/job_service.dart';
+import 'package:chotot/data/login_data.dart';
 
 import 'package:chotot/screens/login.dart';
 import 'package:chotot/screens/thong_tin_job_screen.dart';
-// import 'package:dropdown_button2/dropdown_button2.dart';
 
 import 'package:flutter/material.dart';
 import 'package:chotot/data/get_host_job_data.dart';
@@ -229,7 +227,7 @@ class _CongViecHostScreenState extends State<CongViecHostScreen>
                 ),
                 title: Center(
                   child: Text(
-                    'Chủ nhà - ${lyLichInfo[0].name}',
+                    'Chủ nhà - ${loginData[0].name}',
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.bold,
@@ -734,10 +732,19 @@ class _HostJobStatusState extends State<HostJobStatus>
                             '${dateTime.day < 10 ? 0 : ''}${dateTime.day}/${dateTime.month < 10 ? 0 : ''}${dateTime.month}/${dateTime.year}';
                         var time =
                             '${dateTime.hour < 10 ? 0 : ''}${dateTime.hour}:${dateTime.minute < 10 ? 0 : ''}${dateTime.minute}';
-                        var createAt =
-                            DateTime.parse(item.priceHostJob.createAt)
-                                .toString();
+                        // var createAt =
+                        //     DateTime.parse(item.priceHostJob.createAt)
+                        //         .toString();
+                        DateTime dateTimeCreateAt =
+                            DateTime.parse(item.priceHostJob.createAt);
 
+                        // Create a DateFormat instance
+                        DateFormat dateFormat =
+                            DateFormat("dd-MM-yyyy HH:mm:ss");
+
+                        // Format the DateTime
+                        String formattedDate =
+                            dateFormat.format(dateTimeCreateAt.toLocal());
                         return GestureDetector(
                           onTap: () async {
                             await getAJob.getAJob(item.jobId);
@@ -853,8 +860,7 @@ class _HostJobStatusState extends State<HostJobStatus>
                                             children: [
                                               Expanded(
                                                 child: Text(
-                                                  createAt.substring(
-                                                      0, createAt.length - 5),
+                                                  formattedDate,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodySmall!

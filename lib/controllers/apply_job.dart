@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/ly_lich.dart';
+import 'package:chotot/data/version_app.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -36,7 +37,7 @@ class ApplyJob extends GetxController {
       'lat': lyLichInfo[0].lat,
       'lng': lyLichInfo[0].lng,
       'token': 'anhkhongdoiqua',
-      'version': 'publish'
+      'version': version,
     };
 
     http.Response response = await http.post(

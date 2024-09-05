@@ -8,11 +8,12 @@ class JobItems {
   final String jobserviceId;
   final String name;
   final String price;
-
+  final String img;
   final String unit;
   final String workerId;
   int qt;
   JobItems({
+    required this.img,
     required this.id,
     required this.jobItemId,
     required this.version,

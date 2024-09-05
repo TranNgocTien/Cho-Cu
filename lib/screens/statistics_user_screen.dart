@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:basic_utils/basic_utils.dart' as priceLibrary;
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
@@ -8,7 +9,9 @@ import 'package:chotot/data/ly_lich.dart';
 // import 'package:chotot/data/ly_lich.dart';
 import 'package:chotot/data/statistics_user_data.dart';
 import 'package:chotot/data/type_user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -36,6 +39,7 @@ class _StatisticsUserScreenState extends State<StatisticsUserScreen> {
   late TooltipBehavior _tooltipBehavior;
   bool swapLoading = false;
   bool isLoading = false;
+  bool booleanType = true;
   String dateConvertToString = '';
   List<DateTime?> fromDate = [
     DateTime.now(),
@@ -70,7 +74,7 @@ class _StatisticsUserScreenState extends State<StatisticsUserScreen> {
     await statisticsUser.getStatisticsUser(
         type, '${now.year}-01-01', '${now.year}-12-30');
     statisticsUserDataTotal.add(statisticsUser.statisticsUser);
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 1), () {
       setState(() {
         swapLoading = false;
       });
@@ -132,6 +136,7 @@ class _StatisticsUserScreenState extends State<StatisticsUserScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -163,286 +168,154 @@ class _StatisticsUserScreenState extends State<StatisticsUserScreen> {
               ),
         ),
       ),
-      body: swapLoading
-          ? Center(
-              child: LoadingAnimationWidget.waveDots(
-                color: const Color.fromRGBO(1, 142, 33, 1),
-                size: 30,
-              ),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  lyLichInfo[0].workerAuthen == 'true'
-                      ? GestureDetector(
-                          onTap: () async {
-                            setState(() {
-                              swapLoading = true;
-                              type = type == 'host' ? 'worker' : 'host';
-                              getStatisticsData();
-                              getStatisticsDataTotal();
-                            });
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 15),
+            lyLichInfo[0].workerAuthen == 'true'
+                ?
+                // ? GestureDetector(
+                //     onTap: () async {
+                //       setState(() {
+                //         swapLoading = true;
+                //         type = type == 'host' ? 'worker' : 'host';
+                //         getStatisticsData();
+                //         getStatisticsDataTotal();
+                //       });
 
-                            // await prefs.setString('token', token.toString());
-                          },
-                          child: Card(
-                            color: Colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.height *
-                                        0.3,
-                                    child: Row(children: [
-                                      Image.asset(
-                                        type == 'host'
-                                            ? 'image/computer-worker.png'
-                                            : 'image/mechanic.png',
-                                        height: 30,
-                                        width: 30,
-                                      ),
-                                      const SizedBox(width: 20),
-                                      Expanded(
-                                        child: Text(
-                                          type == 'host'
-                                              ? 'Chủ Nhà - ${lyLichInfo[0].name}'
-                                              : 'Thợ - ${lyLichInfo[0].name}',
-                                          style:
-                                              GoogleFonts.poppins(fontSize: 16),
-                                          softWrap: true,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ]),
-                                  ),
-                                  const Icon(Icons.change_circle_outlined)
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
-                  Card(
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        Text(
-                          'Chọn thời gian:',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                              ),
+                //       // await prefs.setString('token', token.toString());
+                //     },
+                //     child: Card(
+                //       color: Colors.white,
+                //       child: Padding(
+                //         padding: const EdgeInsets.symmetric(
+                //             horizontal: 30, vertical: 15),
+                //         child: Row(
+                //           mainAxisAlignment:
+                //               MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             SizedBox(
+                //               width: MediaQuery.of(context).size.height *
+                //                   0.3,
+                //               child: Row(children: [
+                //                 Image.asset(
+                //                   type == 'host'
+                //                       ? 'image/computer-worker.png'
+                //                       : 'image/mechanic.png',
+                //                   height: 30,
+                //                   width: 30,
+                //                 ),
+                //                 const SizedBox(width: 20),
+                //                 Expanded(
+                //                   child: Text(
+                //                     type == 'host'
+                //                         ? 'Chủ Nhà - ${lyLichInfo[0].name}'
+                //                         : 'Thợ - ${lyLichInfo[0].name}',
+                //                     style:
+                //                         GoogleFonts.poppins(fontSize: 16),
+                //                     softWrap: true,
+                //                     maxLines: 1,
+                //                     overflow: TextOverflow.ellipsis,
+                //                   ),
+                //                 ),
+                //               ]),
+                //             ),
+                //             const Icon(Icons.change_circle_outlined)
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //   )
+                AnimatedToggleSwitch<bool>.dual(
+                    current: booleanType,
+                    first: false,
+                    second: true,
+                    spacing: 50.0,
+                    style: const ToggleStyle(
+                      borderColor: Colors.transparent,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          spreadRadius: 1,
+                          blurRadius: 2,
+                          offset: Offset(0, 1.5),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              'Từ ngày:',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                  ),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              padding: const EdgeInsets.only(
-                                  top: 8, bottom: 8, right: 10),
-                              // decoration: BoxDecoration(
-                              //   border: Border.all(color: Colors.grey),
-                              //   borderRadius: BorderRadius.circular(10),
-                              // ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  IconButton(
-                                      icon: const FaIcon(
-                                          FontAwesomeIcons.calendarDay),
-                                      onPressed: () async {
-                                        fromDate =
-                                            (await showCalendarDatePicker2Dialog(
-                                          context: context,
-                                          config:
-                                              CalendarDatePicker2WithActionButtonsConfig(
-                                            lastDate: DateTime.now(),
-                                          ),
-                                          dialogSize: const Size(325, 400),
-                                          value: fromDate,
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ))!;
-
-                                        setState(() {});
-                                      }),
-                                  Text(
-                                    _getValueText(
-                                        config.calendarType, fromDate),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                          fontFamily:
-                                              GoogleFonts.poppins().fontFamily,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              'Đến ngày:',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                  ),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              padding: const EdgeInsets.only(
-                                  top: 8, bottom: 8, right: 10),
-                              // decoration: BoxDecoration(
-                              //   border: Border.all(color: Colors.grey),
-                              //   borderRadius: BorderRadius.circular(10),
-                              // ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  IconButton(
-                                      icon: const FaIcon(
-                                          FontAwesomeIcons.calendarDay),
-                                      onPressed: () async {
-                                        toDate =
-                                            (await showCalendarDatePicker2Dialog(
-                                          context: context,
-                                          config:
-                                              CalendarDatePicker2WithActionButtonsConfig(
-                                            lastDate: DateTime.now(),
-                                          ),
-                                          dialogSize: const Size(325, 400),
-                                          value: toDate,
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ))!;
-
-                                        setState(() {});
-                                      }),
-                                  Text(
-                                    _getValueText(config.calendarType, toDate),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                          fontFamily:
-                                              GoogleFonts.poppins().fontFamily,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        MaterialButton(
-                          elevation: 1.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          height: 40.0,
-                          minWidth: 100.0,
-                          color: const Color.fromRGBO(38, 166, 83, 1),
-                          child: Text(
-                            'Tra cứu',
+                      ],
+                    ),
+                    borderWidth: 5.0,
+                    height: 55,
+                    onChanged: (b) => setState(() => setState(() {
+                          booleanType = !booleanType;
+                          swapLoading = true;
+                          type = type == 'host' ? 'worker' : 'host';
+                          getStatisticsData();
+                          getStatisticsDataTotal();
+                        })),
+                    styleBuilder: (b) => const ToggleStyle(
+                        indicatorColor: Colors.green,
+                        backgroundColor: Colors.white),
+                    iconBuilder: (value) => value
+                        ? Image.asset('image/computer-worker.png')
+                        : Image.asset('image/mechanic.png'),
+                    textBuilder: (value) => value
+                        ? Center(
+                            child: Text(
+                            'Chủ nhà',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge!
                                 .copyWith(
                                   fontFamily: GoogleFonts.poppins().fontFamily,
-                                  color: Colors.white,
                                 ),
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            statisticsUserData.clear();
-                            if (DateTime.parse(fromDate.toString().substring(
-                                        1, toDate.toString().indexOf(' ')))
-                                    .compareTo(DateTime.parse(toDate
-                                        .toString()
-                                        .substring(1,
-                                            toDate.toString().indexOf(' ')))) >
-                                0) {
-                              AwesomeDialog(
-                                context: Get.context!,
-                                animType: AnimType.scale,
-                                dialogType: DialogType.warning,
-                                title: 'Thời gian tra cứu không hợp lệ',
-                                titleTextStyle: GoogleFonts.poppins(),
-                              ).show();
-                            }
-                            await statisticsUser.getStatisticsUser(
-                                'host',
-                                fromDate.toString().substring(
-                                    1, toDate.toString().indexOf(' ')),
-                                toDate.toString().substring(
-                                    1, toDate.toString().indexOf(' ')));
-                            statisticsUserData
-                                .add(statisticsUser.statisticsUser);
-
-                            setState(() {
-                              isLoading = false;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                      ],
+                          ))
+                        : Center(
+                            child: Text(
+                            'Thợ  ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                ),
+                          )),
+                  )
+                : const SizedBox(),
+            const SizedBox(height: 15),
+            swapLoading
+                ? Center(
+                    child: LoadingAnimationWidget.waveDots(
+                      color: const Color.fromRGBO(1, 142, 33, 1),
+                      size: 30,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  isLoading == true
-                      ? Center(
-                          child: LoadingAnimationWidget.waveDots(
-                            color: const Color.fromRGBO(1, 142, 33, 1),
-                            size: 30,
-                          ),
-                        )
-                      : Column(
-                          children: [
-                            Card(
-                              color: Colors.white,
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.5,
-                                child: SfCartesianChart(
-                                    primaryXAxis: const CategoryAxis(
-                                        axisBorderType:
-                                            AxisBorderType.rectangle),
-                                    legend: const Legend(isVisible: true),
-                                    tooltipBehavior: _tooltipBehavior,
-                                    title: ChartTitle(
-                                      text: type == 'host'
-                                          ? 'Thống kê chi tiêu năm ${DateTime.now().year}'
-                                          : 'Thống kê thu nhập năm ${DateTime.now().year}',
-                                      textStyle: Theme.of(context)
+                  )
+                : Column(
+                    children: [
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Column(
+                        children: [
+                          Card(
+                            color: Colors.white,
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Chọn thời gian:',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                        fontFamily:
+                                            GoogleFonts.poppins().fontFamily,
+                                      ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      'Từ ngày:',
+                                      style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
                                           .copyWith(
@@ -450,218 +323,451 @@ class _StatisticsUserScreenState extends State<StatisticsUserScreen> {
                                                 .fontFamily,
                                           ),
                                     ),
-                                    series: <ColumnSeries<Satistics, String>>[
-                                      ColumnSeries<Satistics, String>(
-                                          name: '',
-                                          trackColor: Colors.red,
-                                          color: const Color.fromRGBO(
-                                              38, 166, 83, 1),
-                                          pointColorMapper:
-                                              (Satistics data, _) => data.color,
-                                          dataSource: <Satistics>[
-                                            Satistics(
-                                                '${_getValueText(config.calendarType, fromDate)} - ${_getValueText(config.calendarType, toDate)}',
-                                                statisticsUserData[0].sum,
-                                                const Color.fromARGB(
-                                                    255, 187, 225, 43)),
-                                            Satistics(
-                                                DateTime.now().year.toString(),
-                                                statisticsUserDataTotal[0].sum,
-                                                const Color.fromARGB(
-                                                    255, 159, 212, 225)),
-                                          ],
-                                          xValueMapper: (Satistics sales, _) =>
-                                              sales.year,
-                                          yValueMapper: (Satistics sales, _) =>
-                                              sales.sales,
-                                          // Enable data label
-                                          dataLabelSettings:
-                                              const DataLabelSettings(
-                                                  isVisible: true))
-                                    ]),
-                              ),
-                            ),
-                            Card(
-                              color: Colors.white,
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Column(
-                                  children: [
-                                    Center(
-                                      child: Text(
-                                        '${_getValueText(config.calendarType, fromDate)} - ${_getValueText(config.calendarType, toDate)}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium!
-                                            .copyWith(
-                                              fontFamily: GoogleFonts.poppins()
-                                                  .fontFamily,
-                                            ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      padding: const EdgeInsets.only(
+                                          top: 8, bottom: 8, right: 10),
+                                      // decoration: BoxDecoration(
+                                      //   border: Border.all(color: Colors.grey),
+                                      //   borderRadius: BorderRadius.circular(10),
+                                      // ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          IconButton(
+                                              icon: const FaIcon(
+                                                  FontAwesomeIcons.calendarDay),
+                                              onPressed: () async {
+                                                fromDate =
+                                                    (await showCalendarDatePicker2Dialog(
+                                                  context: context,
+                                                  config:
+                                                      CalendarDatePicker2WithActionButtonsConfig(
+                                                    lastDate: DateTime.now(),
+                                                  ),
+                                                  dialogSize:
+                                                      const Size(325, 400),
+                                                  value: fromDate,
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ))!;
+
+                                                setState(() {});
+                                              }),
+                                          Text(
+                                            _getValueText(
+                                                config.calendarType, fromDate),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge!
+                                                .copyWith(
+                                                  fontFamily:
+                                                      GoogleFonts.poppins()
+                                                          .fontFamily,
+                                                ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          type == 'host'
-                                              ? 'Chi tiêu:'
-                                              : 'Thu nhập:',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                              ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          getFormatPrice(statisticsUserData[0]
-                                              .sum
-                                              .toString()),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          type == 'host'
-                                              ? 'Số lượng dịch vụ:'
-                                              : 'Số lượng công việc:',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                              ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          statisticsUserData[0]
-                                              .count
-                                              .toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Center(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.7,
-                                        decoration: const BoxDecoration(
-                                            border: Border(
-                                                top: BorderSide(
-                                                    color: Colors.grey))),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Center(
-                                      child: Text(
-                                        DateTime.now().year.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium!
-                                            .copyWith(
-                                              fontFamily: GoogleFonts.poppins()
-                                                  .fontFamily,
-                                            ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          type == 'host'
-                                              ? 'Chi tiêu'
-                                              : 'Thu nhập',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                              ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          getFormatPrice(
-                                              statisticsUserDataTotal[0]
-                                                  .sum
-                                                  .toString()),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          type == 'host'
-                                              ? 'Số lượng dịch vụ:'
-                                              : 'Số lượng công việc:',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                              ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          statisticsUserDataTotal[0]
-                                              .count
-                                              .toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                              ),
-                                        ),
-                                      ],
                                     ),
                                   ],
                                 ),
-                              ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      'Đến ngày:',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(
+                                            fontFamily: GoogleFonts.poppins()
+                                                .fontFamily,
+                                          ),
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      padding: const EdgeInsets.only(
+                                          top: 8, bottom: 8, right: 10),
+                                      // decoration: BoxDecoration(
+                                      //   border: Border.all(color: Colors.grey),
+                                      //   borderRadius: BorderRadius.circular(10),
+                                      // ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          IconButton(
+                                              icon: const FaIcon(
+                                                  FontAwesomeIcons.calendarDay),
+                                              onPressed: () async {
+                                                toDate =
+                                                    (await showCalendarDatePicker2Dialog(
+                                                  context: context,
+                                                  config:
+                                                      CalendarDatePicker2WithActionButtonsConfig(
+                                                    lastDate: DateTime.now(),
+                                                  ),
+                                                  dialogSize:
+                                                      const Size(325, 400),
+                                                  value: toDate,
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ))!;
+
+                                                setState(() {});
+                                              }),
+                                          Text(
+                                            _getValueText(
+                                                config.calendarType, toDate),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge!
+                                                .copyWith(
+                                                  fontFamily:
+                                                      GoogleFonts.poppins()
+                                                          .fontFamily,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                MaterialButton(
+                                  elevation: 1.0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  height: 40.0,
+                                  minWidth: 100.0,
+                                  color: const Color.fromRGBO(38, 166, 83, 1),
+                                  child: Text(
+                                    'Tra cứu',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                          fontFamily:
+                                              GoogleFonts.poppins().fontFamily,
+                                          color: Colors.white,
+                                        ),
+                                  ),
+                                  onPressed: () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    statisticsUserData.clear();
+                                    if (DateTime.parse(fromDate
+                                                .toString()
+                                                .substring(
+                                                    1,
+                                                    toDate
+                                                        .toString()
+                                                        .indexOf(' ')))
+                                            .compareTo(DateTime.parse(toDate
+                                                .toString()
+                                                .substring(
+                                                    1,
+                                                    toDate
+                                                        .toString()
+                                                        .indexOf(' ')))) >
+                                        0) {
+                                      AwesomeDialog(
+                                        context: Get.context!,
+                                        animType: AnimType.scale,
+                                        dialogType: DialogType.warning,
+                                        title: 'Thời gian tra cứu không hợp lệ',
+                                        titleTextStyle: GoogleFonts.poppins(),
+                                      ).show();
+                                    }
+                                    await statisticsUser.getStatisticsUser(
+                                        'host',
+                                        fromDate.toString().substring(
+                                            1, toDate.toString().indexOf(' ')),
+                                        toDate.toString().substring(
+                                            1, toDate.toString().indexOf(' ')));
+                                    statisticsUserData
+                                        .add(statisticsUser.statisticsUser);
+
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                  },
+                                ),
+                                const SizedBox(height: 10),
+                              ],
                             ),
-                          ],
-                        ),
-                ],
-              ),
-            ),
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                      isLoading == true
+                          ? Center(
+                              child: LoadingAnimationWidget.waveDots(
+                                color: const Color.fromRGBO(1, 142, 33, 1),
+                                size: 30,
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                Card(
+                                  color: Colors.white,
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
+                                    child: SfCartesianChart(
+                                        primaryXAxis: const CategoryAxis(
+                                            axisBorderType:
+                                                AxisBorderType.rectangle),
+                                        legend: const Legend(isVisible: true),
+                                        tooltipBehavior: _tooltipBehavior,
+                                        title: ChartTitle(
+                                          text: type == 'host'
+                                              ? 'Thống kê chi tiêu năm ${DateTime.now().year}'
+                                              : 'Thống kê thu nhập năm ${DateTime.now().year}',
+                                          textStyle: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge!
+                                              .copyWith(
+                                                fontFamily:
+                                                    GoogleFonts.poppins()
+                                                        .fontFamily,
+                                              ),
+                                        ),
+                                        series: <ColumnSeries<Satistics,
+                                            String>>[
+                                          ColumnSeries<Satistics, String>(
+                                              name: '',
+                                              trackColor: Colors.red,
+                                              color: const Color.fromRGBO(
+                                                  38, 166, 83, 1),
+                                              pointColorMapper:
+                                                  (Satistics data, _) =>
+                                                      data.color,
+                                              dataSource: <Satistics>[
+                                                Satistics(
+                                                    '${_getValueText(config.calendarType, fromDate)} - ${_getValueText(config.calendarType, toDate)}',
+                                                    statisticsUserData[0].sum,
+                                                    const Color.fromARGB(
+                                                        255, 187, 225, 43)),
+                                                Satistics(
+                                                    DateTime.now()
+                                                        .year
+                                                        .toString(),
+                                                    statisticsUserDataTotal[0]
+                                                        .sum,
+                                                    const Color.fromARGB(
+                                                        255, 159, 212, 225)),
+                                              ],
+                                              xValueMapper:
+                                                  (Satistics sales, _) =>
+                                                      sales.year,
+                                              yValueMapper:
+                                                  (Satistics sales, _) =>
+                                                      sales.sales,
+                                              // Enable data label
+                                              dataLabelSettings:
+                                                  const DataLabelSettings(
+                                                      isVisible: true))
+                                        ]),
+                                  ),
+                                ),
+                                Card(
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Column(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            '${_getValueText(config.calendarType, fromDate)} - ${_getValueText(config.calendarType, toDate)}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!
+                                                .copyWith(
+                                                  fontFamily:
+                                                      GoogleFonts.poppins()
+                                                          .fontFamily,
+                                                ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              type == 'host'
+                                                  ? 'Chi tiêu:'
+                                                  : 'Thu nhập:',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontFamily:
+                                                        GoogleFonts.poppins()
+                                                            .fontFamily,
+                                                  ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              getFormatPrice(
+                                                  statisticsUserData[0]
+                                                      .sum
+                                                      .toString()),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontFamily:
+                                                        GoogleFonts.poppins()
+                                                            .fontFamily,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              type == 'host'
+                                                  ? 'Số lượng dịch vụ:'
+                                                  : 'Số lượng công việc:',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontFamily:
+                                                        GoogleFonts.poppins()
+                                                            .fontFamily,
+                                                  ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              statisticsUserData[0]
+                                                  .count
+                                                  .toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontFamily:
+                                                        GoogleFonts.poppins()
+                                                            .fontFamily,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Center(
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.7,
+                                            decoration: const BoxDecoration(
+                                                border: Border(
+                                                    top: BorderSide(
+                                                        color: Colors.grey))),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Center(
+                                          child: Text(
+                                            DateTime.now().year.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!
+                                                .copyWith(
+                                                  fontFamily:
+                                                      GoogleFonts.poppins()
+                                                          .fontFamily,
+                                                ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              type == 'host'
+                                                  ? 'Chi tiêu'
+                                                  : 'Thu nhập',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontFamily:
+                                                        GoogleFonts.poppins()
+                                                            .fontFamily,
+                                                  ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              getFormatPrice(
+                                                  statisticsUserDataTotal[0]
+                                                      .sum
+                                                      .toString()),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontFamily:
+                                                        GoogleFonts.poppins()
+                                                            .fontFamily,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              type == 'host'
+                                                  ? 'Số lượng dịch vụ:'
+                                                  : 'Số lượng công việc:',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontFamily:
+                                                        GoogleFonts.poppins()
+                                                            .fontFamily,
+                                                  ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              statisticsUserDataTotal[0]
+                                                  .count
+                                                  .toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontFamily:
+                                                        GoogleFonts.poppins()
+                                                            .fontFamily,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ],
+                  ),
+          ],
+        ),
+      ),
     );
   }
 }

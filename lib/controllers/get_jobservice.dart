@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chotot/data/job_service_data.dart';
+// import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/job_service.dart';
 import 'package:http/http.dart' as http;
 // import 'package:chotot/utils/api_endpoints.dart';
@@ -8,10 +9,9 @@ import 'package:get/get.dart';
 
 class GetJobService extends GetxController {
   Future<void> getJobService() async {
-    var url = Uri.parse(
-        'https://vstserver.com/services/get_jobservice?version=test&token=anhkhongdoiqua');
+    var url = Uri.parse('https://vstserver.com/services/get_jobservice');
     Map body = {
-      'version': 'publish',
+      // 'version': version,
       'token': 'anhkhongdoiqua',
     };
 

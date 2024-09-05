@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/acceptorker_data.dart';
-import 'package:flutter/material.dart';
+import 'package:chotot/data/version_app.dart';
+// import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,7 +24,7 @@ class Workerdone extends GetxController {
     var url = Uri.parse(
         ApiEndPoints.servicesUrl + ApiEndPoints.authEndPoints.workerDone);
     Map body = {
-      'version': 'publish',
+      'version': version,
       'contract_id':
           contractId == '' ? acceptWorkerData[0].contractId : contractId,
       'job_id': jobId == '' ? acceptWorkerData[0].jobId : jobId,
@@ -46,24 +48,15 @@ class Workerdone extends GetxController {
         // var data = json['data'];
       } else if (json['status'] == 'error') {
         if (json['error']['message'] == 'Không có công việc') {
-          showDialog(
-              context: Get.context!,
-              builder: (context) {
-                return SimpleDialog(
-                  contentPadding: const EdgeInsets.all(20),
-                  children: [
-                    Center(
-                      child: Text('Không còn công việc',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                              )),
-                    ),
-                  ],
-                );
-              });
+          await AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            animType: AnimType.leftSlide,
+            title: 'Không còn công việc',
+            titleTextStyle: GoogleFonts.poppins(),
+            autoHide: const Duration(milliseconds: 800),
+          ).show();
+
           return;
         }
       }
