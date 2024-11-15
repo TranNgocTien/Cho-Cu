@@ -11,14 +11,16 @@ import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:chotot/controllers/statistics.dart';
 import 'package:chotot/controllers/statistics_user.dart';
 import 'package:chotot/data/login_data.dart';
+import 'package:chotot/data/reg_profile_data.dart';
 import 'package:chotot/data/statistics_user_data.dart';
 import 'package:chotot/data/type_user.dart';
 import 'package:chotot/data/version_app.dart';
 import 'package:chotot/screens/active_screen.dart';
 import 'package:chotot/screens/cap_nhat_thong_tin_viewweb.dart';
+import 'package:chotot/screens/dang_ky_tho.dart';
 
 // import 'package:chotot/screens/dang_ky_tho_webview_inapp.dart';
-import 'package:chotot/screens/dang_ky_tho_webview_plugin.dart';
+
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:chotot/screens/login.dart';
 import 'package:chotot/screens/nap_tien_screen.dart';
@@ -291,7 +293,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                             children: [
                               Row(children: [
                                 Image.asset(
-                                  'image/analytics.png',
+                                  'image/new_icon/TAI_KHOAN/THONG_KE.png',
                                   height: 30,
                                   width: 30,
                                 ),
@@ -335,7 +337,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                           width: MediaQuery.of(context).size.height * 0.25,
                           child: Row(children: [
                             Image.asset(
-                              'image/ewallet.png',
+                              'image/new_icon/TAI_KHOAN/NAP_TIEN.png',
                               height: 30,
                               width: 30,
                             ),
@@ -353,70 +355,16 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
               ),
               const SizedBox(height: 30),
               tokenString != ''
-                  ? loginData[0].workerAuthen == 'true'
+                  ?
+                  //  loginData[0].regProfile == '--'
+                  //     ? const SizedBox()
+                  //     :
+                  regProfile.isNotEmpty
                       ? const SizedBox()
-                      //     ? GestureDetector(
-                      //         onTap: () async {
-                      //           tokenString != ''
-                      //               ? Get.to(() => {})
-                      //               : AwesomeDialog(
-                      //                   context: context,
-                      //                   dialogType: DialogType.info,
-                      //                   animType: AnimType.rightSlide,
-                      //                   title: 'Vui lòng đăng nhập',
-                      //                   titleTextStyle: GoogleFonts.poppins(),
-                      //                   btnOkText: 'Đăng nhập',
-                      //                   btnOkOnPress: () {
-                      //                     Get.to(() => const LoginScreen());
-                      //                   },
-                      //                 ).show();
-                      //           // await prefs.setString('token', token.toString());
-                      //         },
-                      //         child: Card(
-                      //           color:
-                      //               const Color.fromARGB(255, 192, 244, 210),
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.symmetric(
-                      //                 horizontal: 30, vertical: 15),
-                      //             child: Row(
-                      //               mainAxisAlignment:
-                      //                   MainAxisAlignment.spaceBetween,
-                      //               children: [
-                      //                 SizedBox(
-                      //                   width: MediaQuery.of(context)
-                      //                           .size
-                      //                           .height *
-                      //                       0.25,
-                      //                   child: Row(children: [
-                      //                     Image.asset(
-                      //                       'image/up-arrow.png',
-                      //                       height: 30,
-                      //                       width: 30,
-                      //                     ),
-                      //                     const SizedBox(width: 10),
-                      //                     const Text(
-                      //                       'Nâng cấp thợ',
-                      //                     ),
-                      //                   ]),
-                      //                 ),
-                      //                 const Icon(Icons.arrow_forward)
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       )
-                      //     :
                       : GestureDetector(
                           onTap: () async {
                             tokenString != ''
-                                ? Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DangKyThoWebView(
-                                          url:
-                                              'https://thothongminh.com/dang-ky-tho-mobile/${getAUserController.aUser[0].user.id}'),
-                                    ),
-                                  )
+                                ? Get.to(() => const DangKyThoScreen())
                                 : AwesomeDialog(
                                     context: context,
                                     dialogType: DialogType.info,
@@ -444,7 +392,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                                         0.25,
                                     child: Row(children: [
                                       Image.asset(
-                                        'image/clipboard.png',
+                                        'image/new_icon/TAI_KHOAN/DANG_KY_THO.png',
                                         height: 30,
                                         width: 30,
                                       ),
@@ -499,7 +447,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                                               0.25,
                                       child: Row(children: [
                                         Image.asset(
-                                          'image/clipboard.png',
+                                          'image/new_icon/TAI_KHOAN/DANG_KY_THO.png',
                                           height: 30,
                                           width: 30,
                                         ),
@@ -516,16 +464,20 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                       ),
                     ),
               tokenString != ''
-                  ? loginData[0].workerAuthen == 'true'
-                      ? GestureDetector(
+                  ?
+                  // loginData[0].regProfile != '--'
+
+                  //     ?
+                  regProfile.isEmpty
+                      ? const SizedBox()
+                      : GestureDetector(
                           onTap: () async {
                             tokenString != ''
                                 ? Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => CapNhatThongTinTho(
-                                          link:
-                                              'https://thothongminh.com/dang-ky-tho-mobile/${getAUserController.aUser[0].user.id}'),
+                                      builder: (context) =>
+                                          const CapNhatThongTinTho(),
                                     ))
                                 // _launchUrl(
                                 //     Uri.parse(
@@ -555,7 +507,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                                 children: [
                                   Row(children: [
                                     Image.asset(
-                                      'image/employee.png',
+                                      'image/new_icon/TAI_KHOAN/DANG_KY_THO.png',
                                       height: 30,
                                       width: 30,
                                     ),
@@ -570,8 +522,9 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                             ),
                           ),
                         )
-                      : const SizedBox()
-                  : const SizedBox(),
+                  : const SizedBox()
+              // : const SizedBox()
+              ,
               const SizedBox(height: 30),
               GestureDetector(
                 onTap: () async {
@@ -610,7 +563,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                                     MediaQuery.of(context).size.height * 0.25,
                                 child: Row(children: [
                                   Image.asset(
-                                    'image/logout.png',
+                                    'image/new_icon/TAI_KHOAN/DANG_XUAT.png',
                                     height: 30,
                                     width: 30,
                                   ),
@@ -663,7 +616,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                                         0.3,
                                     child: Row(children: [
                                       Image.asset(
-                                        'image/delete-user.png',
+                                        'image/new_icon/TAI_KHOAN/XOA_TAI_KHOAN.png',
                                         height: 30,
                                         width: 30,
                                       ),
@@ -708,40 +661,6 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
                             ),
                           )
                     : const SizedBox(),
-              ),
-              const SizedBox(height: 30),
-              GestureDetector(
-                onTap: () async {
-                  version == 'publish' ? version = 'test' : version = 'publish';
-                  Get.offAll(() => const MainScreen());
-                },
-                child: Card(
-                  color: const Color.fromARGB(255, 192, 244, 210),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.height * 0.25,
-                          child: Row(children: [
-                            Image.asset(
-                              'image/logout.png',
-                              height: 30,
-                              width: 30,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              'Chuyển version: $version',
-                            ),
-                          ]),
-                        ),
-                        const Icon(Icons.arrow_forward)
-                      ],
-                    ),
-                  ),
-                ),
               ),
               const SizedBox(height: 20),
               SizedBox(

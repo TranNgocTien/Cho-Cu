@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chotot/data/login_data.dart';
+import 'package:chotot/data/reg_profile_data.dart';
 import 'package:chotot/data/version_app.dart';
 import 'package:chotot/screens/homeScreen.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -65,6 +66,7 @@ class LogOutController extends GetxController {
           loginController.tokenString = '';
           loginController.hostId = '';
           loginData.clear();
+          regProfile.clear();
           await _storage.delete(key: "KEY_USERNAME");
           await _storage.delete(key: "KEY_PASSWORD");
           await _storage.delete(key: "ADDRESS_DEFAULT");

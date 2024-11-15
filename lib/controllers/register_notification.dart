@@ -42,7 +42,7 @@ class RegisterNotification {
     );
 
     //Lấy device FCM token
-    final token = await _firebaseMessaging.getToken();
+    // final token = await _firebaseMessaging.getToken();
   }
 
   // initalize local notifications

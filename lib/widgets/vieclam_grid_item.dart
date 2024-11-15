@@ -1,12 +1,13 @@
 import 'dart:math';
 
+import 'package:chotot/data/job_service_data.dart';
 import 'package:chotot/models/get_post_job_model.dart';
 import 'package:chotot/screens/job_detail_market.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ViecLamGridItem extends StatelessWidget {
@@ -74,8 +75,11 @@ class ViecLamGridItem extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                       color: const Color.fromRGBO(230, 246, 235, 1),
                     ),
-                    child: Image.asset(
-                      imageWorker[randomNumber],
+                    child: Image.network(
+                      jobServiceList
+                          .firstWhereOrNull((element) =>
+                              element.code.trim() == job.jobserviceid.trim())!
+                          .img,
                       width: 60,
                       height: 60,
                     ),

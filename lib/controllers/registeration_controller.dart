@@ -51,12 +51,10 @@ class RegisterationController extends GetxController {
           await http.post(url, body: jsonEncode(body), headers: headers);
       final json = jsonDecode(response.body);
 
-     
       if (response.statusCode == 200) {
         if (json['status'] == 'ok') {
           Get.to(const VerifyOtpScreen());
         } else if (json['status'] == "error") {
-          
           AwesomeDialog(
             context: Get.context!,
             dialogType: DialogType.warning,
@@ -186,7 +184,15 @@ class RegisterationController extends GetxController {
       final json = jsonDecode(response.body);
 
       if (json['status'] == 'ok') {
-        Get.to(const RegisterScreen());
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.success,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
+        Get.to(() => const LoginScreen());
       } else if (json['status'] == 'error') {
         AwesomeDialog(
           context: Get.context!,

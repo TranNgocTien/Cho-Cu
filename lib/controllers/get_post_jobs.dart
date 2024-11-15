@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:chotot/data/get_post_job_data.dart';
 import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/get_post_job_model.dart';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // import 'dart:io';
@@ -54,7 +55,7 @@ class GetPostJobs extends GetxController {
       },
     );
     final json = jsonDecode(response.body);
-
+    print(json);
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         var photos = [];
@@ -173,6 +174,7 @@ class GetPostJobs extends GetxController {
                     data[i]['job']['agent_voucher_bonus'].toString(),
                 description: data[i]['job']['description'].toString(),
               ),
+              jobserviceid: data[i]['job']['services'][0]['jobservice_id'],
               contract: data[i]['contract'].toString(),
               contracts: contractsList,
               employee: data[i]['employee'],

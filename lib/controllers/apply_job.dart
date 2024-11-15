@@ -61,8 +61,15 @@ class ApplyJob extends GetxController {
         ).show();
 
         Get.back();
-      } else {
-        throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
+      } else if (json['error']['code'] == 'WORKER_FEE_NOT_ENOUGH') {
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: 'Ví không đủ tiền',
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
       }
 
       // final SharedPreferences? prefs = await _prefs;

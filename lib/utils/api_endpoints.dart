@@ -46,4 +46,9 @@ class _AuthEndPoints {
   final String getJobsByType2 = 'get_jobs_by_type_2';
   final String getAStuff = 'get_stuff';
   final String getWorkerByLocation = 'get_worker_by_location';
+  final String uploadCcidPhoto = 'upload_ccid_photo';
+  final String uploadCertPhoto = 'upload_cert_photo';
+  final String registerWorker = 'register_worker_2';
+  final String getReg = 'get_reg';
+  final String uploadAvatarPhoto = 'upload_avatar_photo';
 }

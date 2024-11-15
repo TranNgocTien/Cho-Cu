@@ -44,7 +44,7 @@ class AcceptWorker extends GetxController {
     );
 
     final json = jsonDecode(response.body);
-
+    
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         acceptWorkerData.clear();

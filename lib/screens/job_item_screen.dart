@@ -149,8 +149,7 @@ class _JobItemScreenState extends State<JobItemScreen> {
                   return GFListTile(
                       avatar: GFAvatar(
                         shape: GFAvatarShape.circle,
-                        backgroundColor:
-                            const Color.fromARGB(255, 192, 244, 210),
+                        backgroundColor: Colors.white,
                         child: jobItemList[index].img == '--'
                             ? Image.asset(
                                 image[index],

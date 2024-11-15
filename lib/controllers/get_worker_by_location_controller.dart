@@ -34,7 +34,7 @@ class GetWorkerByLocation extends GetxController {
     http.Response response = await http.post(url, body: body, headers: headers);
 
     final json = jsonDecode(response.body);
-
+    print(json);
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         workerByLocationList.clear();

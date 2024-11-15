@@ -191,8 +191,8 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       shape: GFAvatarShape.circle,
                                       backgroundColor: const Color.fromARGB(
                                           255, 192, 244, 210),
-                                      child:
-                                          Image.asset('image/new-employee.png'),
+                                      child: Image.asset(
+                                          'image/new_icon/CONG_VIEC/THO/CONG_VIEC_DA_UNG_TUYEN.png'),
                                     ),
                                     description: Text('Công việc đã ứng tuyển',
                                         style: Theme.of(context)
@@ -238,7 +238,8 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       shape: GFAvatarShape.circle,
                                       backgroundColor: const Color.fromARGB(
                                           255, 192, 244, 210),
-                                      child: Image.asset('image/choosing.png'),
+                                      child: Image.asset(
+                                          'image/new_icon/CONG_VIEC/THO/CONG_VIEC_DUOC_TUYEN.png'),
                                     ),
                                     title: Text('Công việc được tuyển',
                                         style: Theme.of(context)
@@ -284,8 +285,8 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       shape: GFAvatarShape.circle,
                                       backgroundColor: const Color.fromARGB(
                                           255, 192, 244, 210),
-                                      child:
-                                          Image.asset('image/cancel-order.png'),
+                                      child: Image.asset(
+                                          'image/new_icon/CONG_VIEC/THO/CONG_VIEC_DA_HUY.png'),
                                     ),
                                     // titleText: vouchersValid[index].name,
                                     title: Text('Công việc đã hủy',
@@ -332,8 +333,8 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       shape: GFAvatarShape.circle,
                                       backgroundColor: const Color.fromARGB(
                                           255, 192, 244, 210),
-                                      child:
-                                          Image.asset('image/worker_done.png'),
+                                      child: Image.asset(
+                                          'image/new_icon/CONG_VIEC/THO/THO_BAO_HOAN_TAT.png'),
                                     ),
                                     title: Text('Thợ báo hoàn tất',
                                         style: Theme.of(context)
@@ -380,7 +381,7 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       backgroundColor: const Color.fromARGB(
                                           255, 192, 244, 210),
                                       child: Image.asset(
-                                        'image/marking_host.png',
+                                        'image/new_icon/CONG_VIEC/THO/CHU_NHA_BAO_HOAN_TAT.png',
                                       ),
                                     ),
                                     title: Text('Chủ nhà báo hoàn tất',
@@ -428,7 +429,7 @@ class _CongViecWorkerScreenState extends State<CongViecWorkerScreen>
                                       backgroundColor: const Color.fromARGB(
                                           255, 192, 244, 210),
                                       child: Image.asset(
-                                        'image/star-rate.png',
+                                        'image/new_icon/CONG_VIEC/THO/DANH_GIA_TU_CHU_NHA.png',
                                       ),
                                     ),
                                     title: Text('Đánh giá từ chủ nhà',

@@ -176,7 +176,9 @@ class _DoCuGridItemState extends State<DoCuGridItem> {
                       Padding(
                         padding: const EdgeInsets.only(left: 5),
                         child: Text(
-                          '${StringUtils.reverse(priceReverse)} VNĐ',
+                          widget.docu.price == 'Giá liên hệ'
+                              ? 'Giá liên hệ'
+                              : '${StringUtils.reverse(priceReverse)} VNĐ',
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!

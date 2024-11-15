@@ -275,7 +275,7 @@ class _CongViecHostScreenState extends State<CongViecHostScreen>
                                   backgroundColor:
                                       const Color.fromARGB(255, 192, 244, 210),
                                   child: Image.asset(
-                                    'image/new-employee.png',
+                                    'image/new_icon/CONG_VIEC/CHU NHA/CONG_VIEC_MOI_DANG.png',
                                   ),
                                 ),
                                 description: Text('Công việc mới đăng',
@@ -320,7 +320,8 @@ class _CongViecHostScreenState extends State<CongViecHostScreen>
                                   shape: GFAvatarShape.circle,
                                   backgroundColor:
                                       const Color.fromARGB(255, 192, 244, 210),
-                                  child: Image.asset('image/choosing.png'),
+                                  child: Image.asset(
+                                      'image/new_icon/CONG_VIEC/CHU NHA/DA_CHON_THO_LAM_VIEC.png'),
                                 ),
                                 title: Text('Đã chọn thợ làm việc',
                                     style: Theme.of(context)
@@ -364,7 +365,8 @@ class _CongViecHostScreenState extends State<CongViecHostScreen>
                                   shape: GFAvatarShape.circle,
                                   backgroundColor:
                                       const Color.fromARGB(255, 192, 244, 210),
-                                  child: Image.asset('image/cancel-order.png'),
+                                  child: Image.asset(
+                                      'image/new_icon/CONG_VIEC/CHU NHA/CONG_VIEC_DA_HUY.png'),
                                 ),
                                 // titleText: vouchersValid[index].name,
                                 title: Text('Công việc đã hủy',
@@ -409,7 +411,8 @@ class _CongViecHostScreenState extends State<CongViecHostScreen>
                                   shape: GFAvatarShape.circle,
                                   backgroundColor:
                                       const Color.fromARGB(255, 192, 244, 210),
-                                  child: Image.asset('image/worker_done.png'),
+                                  child: Image.asset(
+                                      'image/new_icon/CONG_VIEC/CHU NHA/THO_BAO_HOAN_TAT.png'),
                                 ),
                                 title: Text('Thợ báo hoàn tất',
                                     style: Theme.of(context)
@@ -454,7 +457,7 @@ class _CongViecHostScreenState extends State<CongViecHostScreen>
                                   backgroundColor:
                                       const Color.fromARGB(255, 192, 244, 210),
                                   child: Image.asset(
-                                    'image/marking_host.png',
+                                    'image/new_icon/CONG_VIEC/THO/CHU_NHA_BAO_HOAN_TAT.png',
                                   ),
                                 ),
                                 title: Text('Chủ nhà báo hoàn tất',

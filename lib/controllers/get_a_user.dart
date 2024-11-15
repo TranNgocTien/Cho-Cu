@@ -37,7 +37,7 @@ class GetAUserController extends GetxController {
         await http.post(url, body: jsonEncode(body), headers: headers);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-
+      print(json);
       if (json['status'] == 'ok') {
         aUser.clear();
         final userJson = json['data']['user'];

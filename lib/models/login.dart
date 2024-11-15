@@ -11,17 +11,20 @@ class LoginPost {
   final String name;
   final String status;
   final String address;
-  LoginPost(
-      {required this.name,
-      required this.wallet,
-      required this.phoneNumber,
-      required this.password,
-      // required this.deviceName,
-      required this.profileImage,
-      required this.type,
-      required this.workerAuthen,
-      required this.status,
-      required this.address});
+  final String regProfile;
+  LoginPost({
+    required this.name,
+    required this.wallet,
+    required this.phoneNumber,
+    required this.password,
+    // required this.deviceName,
+    required this.profileImage,
+    required this.type,
+    required this.workerAuthen,
+    required this.status,
+    required this.address,
+    required this.regProfile,
+  });
 }
 //   final Dio _dio = Dio();
 

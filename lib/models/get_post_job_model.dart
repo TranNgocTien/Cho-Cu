@@ -6,7 +6,7 @@ class PostJob {
   final dynamic employee;
   final List<Contracts> contracts;
   final List<WorkersPostJob> workers;
-
+  final String jobserviceid;
   PostJob({
     required this.job,
     required this.contract,
@@ -15,6 +15,7 @@ class PostJob {
     required this.host,
     required this.rate,
     required this.workers,
+    required this.jobserviceid,
   });
 }
 

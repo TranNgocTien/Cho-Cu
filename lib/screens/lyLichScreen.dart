@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:chotot/screens/capNhatTaiKhoan.dart';
 
 import 'package:chotot/data/ly_lich.dart';
+import 'package:insta_image_viewer/insta_image_viewer.dart';
 
 // import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -698,13 +699,9 @@ class _LyLichScreenState extends State<LyLichScreen> {
                             children: [
                               Column(
                                 children: [
-                                  Material(
-                                    color: Colors.white,
-                                    child: InkWell(
-                                      onTap: () {
-                                        showOverlay(getAUserController
-                                            .aUser[0].worker.ccidImg.truoc);
-                                      },
+                                  InstaImageViewer(
+                                    child: Material(
+                                      color: Colors.white,
                                       child: CachedNetworkImage(
                                           fit: BoxFit.fitWidth,
                                           width: widthDevice * 0.48,
@@ -760,13 +757,9 @@ class _LyLichScreenState extends State<LyLichScreen> {
                               ),
                               Column(
                                 children: [
-                                  Material(
-                                    color: Colors.white,
-                                    child: InkWell(
-                                      onTap: () {
-                                        showOverlay(getAUserController
-                                            .aUser[0].worker.ccidImg.sau);
-                                      },
+                                  InstaImageViewer(
+                                    child: Material(
+                                      color: Colors.white,
                                       child: CachedNetworkImage(
                                           fit: BoxFit.fitWidth,
                                           width: widthDevice * 0.48,
@@ -839,94 +832,99 @@ class _LyLichScreenState extends State<LyLichScreen> {
                             ), // B,,
                           ),
                           const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Material(
-                                color: Colors.white,
-                                child: InkWell(
-                                  onTap: () {
-                                    showOverlay(getAUserController
-                                        .aUser[0].worker.certificate[0].img);
-                                  },
-                                  child: CachedNetworkImage(
-                                      fit: BoxFit.fitWidth,
-                                      width: widthDevice * 0.48,
-                                      height: 200,
-                                      imageUrl: getAUserController
-                                          .aUser[0].worker.certificate[0].img,
-                                      // placeholder: (context, url) =>
-                                      //     const CircularProgressIndicator(strokeWidth: 5.0),
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(
-                                              'image/logo_tho_thong_minh.jpeg',
-                                              width: widthDevice * 0.48,
-                                              height: 200,
-                                              fit: BoxFit.fitWidth),
-                                      imageBuilder: (context, imageProvider) =>
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(10),
-                                                      topRight:
-                                                          Radius.circular(10)),
-                                              image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.fitWidth,
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ...getAUserController
+                                    .aUser[0].worker.certificate
+                                    .map((cert) {
+                                  return InstaImageViewer(
+                                    child: Material(
+                                      color: Colors.white,
+                                      child: CachedNetworkImage(
+                                          fit: BoxFit.fitWidth,
+                                          width: widthDevice * 0.48,
+                                          height: 200,
+                                          imageUrl: cert.img,
+                                          // placeholder: (context, url) =>
+                                          //     const CircularProgressIndicator(strokeWidth: 5.0),
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(
+                                                  'image/logo_tho_thong_minh.jpeg',
+                                                  width: widthDevice * 0.48,
+                                                  height: 200,
+                                                  fit: BoxFit.fitWidth),
+                                          imageBuilder: (context,
+                                                  imageProvider) =>
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10)),
+                                                  image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.fitWidth,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                      memCacheWidth: 200,
-                                      maxHeightDiskCache: 200,
-                                      maxWidthDiskCache:
-                                          (widthDevice * 0.48).toInt()),
-                                ),
-                              ),
-                              Material(
-                                color: Colors.white,
-                                child: InkWell(
-                                  onTap: () {
-                                    showOverlay(getAUserController
-                                        .aUser[0].worker.certificate[1].img);
-                                  },
-                                  child: CachedNetworkImage(
-                                      fit: BoxFit.fitWidth,
-                                      width: widthDevice * 0.48,
-                                      height: 200,
-                                      imageUrl: getAUserController
-                                          .aUser[0].worker.certificate[1].img,
-                                      // placeholder: (context, url) =>
-                                      //     const CircularProgressIndicator(strokeWidth: 5.0),
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(
-                                              'image/logo_tho_thong_minh.jpeg',
-                                              width: widthDevice * 0.48,
-                                              height: 200,
-                                              fit: BoxFit.fitWidth),
-                                      imageBuilder: (context, imageProvider) =>
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(10),
-                                                      topRight:
-                                                          Radius.circular(10)),
-                                              image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.fitWidth,
-                                              ),
-                                            ),
-                                          ),
-                                      memCacheWidth: 200,
-                                      maxHeightDiskCache: 200,
-                                      maxWidthDiskCache:
-                                          (widthDevice * 0.48).toInt()),
-                                ),
-                              ),
-                            ],
+                                          memCacheWidth: 200,
+                                          maxHeightDiskCache: 200,
+                                          maxWidthDiskCache:
+                                              (widthDevice * 0.48).toInt()),
+                                    ),
+                                  );
+                                }),
+                                // Material(
+                                //   color: Colors.white,
+                                //   child: InkWell(
+                                //     onTap: () {
+                                //       showOverlay(getAUserController
+                                //           .aUser[0].worker.certificate[1].img);
+                                //     },
+                                //     child: CachedNetworkImage(
+                                //         fit: BoxFit.fitWidth,
+                                //         width: widthDevice * 0.48,
+                                //         height: 200,
+                                //         imageUrl: getAUserController
+                                //             .aUser[0].worker.certificate[1].img,
+                                //         // placeholder: (context, url) =>
+                                //         //     const CircularProgressIndicator(strokeWidth: 5.0),
+                                //         errorWidget: (context, url, error) =>
+                                //             Image.asset(
+                                //                 'image/logo_tho_thong_minh.jpeg',
+                                //                 width: widthDevice * 0.48,
+                                //                 height: 200,
+                                //                 fit: BoxFit.fitWidth),
+                                //         imageBuilder: (context, imageProvider) =>
+                                //             Container(
+                                //               decoration: BoxDecoration(
+                                //                 borderRadius:
+                                //                     const BorderRadius.only(
+                                //                         topLeft:
+                                //                             Radius.circular(10),
+                                //                         topRight:
+                                //                             Radius.circular(10)),
+                                //                 image: DecorationImage(
+                                //                   image: imageProvider,
+                                //                   fit: BoxFit.fitWidth,
+                                //                 ),
+                                //               ),
+                                //             ),
+                                //         memCacheWidth: 200,
+                                //         maxHeightDiskCache: 200,
+                                //         maxWidthDiskCache:
+                                //             (widthDevice * 0.48).toInt()),
+                                //   ),
+                                // ),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 30),
                           Center(

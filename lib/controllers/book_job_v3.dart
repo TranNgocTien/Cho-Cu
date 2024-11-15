@@ -11,7 +11,7 @@ import 'package:chotot/data/default_information.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:chotot/data/job_service_data.dart';
 import 'package:http/http.dart' as http;
 
 // import 'package:shared_preferences/shared_preferences.dart';
@@ -49,8 +49,8 @@ class BookJob extends GetxController {
   }
 
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<void> bookJob(
-      String name, String workDate, String workHour, String priceId) async {
+  Future<void> bookJob(String idService, String name, String workDate,
+      String workHour, String priceId) async {
     List<String> adressList = addressController.text.split(',');
     tokenString = await _storage.read(key: "TOKEN") ?? '';
     if (adressList.length < 4) {
@@ -99,7 +99,7 @@ class BookJob extends GetxController {
       'description': descriptionController.text,
       'photos': json.encode(imageLink),
       // 'version': version,
-      'version': 'test',
+      'version': 'publish',
       "token": "anhkhongdoiqua",
     };
     http.Response response = await http.post(
@@ -112,7 +112,7 @@ class BookJob extends GetxController {
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-
+      print(json);
       if (json['status'] == 'ok') {
         descriptionController.clear();
 
@@ -183,7 +183,7 @@ class BookJob extends GetxController {
     //       });
 
     //   return;
-    // }
+    // }´
     final hostId = prefs.getString('host_id');
 
     // try {
@@ -201,11 +201,14 @@ class BookJob extends GetxController {
       // request.files.add(http.MultipartFile.fromBytes(
       //     'file', File(file.path).readAsBytesSync(),
       //     filename: file.path));
-      request.files.add(http.MultipartFile(
+      request.files.add(
+        http.MultipartFile(
           'file',
           File(file.path).readAsBytes().asStream(),
           File(file.path).lengthSync(),
-          filename: file.path.split("/").last));
+          filename: file.path.split("/").last,
+        ),
+      );
     }
     Map<String, String> obj = {"user_id": hostId!};
 

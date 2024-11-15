@@ -130,17 +130,19 @@ class ForgotPasswordController extends GetxController {
       'token': 'anhkhongdoiqua',
       'version': version,
     };
+    print(body);
     http.Response response =
         await http.post(url, body: jsonEncode(body), headers: headers);
+    final json = jsonDecode(response.body);
+    print(json);
     if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-
       if (json['status'] == 'ok') {
         phoneNumberController.clear();
         otpCodeController.clear();
         newPasswordController.clear();
         isRequestOtp = 0.obs;
-        Get.off(const LoginScreen());
+
+        Get.off(() => const LoginScreen());
       } else if (json['status'] == 'error') {
         AwesomeDialog(
           context: Get.context!,

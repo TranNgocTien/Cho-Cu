@@ -66,6 +66,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
   GetPrice getPrice = Get.put(GetPrice());
   BookJob bookJob = Get.put(BookJob());
   String serviceSelected = '';
+  String serviceCode = '';
   String workHour = '';
   int timeStampWorkhour = 0;
   int countGetPrice = 0;
@@ -149,6 +150,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
     }
 
     await bookJob.bookJob(
+      serviceCode,
       serviceSelected,
       getPrice.dataPrice.workDate,
       workHour,
@@ -446,6 +448,49 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
 
 // millisecondsSinceEpoch
   getPriceFunc() async {
+    if (bookJob.imageFileList!.length > 3) {
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Đăng tối thiểu 1 ảnh, tối đa 3 ảnh',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+
+      return;
+    }
+
+    if (bookJob.addressController.text.isEmpty) {
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng chọn theo tên gợi ý!',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
+    }
+    if (bookJob.nameController.text.isEmpty) {
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng điền đầy đủ họ tên',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
+    }
+    if (bookJob.phoneController.text.isEmpty) {
+      await AwesomeDialog(
+        context: Get.context!,
+        dialogType: DialogType.warning,
+        animType: AnimType.rightSlide,
+        title: 'Vui lòng điền số điện thoại',
+        titleTextStyle: GoogleFonts.poppins(),
+      ).show();
+      return;
+    }
+
     if (getPrice.code.runtimeType != String) getPrice.code = '';
     var workDate = '$dateConvertToString$hourConvertToString'
         'Z';
@@ -577,6 +622,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
 
   void _modalBottomSheetMenu() async {
     // image = await chooseListImage(widget.nameService);
+    serviceCode = widget.codeService;
     await getJobItem.getJobItem(widget.codeService);
     showMaterialModalBottomSheet(
         context: Get.context!,
@@ -631,8 +677,7 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                   return GFListTile(
                       avatar: GFAvatar(
                         shape: GFAvatarShape.circle,
-                        backgroundColor:
-                            const Color.fromARGB(255, 192, 244, 210),
+                        backgroundColor: Colors.white,
                         child: jobItemList[index].img == '--'
                             ? Image.asset(
                                 image[index],
@@ -685,9 +730,11 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                   element.code ==
                                   jobItemList[index].jobserviceId)
                               .name;
+
                           tempTotalPrice +=
                               int.parse(jobItemList[indexJobItemList].price);
                         });
+
                         Navigator.pop(context);
                       }
                       // title: Text('$dateTo-$dateFrom'),
@@ -702,12 +749,14 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
   @override
   void initState() {
     // print(image);
+    getJobService.getJobService();
     hourConvertToString =
         ' ${time.hour < 10 ? 0 : ''}${time.hour.toString()}:${time.minute < 10 ? 0 : ''}${time.minute.toString()}:${time.second < 10 ? 0 : ''}${time.second.toString()}';
     if (widget.codeService != '') {
       image = chooseListImage(widget.nameService);
       _modalBottomSheetMenu();
     }
+
     selectedItems.clear();
     jobItemsSelected.clear();
     super.initState();
@@ -1156,6 +1205,9 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                     }
                                     if (serviceSelected == '' ||
                                         serviceSelected == item) {
+                                      serviceCode = jobServiceList[
+                                              nameService.indexOf(item)]
+                                          .code;
                                       await getJobItem.getJobItem(
                                           jobServiceList[
                                                   nameService.indexOf(item)]

@@ -21,6 +21,7 @@ class GetJobItem extends GetxController {
       url,
       body: body,
     );
+    print('getJobItem');
     print(jobServiceId);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);

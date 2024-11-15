@@ -94,7 +94,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
 
             TaiKhoanItem(
                 title: 'Thống kê',
-                image: 'image/icon/icon_thong_ke_(1).png',
+                image: 'image/new_icon/TAI_KHOAN/THONG_KE.png',
                 onTap: () async {
                   tokenString != ''
                       ? Get.to(() => const LyLichScreen())
@@ -122,7 +122,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
                 }),
             TaiKhoanItem(
                 title: 'Cập nhật thông tin thợ',
-                image: 'image/icon/dang_ki_tho_(1).png',
+                image: 'image/new_icon/TAI_KHOAN/CAP_NHAP_THONG_TIN_THO.png',
                 onTap: () async {
                   tokenString != ''
                       ? Get.to(() => const LyLichScreen())
@@ -178,7 +178,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
                 }),
             TaiKhoanItem(
                 title: 'Nạp tiền',
-                image: 'image/icon/huong_dan_nap_tien_(1).png',
+                image: 'image/new_icon/TAI_KHOAN/NAP_TIEN.png',
                 onTap: () async {
                   tokenString != ''
                       ? Get.to(() => const LyLichScreen())
@@ -206,7 +206,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
                 }),
             TaiKhoanItem(
                 title: 'Đăng xuất',
-                image: 'image/icon/dnag_xuat_(1).png',
+                image: 'image/new_icon/TAI_KHOAN/DANG_XUAT.png',
                 onTap: () async {
                   tokenString != ''
                       ? await logOutController.logOut()
@@ -234,7 +234,7 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen> {
                 }),
             TaiKhoanItem(
                 title: 'Xóa tài khoản',
-                image: 'image/icon/dnag_xuat_(1).png',
+                image: 'image/new_icon/TAI_KHOAN/XOA_TAI_KHOAN.png',
                 onTap: () async {
                   tokenString != ''
                       ? Get.to(() => const LyLichScreen())

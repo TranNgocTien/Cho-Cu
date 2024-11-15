@@ -8,6 +8,7 @@ import 'package:chotot/controllers/get_jobservice.dart';
 import 'package:chotot/controllers/get_ly_lich.dart';
 import 'package:chotot/controllers/get_news.dart';
 import 'package:chotot/controllers/get_notis.dart';
+import 'package:chotot/controllers/get_reg.dart';
 import 'package:chotot/controllers/get_stuffs.dart';
 import 'package:chotot/controllers/get_vouchers_valid.dart';
 import 'package:chotot/controllers/login_controller.dart';

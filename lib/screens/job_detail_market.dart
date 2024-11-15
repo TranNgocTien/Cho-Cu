@@ -920,10 +920,10 @@ class _JobDetailMarketScreenState extends State<JobDetailMarketScreen> {
                                                       .firstWhereOrNull(
                                                           (element) =>
                                                               element
-                                                                  .name
+                                                                  .code
                                                                   .trim() ==
-                                                              widget
-                                                                  .job.job.name
+                                                              widget.job
+                                                                  .jobserviceid
                                                                   .trim()) !=
                                                   null
                                               ? Image.network(

@@ -334,8 +334,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               ),
                               const SizedBox(height: 30),
                               ElevatedButton(
-                                onPressed: () {
-                                  forgotPasswordController.forgotPassword();
+                                onPressed: () async {
+                                  print('1');
+                                  await forgotPasswordController
+                                      .forgotPassword();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:

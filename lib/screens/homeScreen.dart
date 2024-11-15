@@ -8,6 +8,8 @@ import 'package:chotot/controllers/get_a_user.dart';
 // import 'package:chotot/controllers/get_host_job.dart';
 import 'package:chotot/controllers/get_notis.dart';
 import 'package:chotot/controllers/get_orders_user.dart';
+import 'package:chotot/controllers/get_reg.dart';
+
 import 'package:chotot/controllers/get_stuffs.dart';
 import 'package:chotot/controllers/get_stuffs_suggestion.dart';
 // import 'package:chotot/controllers/get_worker_job.dart';
@@ -16,6 +18,7 @@ import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/controllers/register_notification.dart';
 import 'package:chotot/data/a_stuff_data.dart';
 import 'package:chotot/data/data_listener.dart';
+import 'package:chotot/data/login_data.dart';
 import 'package:chotot/data/ly_lich.dart';
 // import 'package:chotot/controllers/register_notification.dart';
 // import 'package:chotot/controllers/statistics_user.dart';
@@ -55,12 +58,13 @@ class _MainScreenState extends State<MainScreen>
   GetStuffs getStuffs = Get.put(GetStuffs());
   GetAJob getAJob = Get.put(GetAJob());
   LoginController loginController = Get.put(LoginController());
-
+  GetReg getRegController = Get.put(GetReg());
   GetAUserController getAUserController = Get.put(GetAUserController());
   GetOrdersUser getOrdersUser = Get.put(GetOrdersUser());
   GetStuffsSuggestion getStuffsSuggestion = Get.put(GetStuffsSuggestion());
   // final _storage = const FlutterSecureStorage();
   LyLichController lyLichController = Get.put(LyLichController());
+
   int selectedIndex = 0;
   String tokenLogin = '';
   bool isNotiClick = false;
@@ -74,6 +78,7 @@ class _MainScreenState extends State<MainScreen>
       Timer(const Duration(milliseconds: 1000), () async {
         await getAUserController.getAUser();
         await getOrdersUser.getOrdersUser(0);
+
         setState(() {
           getAUserController.isLoading = false;
           getOrdersUser.isLoading = false;
@@ -204,7 +209,7 @@ class _MainScreenState extends State<MainScreen>
   @override
   void initState() {
     getStuffsSuggestion.getStuffs();
-
+    getRegController.getReg();
     setState(() {
       selectedIndex = widget.tabIndex;
       count.value = 0;

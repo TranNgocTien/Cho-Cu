@@ -22,7 +22,7 @@ class GetJobService extends GetxController {
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         final data = json['data'];
-
+        print(data);
         for (int i = 0; i < data.length; i++) {
           jobServiceList.add(
             JobService(

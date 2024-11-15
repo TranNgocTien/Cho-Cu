@@ -18,7 +18,7 @@ import 'package:chotot/screens/tin_tuc_screen.dart';
 import 'package:chotot/screens/voucher_info_screen.dart';
 import 'package:chotot/widgets/news_grid_item.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide CarouselController;
 import 'package:chotot/data/default_information.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -55,7 +55,7 @@ class _TimThoScreenState extends State<TimThoScreen>
   bool isLoading = false;
   // ignore: prefer_typing_uninitialized_variables
   String tokenString = '';
-  final CarouselController _controller = CarouselController();
+  final CarouselSliderController _controller = CarouselSliderController();
   final List<String> imgLink = [
     'image/slider_example_1.jpeg',
     'image/slider_example_2.jpeg'

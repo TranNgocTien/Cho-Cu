@@ -8,6 +8,7 @@ import 'package:chotot/data/docu_data.dart';
 import 'package:chotot/models/place.dart';
 // import 'package:chotot/screens/change_default_info.dart';
 import 'package:chotot/screens/homeScreen.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
@@ -40,12 +41,15 @@ class RaoBanScreen extends StatefulWidget {
 
 class _RaoBanScreenState extends State<RaoBanScreen> {
   final _formKey = GlobalKey<FormState>();
+
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final GetStuffs _getStuffs = Get.put(GetStuffs());
   PostStuff postStuff = Get.put(PostStuff());
   final ImagePicker imagePicker = ImagePicker();
   String service = 'Chọn dịch vụ đăng tin';
   String serviceFee = '0';
+  String insertPrice = '';
+
   final _storage = const FlutterSecureStorage();
   Future<void> _convertCoordinatefromAddress(double lat, double lng) async {
     final url = Uri.parse(
@@ -176,21 +180,6 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
       postStuff.imageFileList!.addAll(selectedImages);
     }
     setState(() {});
-    // try {
-    //   final imageFileGallery = await ImagePicker()
-    //       .pickImage(source: ImageSource.gallery, maxWidth: 600);
-    //   if (imageFileGallery == null) return;
-    //   final imageTemp = File(imageFileGallery.path);
-    //   setState(() {
-    //     imageFile = imageTemp;
-    //   });
-    // } on PlatformException catch (e) {
-    //   AlertDialog(
-    //     content: Text(
-    //       e.toString(),
-    //     ),
-    //   );
-    // }
   }
 
   showAlertDialog(context) => AwesomeDialog(
@@ -383,10 +372,95 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
         });
   }
 
+  List<dynamic> listOfLocation = [];
+  @override
+  void initState() {
+    postStuff.addressController.addListener(() {
+      _onChange();
+    });
+    super.initState();
+  }
+
+  void placeSuggestion(String input) async {
+    try {
+      String request =
+          'https://rsapi.goong.io/Place/AutoComplete?api_key=WOXLNGkieaqVH3DPxcDpJoInSLk7QQajAHdzmyhB&input=$input';
+      var response = await http.get(Uri.parse(request));
+      var data = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        setState(() {
+          listOfLocation = json.decode(response.body)['predictions'];
+        });
+      } else {}
+      throw Exception("Fail to load");
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _onChange() {
+    placeSuggestion(postStuff.addressController.text);
+  }
+
   @override
   void dispose() {
     FocusScope.of(context).unfocus();
     super.dispose();
+  }
+
+  OverlayEntry? _overlayEntry;
+  final LayerLink _layerLink = LayerLink();
+
+  void _showOverlay() {
+    if (_overlayEntry != null) {
+      _overlayEntry!.remove();
+    }
+    _overlayEntry = _createOverlayEntry();
+    Overlay.of(context)!.insert(_overlayEntry!);
+  }
+
+  void _hideOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        width: size.width,
+        left: offset.dx,
+        top: offset.dy + size.height,
+        child: Material(
+          elevation: 4.0,
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: 200, // Giới hạn chiều cao cho danh sách
+            ),
+            child: ListView.builder(
+              itemCount: listOfLocation.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    // Xử lý khi chọn địa điểm
+                    postStuff.addressController.text =
+                        listOfLocation[index]["description"]!;
+                    _hideOverlay(); // Ẩn overlay khi chọn địa điểm
+                  },
+                  child: ListTile(
+                    title: Text(listOfLocation[index]["description"]!),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -417,25 +491,6 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
               ),
             ),
           ),
-          // actions: [
-          //   IconButton(
-          //     onPressed: () async {
-          //       await Get.to(() => const ChangeDefaultInfo())!
-          //           .then((_) => setState(() async {
-          //                 addressDefault =
-          //                     await _storage.read(key: "ADDRESS_DEFAULT") ?? '';
-          //                 nameDefault =
-          //                     await _storage.read(key: "NAME_DEFAULT") ?? '';
-          //                 numberPhoneDefault =
-          //                     await _storage.read(key: "NUMBER_DEFAULT") ?? '';
-          //                 postStuff.addressController.text = addressDefault;
-          //                 postStuff.phoneController.text = numberPhoneDefault;
-          //                 postStuff.nameController.text = nameDefault;
-          //               }));
-          //     },
-          //     icon: const Icon(Icons.settings),
-          //   ),
-          // ],
           title: Text(
             'Đăng tin chợ',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
@@ -587,7 +642,8 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
 
                           final lat = prefs.getDouble('lat')!;
                           final lng = prefs.getDouble('lng')!;
-
+                          print(lat);
+                          print(lng);
                           final pickedLocation =
                               await Navigator.of(context).push<String>(
                             MaterialPageRoute(
@@ -716,48 +772,176 @@ class _RaoBanScreenState extends State<RaoBanScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    'Giá mong muốn: (VNĐ)',
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 1,
-                          color: const Color.fromARGB(255, 192, 244, 210)),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 5, left: 15, right: 15),
-                      child: TextFormField(
-                        controller: postStuff.sumPriceController,
-                        decoration: const InputDecoration(
-                          hintText: '0',
-                          border: InputBorder.none,
-                        ),
-                        keyboardType: TextInputType.number,
-                        autocorrect: false,
-                        textCapitalization: TextCapitalization.none,
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              int.parse(value.trim()) <= 1000) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Price must be higher!'),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton2<String>(
+                      isExpanded: true,
+                      // value: 'Thêm dịch vụ:',
+                      hint: Text(
+                        insertPrice == ''
+                            ? 'Chọn phương thức nhập giá tiền:'
+                            : insertPrice,
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontFamily: GoogleFonts.poppins().fontFamily),
+                      ),
+                      items: [
+                        DropdownMenuItem<String>(
+                            value: 'Giá liên hệ',
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              // color: const Color.fromRGBO(23, 162, 73, 1),
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: const Color.fromRGBO(23, 162, 73, 1),
                               ),
-                            );
-                          }
-                          return null;
-                        },
+                              child: Text(
+                                'Giá liên hệ',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      fontFamily:
+                                          GoogleFonts.poppins().fontFamily,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            ),
+                            onTap: () async {
+                              setState(() {
+                                postStuff.sumPriceController.text =
+                                    'Giá liên hệ';
+                              });
+                            }),
+                        DropdownMenuItem<String>(
+                          value: 'Nhập giá tiền',
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            // color: const Color.fromRGBO(23, 162, 73, 1),
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: const Color.fromRGBO(23, 162, 73, 1),
+                            ),
+                            child: Text(
+                              'Nhập giá tiền',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ),
+                          // onTap: () async {
+                          //   setState(() {
+                          //     insertPrice = 'Nhập giá tiền';
+                          //   });
+                          // }
+                        )
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          insertPrice = value!;
+                        });
+                      },
+                      //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
+                      // value: selectedItems.isEmpty ? null : selectedItems.last,
+
+                      buttonStyleData: ButtonStyleData(
+                        padding: const EdgeInsets.only(left: 14, right: 14),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: const Color.fromARGB(255, 192, 244, 210),
+                          ),
+                          color: Colors.white,
+                        ),
+                        height: 40,
+                        width: double.infinity,
+                      ),
+                      // iconStyleData: const IconStyleData(
+                      //   icon: Icon(
+                      //     Icons.arrow_forward_ios_outlined,
+                      //   ),
+                      //   iconSize: 14,
+                      //   iconEnabledColor: Colors.black,
+                      //   iconDisabledColor: Colors.grey,
+                      // ),
+                      dropdownStyleData: DropdownStyleData(
+                        maxHeight: 200,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Colors.white,
+                        ),
+                        offset: const Offset(20, 0),
+                        scrollbarTheme: ScrollbarThemeData(
+                          radius: const Radius.circular(40),
+                          thickness: WidgetStateProperty.all(6),
+                          thumbVisibility: WidgetStateProperty.all(true),
+                        ),
+                      ),
+                      menuItemStyleData: const MenuItemStyleData(
+                        height: 50,
+                        padding: EdgeInsets.only(left: 14, right: 14),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  insertPrice == 'Nhập giá tiền'
+                      ? Text(
+                          'Giá mong muốn: (VNĐ)',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        )
+                      : const SizedBox(),
+                  insertPrice == 'Nhập giá tiền'
+                      ? Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1,
+                                color:
+                                    const Color.fromARGB(255, 192, 244, 210)),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 5, left: 15, right: 15),
+                            child: TextFormField(
+                              controller: postStuff.sumPriceController,
+                              decoration: const InputDecoration(
+                                hintText: '0',
+                                border: InputBorder.none,
+                              ),
+                              keyboardType: TextInputType.number,
+                              autocorrect: false,
+                              textCapitalization: TextCapitalization.none,
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    int.parse(value.trim()) <= 1000) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Price must be higher!'),
+                                    ),
+                                  );
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
                   const SizedBox(
                     height: 20,
                   ),

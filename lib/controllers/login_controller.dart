@@ -7,6 +7,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/register_notification.dart';
 import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/login.dart';
+import 'package:chotot/screens/login.dart';
 // import 'package:chotot/models/place.dart';
 import 'package:chotot/screens/map_background.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -141,7 +142,7 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-
+        print(json);
         if (json['status'] == 'ok') {
           if (currentHostID != json['data']['_id']) {
             addressDefault = '';
@@ -160,6 +161,7 @@ class LoginController extends GetxController {
               name: json['data']['name'].toString(),
               status: json['data']['status'].toString(),
               address: json['data']['address'].toString(),
+              regProfile: json['data']['reg_profile'].toString(),
             ),
           );
 
@@ -335,7 +337,7 @@ class LoginController extends GetxController {
           }
         } else if (json['status'] == "error") {
           if (json['error']['code'] == 'LOGIN02') {
-            AwesomeDialog(
+            await AwesomeDialog(
               context: Get.context!,
               dialogType: DialogType.warning,
               animType: AnimType.rightSlide,
@@ -343,6 +345,8 @@ class LoginController extends GetxController {
               titleTextStyle: GoogleFonts.poppins(),
               autoHide: const Duration(milliseconds: 800),
             ).show();
+
+            Get.offAll(() => const LoginScreen());
           }
           if (json['error']['code'] == 'LOGIN03') {
             AwesomeDialog(
@@ -353,6 +357,7 @@ class LoginController extends GetxController {
               titleTextStyle: GoogleFonts.poppins(),
               autoHide: const Duration(milliseconds: 800),
             ).show();
+            Get.offAll(() => const LoginScreen());
           }
           // showDialog(
           //     context: Get.context!,
