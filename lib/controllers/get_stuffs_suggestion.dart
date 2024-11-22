@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/data/docu_suggestion.dart';
 import 'package:chotot/data/version_app.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -10,6 +11,7 @@ import 'package:chotot/controllers/login_controller.dart';
 // import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -105,9 +107,14 @@ class GetStuffsSuggestion extends GetxController {
             }
           }
         } else if (json['status'] == 'error') {
-          if (json['error']['message'] == 'Không có hàng') {
-            return;
-          }
+          await AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: json['error']['message'],
+            titleTextStyle: GoogleFonts.poppins(),
+            autoHide: const Duration(milliseconds: 800),
+          ).show();
         }
         // final SharedPreferences? prefs = await _prefs;
         // await prefs?.setString('token', token);

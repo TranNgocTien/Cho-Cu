@@ -70,6 +70,15 @@ class ApplyJob extends GetxController {
           titleTextStyle: GoogleFonts.poppins(),
           autoHide: const Duration(milliseconds: 800),
         ).show();
+      } else if (json['status'] == 'error') {
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
       }
 
       // final SharedPreferences? prefs = await _prefs;

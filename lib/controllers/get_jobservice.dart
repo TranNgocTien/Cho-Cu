@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/data/job_service_data.dart';
 // import 'package:chotot/data/version_app.dart';
 import 'package:chotot/models/job_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 // import 'package:chotot/utils/api_endpoints.dart';
 import 'package:get/get.dart';
@@ -22,7 +24,9 @@ class GetJobService extends GetxController {
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         final data = json['data'];
-        print(data);
+        nameService.clear();
+        imgService.clear();
+        jobServiceList.clear();
         for (int i = 0; i < data.length; i++) {
           jobServiceList.add(
             JobService(
@@ -40,6 +44,15 @@ class GetJobService extends GetxController {
           nameService.add(data[i]['name']);
           imgService.add(data[i]['img']);
         }
+      } else if (json['status'] == 'error') {
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
       }
     }
     // else {

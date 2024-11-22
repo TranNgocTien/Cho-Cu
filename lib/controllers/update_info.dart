@@ -125,8 +125,8 @@ class UpdateInfoController extends GetxController {
         lat = 0;
         lng = 0;
         Get.offAll(() => const MainScreen());
-      } else if (json['status'] == "error") {
-        AwesomeDialog(
+      } else if (json['status'] == 'error') {
+        await AwesomeDialog(
           context: Get.context!,
           dialogType: DialogType.warning,
           animType: AnimType.rightSlide,
@@ -134,9 +134,6 @@ class UpdateInfoController extends GetxController {
           titleTextStyle: GoogleFonts.poppins(),
           autoHide: const Duration(milliseconds: 800),
         ).show();
-
-        throw jsonDecode(response.body)['error']['message'] ??
-            'Unknown Error Occured';
       }
     } else {
       throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';

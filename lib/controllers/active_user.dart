@@ -56,16 +56,15 @@ class ActiveUser extends GetxController {
           autoHide: const Duration(milliseconds: 800),
         ).show();
         Get.offAll(const MainScreen());
-      } else {
+      } else if (json['status'] == 'error') {
         await AwesomeDialog(
           context: Get.context!,
-          dialogType: DialogType.error,
+          dialogType: DialogType.warning,
           animType: AnimType.rightSlide,
-          title: 'Thông tin vừa nhập không hợp lệ',
+          title: json['error']['message'],
           titleTextStyle: GoogleFonts.poppins(),
           autoHide: const Duration(milliseconds: 800),
         ).show();
-        Get.back();
       }
     }
   }

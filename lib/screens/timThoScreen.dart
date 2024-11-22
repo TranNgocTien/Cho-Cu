@@ -667,8 +667,17 @@ class _TimThoScreenState extends State<TimThoScreen>
                                                 padding:
                                                     const EdgeInsets.all(15.0),
                                                 decoration: BoxDecoration(
-                                                    color: const Color.fromRGBO(
-                                                        230, 246, 235, 1),
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                        0,
+                                                        200,
+                                                        100,
+                                                        1,
+                                                      ),
+                                                      width: 3,
+                                                    ),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             50)),

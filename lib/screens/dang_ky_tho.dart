@@ -1739,7 +1739,7 @@ class _DoanhNghiepState extends State<DoanhNghiep> {
         context: Get.context!,
         dialogType: DialogType.warning,
         animType: AnimType.rightSlide,
-        title: 'Quý khách vui lòng nhập căn cước công dân.',
+        title: 'Quý khách vui lòng nhập mã số doanh nghiệp.',
         titleTextStyle: GoogleFonts.poppins(),
       ).show();
       return;
@@ -1759,7 +1759,7 @@ class _DoanhNghiepState extends State<DoanhNghiep> {
         context: Get.context!,
         dialogType: DialogType.warning,
         animType: AnimType.rightSlide,
-        title: 'Quý khách vui lòng nhập hình ảnh chứng chỉ.',
+        title: 'Quý khách vui lòng thêm hình ảnh chứng chỉ.',
         titleTextStyle: GoogleFonts.poppins(),
       ).show();
       return;

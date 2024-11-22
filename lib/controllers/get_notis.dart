@@ -2,7 +2,9 @@ import 'dart:convert';
 
 // import 'package:flutter/material.dart';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -51,23 +53,16 @@ class NotiController extends GetxController {
               ),
             );
           }
-        } else if (json['status'] == "error") {
-          // showDialog(
-          //     context: Get.context!,
-          //     builder: (context) {
-          //       return SimpleDialog(
-          //         title: const Text('Error'),
-          //         contentPadding: const EdgeInsets.all(20),
-          //         children: [
-          //           Text(
-          //             json['error']['message'],
-          //           ),
-          //         ],
-          //       );
-          //     });
-          throw jsonDecode(response.body)['error']['message'] ??
-              'Unknown Error Occured';
-        }
+        } else if (json['status'] == 'error') {
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
+      }
       } else {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }

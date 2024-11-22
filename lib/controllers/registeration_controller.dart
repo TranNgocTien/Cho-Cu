@@ -122,10 +122,9 @@ class RegisterationController extends GetxController {
           await http.post(url, body: jsonEncode(body), headers: headers);
       final json = jsonDecode(response.body);
 
-      print(json);
       if (response.statusCode == 200) {
         if (json['status'] == 'ok') {
-          Get.to(const VerifyOtpScreen());
+          Get.to(const LoginScreen());
         } else if (json['status'] == "error") {
           AwesomeDialog(
             context: Get.context!,
@@ -192,7 +191,7 @@ class RegisterationController extends GetxController {
           titleTextStyle: GoogleFonts.poppins(),
           autoHide: const Duration(milliseconds: 800),
         ).show();
-        Get.to(() => const LoginScreen());
+        Get.to(() => const RegisterScreen());
       } else if (json['status'] == 'error') {
         AwesomeDialog(
           context: Get.context!,

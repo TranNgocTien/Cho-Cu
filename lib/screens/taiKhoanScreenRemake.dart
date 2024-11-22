@@ -102,17 +102,21 @@ class _TaiKhoanScreenState extends State<TaiKhoanScreen>
       getStatisticsDataTotal();
       // getAUserController.getAUser();
     }
-    getJobTypeController.isLoading = true;
-    Timer(const Duration(milliseconds: 1000), () async {
+    setState(() {
+      getJobTypeController.isLoading = true;
+      getAUserController.isLoading = true;
+    });
+    Timer(const Duration(milliseconds: 300), () async {
       await getJobTypeController.getJobType();
       await statistics.getStatistics();
       // await getOrdersUser.getOrdersUser(
       //   0,
       // );
       isLogin();
-    });
-    setState(() {
-      getJobTypeController.isLoading = false;
+      setState(() {
+        getAUserController.isLoading = false;
+        getJobTypeController.isLoading = false;
+      });
     });
 
     super.initState();

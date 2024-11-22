@@ -99,21 +99,14 @@ class GetPrice extends GetxController {
             jobItemConfirm: jobItem,
           ));
         }
-      } else {
-        code = '';
-        AwesomeDialog(
+      } else if (json['status'] == 'error') {
+        await AwesomeDialog(
           context: Get.context!,
-          animType: AnimType.scale,
-          dialogType: DialogType.info,
-          body: Center(
-            child: Text(
-              json['error']['message'],
-              style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: GoogleFonts.montserrat().fontFamily),
-              textAlign: TextAlign.center,
-            ),
-          ),
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
         ).show();
       }
     }

@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/get_worker_by_location_data.dart';
 import 'package:chotot/models/get_worker_by_location_model.dart';
 import 'package:chotot/utils/api_endpoints.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 class GetWorkerByLocation extends GetxController {
@@ -34,7 +36,7 @@ class GetWorkerByLocation extends GetxController {
     http.Response response = await http.post(url, body: body, headers: headers);
 
     final json = jsonDecode(response.body);
-    print(json);
+
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         workerByLocationList.clear();
@@ -71,6 +73,15 @@ class GetWorkerByLocation extends GetxController {
             ),
           );
         }
+      } else if (json['status'] == 'error') {
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
       }
     }
   }

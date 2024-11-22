@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/login_controller.dart';
 import 'package:chotot/data/acceptorker_data.dart';
 import 'package:chotot/data/version_app.dart';
@@ -66,6 +67,15 @@ class HostDone extends GetxController {
               });
           return;
         }
+      } else if (json['status'] == 'error') {
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
       }
       // final SharedPreferences? prefs = await _prefs;
       // await prefs?.setString('token', token);

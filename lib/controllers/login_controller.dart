@@ -142,7 +142,7 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        print(json);
+
         if (json['status'] == 'ok') {
           if (currentHostID != json['data']['_id']) {
             addressDefault = '';

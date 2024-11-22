@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chotot/controllers/login_controller.dart';
 
 import 'package:get/get.dart';
 import 'package:chotot/data/login_data.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:chotot/utils/api_endpoints.dart';
@@ -37,7 +39,7 @@ class GetReg extends GetxController {
       final data = json['data'];
       if (json['status'] == 'ok') {
         regProfile.clear();
-        print('1');
+
         final List<CcidImage> ccidList = [];
         final List<Cert> certList = [];
         for (var i = 0; i < data['ccid_img'].length; i++) {
@@ -79,10 +81,16 @@ class GetReg extends GetxController {
             workerType: data['worker_type'].toString(),
           ),
         );
-        print(regProfile);
-      } else {
+      } else if (json['status'] == 'error') {
         regProfile = [];
-        throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
       }
     } else {
       throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';

@@ -523,7 +523,9 @@ class _ThongTinSanPhamScreenState extends State<ThongTinSanPhamScreen> {
                                         const SizedBox(width: 20),
                                         SizedBox(
                                           child: Text(
-                                            '${StringUtils.reverse(priceReverse)} VNĐ',
+                                            widget.docu.price == 'Giá liên hệ'
+                                                ? 'Giá liên hệ'
+                                                : '${StringUtils.reverse(priceReverse)} VNĐ',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleMedium!

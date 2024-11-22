@@ -44,7 +44,7 @@ class AcceptWorker extends GetxController {
     );
 
     final json = jsonDecode(response.body);
-    
+
     if (response.statusCode == 200) {
       if (json['status'] == 'ok') {
         acceptWorkerData.clear();
@@ -73,8 +73,15 @@ class AcceptWorker extends GetxController {
           dismissOnTouchOutside: true,
         ).show();
         Get.back();
-      } else {
-        throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
+      } else if (json['status'] == 'error') {
+        await AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: json['error']['message'],
+          titleTextStyle: GoogleFonts.poppins(),
+          autoHide: const Duration(milliseconds: 800),
+        ).show();
       }
 
       // final SharedPreferences? prefs = await _prefs;
