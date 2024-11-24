@@ -386,7 +386,6 @@ class LoginController extends GetxController {
     } catch (error) {
       isLoading = false;
 
-      Get.back();
       AwesomeDialog(
         context: Get.context!,
         dialogType: DialogType.warning,

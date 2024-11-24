@@ -135,8 +135,8 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         ),
                         const SizedBox(height: 30),
                         ElevatedButton(
-                          onPressed: () {
-                            requestController.verifyOTP();
+                          onPressed: () async {
+                            await requestController.verifyOTP();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -161,8 +161,8 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {
-                            requestController.reRequestOtp();
+                          onPressed: () async {
+                            await requestController.reRequestOtp();
                           },
                           child: Text(
                             'Gửi lại mã OTP',

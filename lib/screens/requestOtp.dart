@@ -135,8 +135,8 @@ class _RequestOtpScreenState extends State<RequestOtpScreen> {
                         ),
                         const SizedBox(height: 30),
                         ElevatedButton(
-                          onPressed: () {
-                            requestController.requestOtp();
+                          onPressed: () async {
+                            await requestController.requestOtp();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:

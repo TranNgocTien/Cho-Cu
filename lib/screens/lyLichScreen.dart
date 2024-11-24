@@ -66,6 +66,7 @@ class _LyLichScreenState extends State<LyLichScreen> {
 
   @override
   void initState() {
+    print(getAUserController.aUser);
     setState(() {});
     super.initState();
   }
@@ -446,23 +447,25 @@ class _LyLichScreenState extends State<LyLichScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      RatingBar.builder(
-                        initialRating: (double.tryParse(
-                                getAUserController.aUser[0].worker.ds)! /
-                            20),
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        ignoreGestures: true,
-                        itemCount: 5,
-                        itemPadding:
-                            const EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => const Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                        onRatingUpdate: (rating) {},
-                      ),
+                      getAUserController.aUser[0].worker.ds.isNull
+                          ? const SizedBox()
+                          : RatingBar.builder(
+                              initialRating: (double.tryParse(
+                                      getAUserController.aUser[0].worker.ds)! /
+                                  20),
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              allowHalfRating: true,
+                              ignoreGestures: true,
+                              itemCount: 5,
+                              itemPadding:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                              itemBuilder: (context, _) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (rating) {},
+                            ),
                       const SizedBox(
                         height: 10,
                       ),

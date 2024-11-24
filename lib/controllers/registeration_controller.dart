@@ -74,7 +74,6 @@ class RegisterationController extends GetxController {
         throw jsonDecode(response.body)['message'] ?? 'Unknown Error occured';
       }
     } catch (e) {
-      Get.back();
       // showDialog(
       //     context: Get.context!,
       //     builder: (context) {
@@ -124,7 +123,7 @@ class RegisterationController extends GetxController {
 
       if (response.statusCode == 200) {
         if (json['status'] == 'ok') {
-          Get.to(const LoginScreen());
+          Get.to(const VerifyOtpScreen());
         } else if (json['status'] == "error") {
           AwesomeDialog(
             context: Get.context!,
@@ -139,7 +138,6 @@ class RegisterationController extends GetxController {
         throw jsonDecode(response.body)['message'] ?? 'Unknown Error occured';
       }
     } catch (e) {
-      Get.back();
       // showDialog(
       //     context: Get.context!,
       //     builder: (context) {
@@ -176,12 +174,13 @@ class RegisterationController extends GetxController {
       'code': otpCodeController.text.trim(),
       'token': 'anhkhongdoiqua',
     };
+    print(body);
     http.Response response =
         await http.post(url, body: jsonEncode(body), headers: headers);
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-
+      print(json);
       if (json['status'] == 'ok') {
         await AwesomeDialog(
           context: Get.context!,
@@ -191,11 +190,11 @@ class RegisterationController extends GetxController {
           titleTextStyle: GoogleFonts.poppins(),
           autoHide: const Duration(milliseconds: 800),
         ).show();
-        Get.to(() => const RegisterScreen());
+        Get.off(() => const RegisterScreen());
       } else if (json['status'] == 'error') {
         AwesomeDialog(
           context: Get.context!,
-          dialogType: DialogType.success,
+          dialogType: DialogType.warning,
           animType: AnimType.rightSlide,
           title: json['error']['message'],
           titleTextStyle: GoogleFonts.poppins(),
@@ -266,7 +265,12 @@ class RegisterationController extends GetxController {
       final json = jsonDecode(response.body);
 
       if (json['status'] == 'ok') {
-        AwesomeDialog(
+        nameController.clear();
+        phoneNumberController.clear();
+        addressController.clear();
+        passwordController.clear();
+        otpCodeController.clear();
+        await AwesomeDialog(
           context: Get.context!,
           dialogType: DialogType.success,
           animType: AnimType.rightSlide,
@@ -274,23 +278,22 @@ class RegisterationController extends GetxController {
           titleTextStyle: GoogleFonts.poppins(),
           autoHide: const Duration(milliseconds: 800),
         ).show();
-        nameController.clear();
-        phoneNumberController.clear();
-        addressController.clear();
-        passwordController.clear();
-        otpCodeController.clear();
-        Get.off(const LoginScreen());
-      } else if (json['status'] == 'error') {
-        AwesomeDialog(
-          context: Get.context!,
-          dialogType: DialogType.warning,
-          animType: AnimType.rightSlide,
-          title: json['error']['message'],
-          titleTextStyle: GoogleFonts.poppins(),
-          autoHide: const Duration(milliseconds: 800),
-        ).show();
 
-        return;
+        Navigator.pushReplacement(
+          Get.context!,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+        // } else if (json['status'] == 'error') {
+        //   AwesomeDialog(
+        //     context: Get.context!,
+        //     dialogType: DialogType.warning,
+        //     animType: AnimType.rightSlide,
+        //     title: json['error']['message'],
+        //     titleTextStyle: GoogleFonts.poppins(),
+        //     autoHide: const Duration(milliseconds: 800),
+        //   ).show();
+
+        //   return;
       }
     } else {
       throw jsonDecode(response.body)['message'] ?? 'Unknown Error occured';

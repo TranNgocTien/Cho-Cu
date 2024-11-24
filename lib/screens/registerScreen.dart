@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:chotot/controllers/registeration_controller.dart';
 import 'package:chotot/screens/PDF_View.dart';
@@ -345,6 +346,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 30),
                         ElevatedButton(
                           onPressed: () {
+                            if (isAgree == false) {
+                              AwesomeDialog(
+                                context: Get.context!,
+                                dialogType: DialogType.warning,
+                                animType: AnimType.rightSlide,
+                                title: 'Vui lòng chấp nhận chính sách bảo mật',
+                                titleTextStyle: GoogleFonts.poppins(),
+                                autoHide: const Duration(milliseconds: 800),
+                              ).show();
+                            }
+
                             isAgree == false
                                 ? null
                                 : registerController.registerAccount();

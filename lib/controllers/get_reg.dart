@@ -16,6 +16,9 @@ class GetReg extends GetxController {
   LoginController loginController = Get.put(LoginController());
 
   Future<void> getReg() async {
+    if (loginData[0].regProfile == "--") {
+      return;
+    }
     final headers = {
       'x-access-token': loginController.tokenString,
     };
@@ -87,10 +90,12 @@ class GetReg extends GetxController {
           context: Get.context!,
           dialogType: DialogType.warning,
           animType: AnimType.rightSlide,
+          dismissOnTouchOutside: true,
           title: json['error']['message'],
           titleTextStyle: GoogleFonts.poppins(),
           autoHide: const Duration(milliseconds: 800),
         ).show();
+        return;
       }
     } else {
       throw jsonDecode(response.body)['message'] ?? 'Unknown Error Occured';

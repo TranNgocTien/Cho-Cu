@@ -68,7 +68,6 @@ class ForgotPasswordController extends GetxController {
         throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       }
     } catch (error) {
-      Get.back();
       AwesomeDialog(
         context: Get.context!,
         dialogType: DialogType.warning,

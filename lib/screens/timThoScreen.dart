@@ -394,53 +394,7 @@ class _TimThoScreenState extends State<TimThoScreen>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    AnimatedBuilder(
-                      animation: _animationController,
-                      builder: (context, child) => Opacity(
-                        opacity: _animationController.value,
-                        child: child,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Center(
-                          child: loginController.tokenString != ''
-                              ? MaterialButton(
-                                  onPressed: () async {
-                                    List<Location> location =
-                                        await locationFromAddress(
-                                            addressDefault);
 
-                                    final lat = location.last.latitude;
-                                    final lng = location.last.longitude;
-
-                                    if (lat == null || lng == null) {
-                                      return;
-                                    }
-
-                                    Get.to(() => TimThoNhanh(
-                                        cameraPositionLat: lat,
-                                        cameraPositionLng: lng));
-                                  },
-                                  elevation: 1.0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  height: 60.0,
-                                  minWidth: widthDevice * 0.9,
-                                  color: const Color.fromRGBO(23, 162, 73, 1),
-                                  child: Text(
-                                    'Tìm thợ quanh bạn',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: widthDevice * 0.04,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                    ),
-                                  ))
-                              : const Text(''),
-                        ),
-                      ),
-                    ),
                     const SizedBox(height: 10),
                     AnimatedBuilder(
                       animation: _animationController,

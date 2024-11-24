@@ -48,8 +48,8 @@ class User {
 class WorkerAUser {
   final String id;
   final String userId;
-  final String ds;
-  final String wf;
+  final dynamic ds;
+  final dynamic wf;
   final String address;
   final String agent;
   final String ccid;

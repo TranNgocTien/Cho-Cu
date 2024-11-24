@@ -65,21 +65,20 @@ class LyLichController extends GetxController {
           );
           showWallet = false;
         } else if (json['status'] == 'error') {
-        await AwesomeDialog(
-          context: Get.context!,
-          dialogType: DialogType.warning,
-          animType: AnimType.rightSlide,
-          title: json['error']['message'],
-          titleTextStyle: GoogleFonts.poppins(),
-          autoHide: const Duration(milliseconds: 800),
-        ).show();
-      }
+          await AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: json['error']['message'],
+            titleTextStyle: GoogleFonts.poppins(),
+            autoHide: const Duration(milliseconds: 800),
+          ).show();
+        }
       }
       // else {
       //   throw jsonDecode(response.body)['Message'] ?? 'Unknown Error Occured';
       // }
     } catch (error) {
-      Get.back();
       showDialog(
           context: Get.context!,
           builder: (context) {

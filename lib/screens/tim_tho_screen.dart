@@ -1085,8 +1085,21 @@ class _TimThoThongMinhScreenState extends State<TimThoThongMinhScreen> {
                                   initialDate =
                                       (await showCalendarDatePicker2Dialog(
                                     context: context,
+                                    // config: CalendarDatePicker2Config(
+                                    //   selectableDayPredicate: (day) {
+                                    //     // Vô hiệu hóa ngày trước ngày hiện tại
+                                    //     return day.isAfter(
+                                    //         now.subtract(Duration(days: 1)));
+                                    //   },
+                                    // ),
                                     config:
-                                        CalendarDatePicker2WithActionButtonsConfig(),
+                                        CalendarDatePicker2WithActionButtonsConfig(
+                                      selectableDayPredicate: (day) {
+                                        // Vô hiệu hóa ngày trước ngày hiện tại
+                                        return day.isAfter(DateTime.now()
+                                            .subtract(const Duration(days: 1)));
+                                      },
+                                    ),
                                     dialogSize: const Size(325, 400),
                                     value: initialDate,
                                     borderRadius: BorderRadius.circular(15),

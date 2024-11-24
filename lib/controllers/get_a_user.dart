@@ -21,7 +21,7 @@ class GetAUserController extends GetxController {
   List<AUser> aUser = [];
   Future<void> getAUser() async {
     // Get device information
-
+    print(loginController.tokenString);
     // try {
     var headers = {
       'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ class GetAUserController extends GetxController {
         await http.post(url, body: jsonEncode(body), headers: headers);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-
+      print(json);
       if (json['status'] == 'ok') {
         aUser.clear();
         final userJson = json['data']['user'];
@@ -85,12 +85,12 @@ class GetAUserController extends GetxController {
             password: userJson['password'],
             wallet: userJson['wallet'].toString(),
           ),
-          worker: userJson['worker_authen'] != 'false'
+          worker: userJson['worker_authen'] == 'true'
               ? WorkerAUser(
                   id: workerJson['_id'],
                   userId: workerJson['user_id'],
-                  ds: workerJson['DS'].toString(),
-                  wf: workerJson['WF'].toString(),
+                  ds: workerJson['DS'],
+                  wf: workerJson['WF'],
                   address: workerJson['address'],
                   agent: workerJson['agent'],
                   ccid: workerJson['ccid'],
@@ -125,6 +125,7 @@ class GetAUserController extends GetxController {
                   workerType: [],
                 ),
         ));
+        print(aUser);
       } else if (json['status'] == "error") {
         AwesomeDialog(
           context: Get.context!,
